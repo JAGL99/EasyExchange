@@ -127,6 +127,16 @@ fun ExchangeScreen(
                 
                 Spacer(modifier = Modifier.height(24.dp))
                 
+                // Botón para realizar la consulta
+                androidx.compose.material3.Button(
+                    onClick = { viewModel.performConversion() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Consultar Tipo de Cambio")
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
                 // Resultado de la conversión
                 ElevatedCard(
                     modifier = Modifier.fillMaxWidth()

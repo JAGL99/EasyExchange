@@ -61,7 +61,6 @@ class ExchangeViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(fromCurrency = currency)
         }
-        convertAmount()
     }
 
     /**
@@ -71,7 +70,6 @@ class ExchangeViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(toCurrency = currency)
         }
-        convertAmount()
     }
 
     /**
@@ -81,7 +79,6 @@ class ExchangeViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(amount = amount)
         }
-        convertAmount()
     }
 
     /**
@@ -94,6 +91,12 @@ class ExchangeViewModel : ViewModel() {
                 toCurrency = currentState.fromCurrency
             )
         }
+    }
+    
+    /**
+     * Método público para iniciar la conversión de moneda manualmente
+     */
+    fun performConversion() {
         convertAmount()
     }
 
