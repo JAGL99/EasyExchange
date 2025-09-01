@@ -13,12 +13,13 @@ data class ExchangeRate(
 )
 
 /**
- * Modelo de respuesta de la API de tasas de cambio
+ * Modelo de respuesta de la API de tasas de cambio de apilayer.net
  */
 data class ExchangeRateResponse(
     val success: Boolean,
+    val terms: String?,
+    val privacy: String?,
     val timestamp: Long,
-    val base: String,
-    val date: String,
-    val rates: Map<String, Double>
+    val source: String,
+    val quotes: Map<String, Double>
 )

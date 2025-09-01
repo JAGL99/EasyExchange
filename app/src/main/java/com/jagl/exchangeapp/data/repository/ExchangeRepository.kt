@@ -28,12 +28,20 @@ class ExchangeRepository {
     suspend fun getExchangeRates(baseCurrency: String): Result<List<ExchangeRate>> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = api.getLatestRates(baseCurrency)
+                // Obtenemos todas las monedas disponibles excepto la base
+                val targetCurrencies = CurrencyData.availableCurrencies
+                    .filter { it.code != baseCurrency }
+                    .map { it.code }
+                    .joinToString(",")
+                
+                val response = api.getLatestRates(baseCurrency, targetCurrencies)
                 if (response.success) {
-                    val rates = response.rates.map { (currencyCode, rate) ->
+                    val rates = response.quotes.map { (quotePair, rate) ->
+                        // El formato de la clave es USDEUR (moneda base + moneda destino)
+                        val toCurrency = quotePair.substring(baseCurrency.length)
                         ExchangeRate(
                             fromCurrency = baseCurrency,
-                            toCurrency = currencyCode,
+                            toCurrency = toCurrency,
                             rate = rate
                         )
                     }
@@ -61,9 +69,12 @@ class ExchangeRepository {
     ): Result<Double> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = api.getLatestRates(fromCurrency)
+                // Para la API de apilayer, necesitamos solicitar específicamente la moneda de destino
+                val response = api.getLatestRates(fromCurrency, toCurrency)
                 if (response.success) {
-                    val rate = response.rates[toCurrency]
+                    // La clave en el mapa quotes tiene el formato USDEUR (fromCurrency + toCurrency)
+                    val quoteKey = "${fromCurrency}${toCurrency}"
+                    val rate = response.quotes[quoteKey]
                     if (rate != null) {
                         Result.success(amount * rate)
                     } else {
