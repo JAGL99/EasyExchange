@@ -43,9 +43,8 @@ import com.jagl.exchangeapp.ui.viewmodel.ExchangeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExchangeScreen(
-    viewModel: ExchangeViewModel = viewModel()
-) {
+fun ExchangeScreen() {
+    val viewModel: ExchangeViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     

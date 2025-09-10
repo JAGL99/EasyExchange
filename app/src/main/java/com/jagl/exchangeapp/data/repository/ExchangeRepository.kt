@@ -1,17 +1,29 @@
 package com.jagl.exchangeapp.data.repository
 
-import com.jagl.exchangeapp.data.api.NetworkModule
+import android.content.Context
+import com.jagl.exchangeapp.data.api.ExchangeRateApi
+import com.jagl.exchangeapp.data.local.ExchangeDatabase
+import com.jagl.exchangeapp.data.local.entity.ExchangeRateEntity
 import com.jagl.exchangeapp.data.model.Currency
 import com.jagl.exchangeapp.data.model.CurrencyData
 import com.jagl.exchangeapp.data.model.ExchangeRate
+import com.jagl.exchangeapp.util.DateUtils
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Repositorio que maneja las operaciones relacionadas con las tasas de cambio
  */
-class ExchangeRepository {
-    private val api = NetworkModule.exchangeRateApi
+@Singleton
+class ExchangeRepository @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val api: ExchangeRateApi,
+    private val database: ExchangeDatabase
+) {
+    private val exchangeRateDao = database.exchangeRateDao()
     
     /**
      * Obtiene la lista de monedas disponibles
@@ -28,12 +40,23 @@ class ExchangeRepository {
     suspend fun getExchangeRates(baseCurrency: String): Result<List<ExchangeRate>> {
         return withContext(Dispatchers.IO) {
             try {
+                val currentDate = DateUtils.getCurrentDate()
+                
+                // Verificar si ya tenemos datos para hoy
+                val hasDataForToday = exchangeRateDao.hasExchangeRatesForDate(baseCurrency, currentDate) > 0
+                
+                if (hasDataForToday) {
+                    // Usar datos locales
+                    val localRates = exchangeRateDao.getExchangeRatesForDate(baseCurrency, currentDate)
+                    val rates = localRates.map { it.toExchangeRate() }
+                    return@withContext Result.success(rates)
+                }
+                
+                // Si no hay datos locales para hoy, obtenerlos de la API
                 // Obtenemos todas las monedas disponibles excepto la base
                 val targetCurrencies = CurrencyData.availableCurrencies
-                    .filter { it.code != baseCurrency }
-                    .map { it.code }
-                    .joinToString(",")
-                
+                    .filter { it.code != baseCurrency }.joinToString(",") { it.code }
+
                 val response = api.getLatestRates(baseCurrency, targetCurrencies)
                 if (response.success) {
                     val rates = response.quotes.map { (quotePair, rate) ->
@@ -45,12 +68,23 @@ class ExchangeRepository {
                             rate = rate
                         )
                     }
-                    Result.success(rates)
+                    
+                    // Guardar en la base de datos local
+                    val entities = rates.map { rate ->
+                        ExchangeRateEntity.fromExchangeRate(
+                            exchangeRate = rate,
+                            date = currentDate,
+                            source = baseCurrency
+                        )
+                    }
+                    exchangeRateDao.insertExchangeRates(entities)
+                    
+                    return@withContext Result.success(rates)
                 } else {
-                    Result.failure(Exception("Error al obtener tasas de cambio"))
+                    return@withContext Result.failure(Exception("Error al obtener tasas de cambio"))
                 }
             } catch (e: Exception) {
-                Result.failure(e)
+                return@withContext Result.failure(e)
             }
         }
     }
@@ -69,22 +103,47 @@ class ExchangeRepository {
     ): Result<Double> {
         return withContext(Dispatchers.IO) {
             try {
-                // Para la API de apilayer, necesitamos solicitar específicamente la moneda de destino
+                val currentDate = DateUtils.getCurrentDate()
+                
+                // Verificar si ya tenemos la tasa de cambio para hoy
+                val localRate = exchangeRateDao.getExchangeRateForDate(fromCurrency, toCurrency, currentDate)
+                
+                if (localRate != null) {
+                    // Usar datos locales
+                    return@withContext Result.success(amount * localRate.rate)
+                }
+                
+                // Si no hay datos locales para hoy, obtenerlos de la API
                 val response = api.getLatestRates(fromCurrency, toCurrency)
                 if (response.success) {
                     // La clave en el mapa quotes tiene el formato USDEUR (fromCurrency + toCurrency)
                     val quoteKey = "${fromCurrency}${toCurrency}"
                     val rate = response.quotes[quoteKey]
                     if (rate != null) {
-                        Result.success(amount * rate)
+                        // Guardar en la base de datos local
+                        val exchangeRate = ExchangeRate(
+                            fromCurrency = fromCurrency,
+                            toCurrency = toCurrency,
+                            rate = rate
+                        )
+                        
+                        val entity = ExchangeRateEntity.fromExchangeRate(
+                            exchangeRate = exchangeRate,
+                            date = currentDate,
+                            source = fromCurrency
+                        )
+                        
+                        exchangeRateDao.insertExchangeRate(entity)
+                        
+                        return@withContext Result.success(amount * rate)
                     } else {
-                        Result.failure(Exception("Moneda de destino no encontrada"))
+                        return@withContext Result.failure(Exception("Moneda de destino no encontrada"))
                     }
                 } else {
-                    Result.failure(Exception("Error al obtener tasas de cambio"))
+                    return@withContext Result.failure(Exception("Error al obtener tasas de cambio"))
                 }
             } catch (e: Exception) {
-                Result.failure(e)
+                return@withContext Result.failure(e)
             }
         }
     }

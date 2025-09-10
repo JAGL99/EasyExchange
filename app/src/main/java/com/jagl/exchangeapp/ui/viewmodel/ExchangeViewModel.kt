@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jagl.exchangeapp.data.model.Currency
 import com.jagl.exchangeapp.data.repository.ExchangeRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
+import javax.inject.Inject
 
 /**
  * Estado de la UI para la pantalla de conversión de monedas
@@ -29,9 +31,10 @@ data class ExchangeUiState(
 /**
  * ViewModel para la pantalla de conversión de monedas
  */
-class ExchangeViewModel : ViewModel() {
-
-    private val repository = ExchangeRepository()
+@HiltViewModel
+class ExchangeViewModel @Inject constructor(
+    private val repository: ExchangeRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExchangeUiState())
     val uiState: StateFlow<ExchangeUiState> = _uiState.asStateFlow()
