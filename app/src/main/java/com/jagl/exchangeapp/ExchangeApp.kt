@@ -16,6 +16,6 @@ class ExchangeApp : Application() {
 
     companion object {
         // Constantes globales de la aplicación
-        const val API_BASE_URL = "https://api.exchangerate-api.com/v4/"
+        const val API_BASE_URL = "http://apilayer.net/api/"
     }
 }
