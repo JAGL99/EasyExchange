@@ -1,5 +1,7 @@
 package com.jagl.exchangeapp.ui.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,11 +15,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -47,14 +50,14 @@ fun ExchangeScreen() {
     val viewModel: ExchangeViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    
+
     // Mostrar mensaje de error si existe
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let {
             snackbarHostState.showSnackbar(message = it)
         }
     }
-    
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -77,7 +80,7 @@ fun ExchangeScreen() {
                     .fillMaxSize()
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 // Moneda de origen
                 Text(
@@ -89,14 +92,14 @@ fun ExchangeScreen() {
                     currencies = uiState.availableCurrencies,
                     onCurrencySelected = viewModel::updateFromCurrency
                 )
-                
+
                 // Monto a convertir
                 Spacer(modifier = Modifier.height(8.dp))
                 AmountInput(
                     value = uiState.amount,
                     onValueChange = viewModel::updateAmount
                 )
-                
+
                 // Botón para intercambiar monedas
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -104,15 +107,19 @@ fun ExchangeScreen() {
                 ) {
                     FilledIconButton(
                         onClick = { viewModel.swapCurrencies() },
-                        modifier = Modifier.size(48.dp)
+                        modifier = Modifier
+                            .size(56.dp)
+                            .padding(4.dp),
+                        shape = MaterialTheme.shapes.medium
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = "Intercambiar monedas"
+                            imageVector = Icons.Default.AddCircle,
+                            contentDescription = "Intercambiar monedas",
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
-                
+
                 // Moneda de destino
                 Text(
                     text = "A:",
@@ -123,22 +130,32 @@ fun ExchangeScreen() {
                     currencies = uiState.availableCurrencies,
                     onCurrencySelected = viewModel::updateToCurrency
                 )
-                
-                Spacer(modifier = Modifier.height(24.dp))
-                
+
+                Spacer(modifier = Modifier.height(20.dp))
+
                 // Botón para realizar la consulta
-                androidx.compose.material3.Button(
+                FilledTonalButton(
                     onClick = { viewModel.performConversion() },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(54.dp),
+                    shape = MaterialTheme.shapes.large
                 ) {
-                    Text("Consultar Tipo de Cambio")
+                    Text(
+                        "Calcular Conversión",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(4.dp)
+                    )
                 }
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 // Resultado de la conversión
                 ElevatedCard(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    shape = MaterialTheme.shapes.large
                 ) {
                     Column(
                         modifier = Modifier
@@ -146,34 +163,58 @@ fun ExchangeScreen() {
                             .padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "Resultado",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                        
+                        AnimatedContent(
+                            targetState = uiState.convertedAmount,
+                            label = "result_animation"
+                        ) { targetAmount ->
+                            Text(
+                                text = if (targetAmount.isNotEmpty()) "Resultado" else " ",
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = animateColorAsState(
+                                    if (targetAmount.isNotEmpty()) MaterialTheme.colorScheme.secondary
+                                    else MaterialTheme.colorScheme.surface
+                                ).value,
+                                modifier = Modifier.padding(vertical = 12.dp)
+                            )
+                        }
+
                         Spacer(modifier = Modifier.height(16.dp))
-                        
+
                         if (uiState.isLoading) {
-                            CircularProgressIndicator()
-                        } else if (uiState.convertedAmount.isNotEmpty()) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(48.dp),
+                                strokeWidth = 4.dp
+                            )
+                            return@Column
+                        }
+
+                        if (uiState.convertedAmount.isNotEmpty()) {
                             Text(
                                 text = uiState.convertedAmount,
                                 style = MaterialTheme.typography.headlineMedium,
                                 fontWeight = FontWeight.Bold
                             )
-                            
+
                             Spacer(modifier = Modifier.height(8.dp))
-                            
+
                             // Mostrar la tasa de cambio
                             uiState.exchangeRate?.let { rate ->
                                 Text(
-                                    text = "1 ${uiState.fromCurrency?.code} = ${String.format("%.4f", rate)} ${uiState.toCurrency?.code}",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center
+                                    text = "1 ${uiState.fromCurrency?.code} = ${
+                                        String.format(
+                                            "%.4f",
+                                            rate
+                                        )
+                                    } ${uiState.toCurrency?.code}",
+                                    style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(vertical = 4.dp)
                                 )
                             }
-                        } else if (uiState.amount.isEmpty()) {
+                            return@Column
+                        }
+
+                        if (uiState.amount.isEmpty()) {
                             Text(
                                 text = "Ingrese un monto para convertir",
                                 style = MaterialTheme.typography.bodyLarge,
