@@ -41,7 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jagl.exchangeapp.ui.components.AmountInput
-import com.jagl.exchangeapp.ui.components.CurrencyDropdown
+import com.jagl.exchangeapp.ui.components.SearchableCurrencyDropdown
 import com.jagl.exchangeapp.ui.viewmodel.ExchangeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,7 +87,7 @@ fun ExchangeScreen() {
                     text = "De:",
                     style = MaterialTheme.typography.titleMedium
                 )
-                CurrencyDropdown(
+                SearchableCurrencyDropdown(
                     selectedCurrency = uiState.fromCurrency,
                     currencies = uiState.availableCurrencies,
                     onCurrencySelected = viewModel::updateFromCurrency
@@ -125,7 +125,7 @@ fun ExchangeScreen() {
                     text = "A:",
                     style = MaterialTheme.typography.titleMedium
                 )
-                CurrencyDropdown(
+                SearchableCurrencyDropdown(
                     selectedCurrency = uiState.toCurrency,
                     currencies = uiState.availableCurrencies,
                     onCurrencySelected = viewModel::updateToCurrency
