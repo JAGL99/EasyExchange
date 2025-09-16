@@ -52,7 +52,7 @@ fun SearchableCurrencyDropdown(
         )
     )
 
-    if (expanded.value && filteredCurrencies.isNotEmpty()) {
+    if (expanded.value && searchQuery.value.isNotEmpty() && filteredCurrencies.isNotEmpty()) {
         filteredCurrencies.forEach { currency ->
             Text(
                 text = "${currency.code} - ${currency.name}",
