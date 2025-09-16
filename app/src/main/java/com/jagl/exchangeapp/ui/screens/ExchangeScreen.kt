@@ -88,7 +88,6 @@ fun ExchangeScreen() {
                     style = MaterialTheme.typography.titleMedium
                 )
                 SearchableCurrencyDropdown(
-                    selectedCurrency = uiState.fromCurrency,
                     currencies = uiState.availableCurrencies,
                     onCurrencySelected = viewModel::updateFromCurrency
                 )
@@ -126,7 +125,6 @@ fun ExchangeScreen() {
                     style = MaterialTheme.typography.titleMedium
                 )
                 SearchableCurrencyDropdown(
-                    selectedCurrency = uiState.toCurrency,
                     currencies = uiState.availableCurrencies,
                     onCurrencySelected = viewModel::updateToCurrency
                 )
