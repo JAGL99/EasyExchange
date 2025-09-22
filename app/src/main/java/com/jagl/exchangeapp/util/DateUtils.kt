@@ -8,9 +8,9 @@ import java.util.Locale
  * Utilidades para manejar fechas
  */
 object DateUtils {
-    
+
     private const val DATE_FORMAT = "yyyy-MM-dd"
-    
+
     /**
      * Obtiene la fecha actual en formato YYYY-MM-DD
      */
@@ -18,7 +18,7 @@ object DateUtils {
         val dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
         return dateFormat.format(Date())
     }
-    
+
     /**
      * Formatea una fecha en formato YYYY-MM-DD
      */
@@ -26,7 +26,7 @@ object DateUtils {
         val dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
         return dateFormat.format(date)
     }
-    
+
     /**
      * Parsea una fecha en formato YYYY-MM-DD
      */

@@ -10,7 +10,7 @@ import retrofit2.http.Query
  * La API key ya está incluida en la URL base
  */
 interface ExchangeRateApi {
-    
+
     /**
      * Obtiene las tasas de cambio para una moneda base
      * @param source Código de la moneda base (ej. USD, EUR)

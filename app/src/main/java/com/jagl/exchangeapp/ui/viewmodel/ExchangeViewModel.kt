@@ -95,7 +95,7 @@ class ExchangeViewModel @Inject constructor(
             )
         }
     }
-    
+
     /**
      * Método público para iniciar la conversión de moneda manualmente
      */
