@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.safeargs)
+    alias(libs.plugins.jupiter)
 }
 
 android {
@@ -34,10 +36,15 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     buildFeatures {
         compose = true
+    }
+    junitPlatform {
+        instrumentationTests {
+            integrityCheckEnabled = false
+        }
     }
 }
 
@@ -48,6 +55,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
@@ -68,8 +76,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
     
-    // Coil
-    implementation(libs.coil.compose)
+
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
@@ -84,12 +91,31 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
-    
+
+    // Testing
+    implementation(libs.kotlinx.coroutines.test)
+    implementation(libs.junit.jupiter.api)
+    implementation(libs.junit.jupiter.params)
+    implementation(libs.androidx.ui.test.junit4)
+    implementation(libs.hilt.android.testing)
+
     testImplementation(libs.junit)
+    testImplementation(libs.turbine)
+    testImplementation(libs.junit)
+    testImplementation(libs.assertk)
+    testImplementation(libs.mockk)
+    testImplementation(libs.junit5.test.core)
+
+    kspAndroidTest(libs.hilt.android.compiler)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+
+    androidTestImplementation (libs.androidx.rules)
+    androidTestImplementation(libs.turbine)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.core.ktx.test)
+    androidTestImplementation(libs.assertk)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
 }
