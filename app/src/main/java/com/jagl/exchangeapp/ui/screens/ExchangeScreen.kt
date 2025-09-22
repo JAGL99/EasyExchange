@@ -39,15 +39,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.jagl.exchangeapp.ui.components.AmountInput
 import com.jagl.exchangeapp.ui.components.SearchableCurrencyDropdown
 import com.jagl.exchangeapp.ui.viewmodel.ExchangeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExchangeScreen() {
-    val viewModel: ExchangeViewModel = viewModel()
+fun ExchangeScreen(
+    viewModel: ExchangeViewModel = hiltViewModel()
+) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 

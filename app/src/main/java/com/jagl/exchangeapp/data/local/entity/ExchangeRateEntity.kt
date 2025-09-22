@@ -35,7 +35,11 @@ data class ExchangeRateEntity(
         /**
          * Crea una entidad a partir de un modelo de dominio
          */
-        fun fromExchangeRate(exchangeRate: ExchangeRate, date: String, source: String): ExchangeRateEntity {
+        fun fromExchangeRate(
+            exchangeRate: ExchangeRate,
+            date: String,
+            source: String
+        ): ExchangeRateEntity {
             return ExchangeRateEntity(
                 id = "${exchangeRate.fromCurrency}_${exchangeRate.toCurrency}",
                 fromCurrency = exchangeRate.fromCurrency,

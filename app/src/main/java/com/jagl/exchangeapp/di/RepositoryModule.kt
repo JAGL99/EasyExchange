@@ -1,13 +1,11 @@
 package com.jagl.exchangeapp.di
 
-import android.content.Context
 import com.jagl.exchangeapp.data.api.ExchangeRateApi
 import com.jagl.exchangeapp.data.local.ExchangeDatabase
 import com.jagl.exchangeapp.data.repository.ExchangeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -26,10 +24,9 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideExchangeRepository(
-        @ApplicationContext context: Context,
         exchangeRateApi: ExchangeRateApi,
         database: ExchangeDatabase
     ): ExchangeRepository {
-        return ExchangeRepository(context, exchangeRateApi, database)
+        return ExchangeRepository(exchangeRateApi, database)
     }
 }

@@ -11,33 +11,40 @@ import com.jagl.exchangeapp.data.local.entity.ExchangeRateEntity
  */
 @Dao
 interface ExchangeRateDao {
-    
+
     /**
      * Inserta una tasa de cambio en la base de datos
      * Si ya existe, la reemplaza
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertExchangeRate(exchangeRate: ExchangeRateEntity)
-    
+
     /**
      * Inserta una lista de tasas de cambio en la base de datos
      * Si ya existen, las reemplaza
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertExchangeRates(exchangeRates: List<ExchangeRateEntity>)
-    
+
     /**
      * Obtiene todas las tasas de cambio para una moneda base y una fecha específica
      */
     @Query("SELECT * FROM exchange_rates WHERE fromCurrency = :baseCurrency AND date = :date")
-    suspend fun getExchangeRatesForDate(baseCurrency: String, date: String): List<ExchangeRateEntity>
-    
+    suspend fun getExchangeRatesForDate(
+        baseCurrency: String,
+        date: String
+    ): List<ExchangeRateEntity>
+
     /**
      * Obtiene una tasa de cambio específica para una fecha
      */
     @Query("SELECT * FROM exchange_rates WHERE fromCurrency = :fromCurrency AND toCurrency = :toCurrency AND date = :date LIMIT 1")
-    suspend fun getExchangeRateForDate(fromCurrency: String, toCurrency: String, date: String): ExchangeRateEntity?
-    
+    suspend fun getExchangeRateForDate(
+        fromCurrency: String,
+        toCurrency: String,
+        date: String
+    ): ExchangeRateEntity?
+
     /**
      * Verifica si existen tasas de cambio para una moneda base y una fecha específica
      */
