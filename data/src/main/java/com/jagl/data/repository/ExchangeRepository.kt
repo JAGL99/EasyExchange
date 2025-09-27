@@ -1,12 +1,13 @@
-package com.jagl.exchangeapp.data.repository
+package com.jagl.data.repository
 
-import com.jagl.exchangeapp.data.api.ExchangeRateApi
-import com.jagl.exchangeapp.data.local.ExchangeDatabase
-import com.jagl.exchangeapp.data.local.entity.ExchangeRateEntity
-import com.jagl.exchangeapp.data.model.Currency
-import com.jagl.exchangeapp.data.model.CurrencyData
-import com.jagl.exchangeapp.data.model.ExchangeRate
-import com.jagl.exchangeapp.util.DateUtils
+
+import com.jagl.core.util.DateUtils
+import com.jagl.data.api.ExchangeRateApi
+import com.jagl.data.local.ExchangeDatabase
+import com.jagl.data.local.entity.ExchangeRateEntity
+import com.jagl.domain.model.Currency
+import com.jagl.domain.model.CurrencyData
+import com.jagl.domain.model.ExchangeRate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -20,12 +21,14 @@ class ExchangeRepository @Inject constructor(
 ) {
     private val exchangeRateDao = database.exchangeRateDao()
 
+
     /**
      * Obtiene la lista de monedas disponibles
      */
     fun getAvailableCurrencies(): List<Currency> {
         return CurrencyData.availableCurrencies
     }
+
 
     /**
      * Obtiene las tasas de cambio para una moneda base

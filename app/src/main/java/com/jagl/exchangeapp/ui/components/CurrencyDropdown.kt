@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.jagl.exchangeapp.data.model.Currency
+import com.jagl.domain.model.Currency
 
 @Composable
 fun SearchableCurrencyDropdown(

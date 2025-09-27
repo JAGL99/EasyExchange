@@ -1,10 +1,10 @@
-package com.jagl.exchangeapp.data.local.dao
+package com.jagl.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.jagl.exchangeapp.data.local.entity.ExchangeRateEntity
+import com.jagl.data.local.entity.ExchangeRateEntity
 
 /**
  * DAO para acceder a las tasas de cambio en la base de datos

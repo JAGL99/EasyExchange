@@ -1,9 +1,9 @@
-package com.jagl.exchangeapp.di
+package com.jagl.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.jagl.exchangeapp.data.local.ExchangeDatabase
-import com.jagl.exchangeapp.data.local.dao.ExchangeRateDao
+import com.jagl.data.local.ExchangeDatabase
+import com.jagl.data.local.dao.ExchangeRateDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +17,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-    
+
     /**
      * Proporciona una instancia de la base de datos Room
      */
@@ -30,7 +30,7 @@ object DatabaseModule {
             "exchange_database"
         ).build()
     }
-    
+
     /**
      * Proporciona el DAO para acceder a las tasas de cambio
      */

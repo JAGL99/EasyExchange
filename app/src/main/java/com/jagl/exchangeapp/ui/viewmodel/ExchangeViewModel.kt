@@ -2,8 +2,8 @@ package com.jagl.exchangeapp.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jagl.exchangeapp.data.model.Currency
-import com.jagl.exchangeapp.data.repository.ExchangeRepository
+import com.jagl.data.repository.ExchangeRepository
+import com.jagl.domain.model.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
