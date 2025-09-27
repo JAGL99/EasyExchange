@@ -58,6 +58,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Retrofit
+    implementation(libs.retrofit)
+
     // Testing
     implementation(libs.kotlinx.coroutines.test)
     implementation(libs.junit.jupiter.api)

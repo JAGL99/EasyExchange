@@ -1,4 +1,4 @@
-package com.jagl.exchangeapp.util
+package com.jagl.core.util
 
 import java.text.SimpleDateFormat
 import java.util.Date

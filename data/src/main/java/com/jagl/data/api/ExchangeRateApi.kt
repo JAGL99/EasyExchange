@@ -1,6 +1,6 @@
-package com.jagl.exchangeapp.data.api
+package com.jagl.data.api
 
-import com.jagl.exchangeapp.data.model.ExchangeRateResponse
+import com.jagl.data.api.model.ExchangeRateResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

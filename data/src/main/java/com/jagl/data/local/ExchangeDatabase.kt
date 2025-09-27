@@ -1,9 +1,9 @@
-package com.jagl.exchangeapp.data.local
+package com.jagl.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.jagl.exchangeapp.data.local.dao.ExchangeRateDao
-import com.jagl.exchangeapp.data.local.entity.ExchangeRateEntity
+import com.jagl.data.local.dao.ExchangeRateDao
+import com.jagl.data.local.entity.ExchangeRateEntity
 
 /**
  * Base de datos de Room para la aplicación

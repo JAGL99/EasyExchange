@@ -50,6 +50,10 @@ android {
 
 dependencies {
 
+    implementation(project(":data"))
+    implementation(project(":domain"))
+    implementation(project(":core"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -61,29 +65,11 @@ dependencies {
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.moshi)
-    
-    // Moshi
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
-    
-    // OkHttp
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
-    
 
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
-    
-    // Room
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
 
     // Hilt
     implementation(libs.hilt.android)

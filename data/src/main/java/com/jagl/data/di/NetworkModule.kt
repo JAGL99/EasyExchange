@@ -1,7 +1,7 @@
-package com.jagl.exchangeapp.di
+package com.jagl.data.di
 
-import com.jagl.exchangeapp.ExchangeApp
-import com.jagl.exchangeapp.data.api.ExchangeRateApi
+
+import com.jagl.data.api.ExchangeRateApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -21,7 +21,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    
+
     /**
      * Proporciona una instancia de OkHttpClient con logging para depuración
      */
@@ -31,14 +31,14 @@ object NetworkModule {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-        
+
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
     }
-    
+
     /**
      * Proporciona una instancia de Moshi para la serialización/deserialización JSON
      */
@@ -49,7 +49,7 @@ object NetworkModule {
             .add(KotlinJsonAdapterFactory())
             .build()
     }
-    
+
     /**
      * Proporciona una instancia de Retrofit para realizar llamadas a la API
      */
@@ -57,12 +57,12 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ExchangeApp.API_BASE_URL)
+            .baseUrl("http://apilayer.net/api/")
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
-    
+
     /**
      * Proporciona una instancia de la API de tasas de cambio
      */

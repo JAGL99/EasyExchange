@@ -1,4 +1,4 @@
-package com.jagl.exchangeapp.data.model
+package com.jagl.domain.model
 
 /**
  * Modelo de datos que representa una moneda

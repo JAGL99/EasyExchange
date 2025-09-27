@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jupiter)
 }
@@ -48,9 +49,33 @@ android {
 
 dependencies {
 
+    implementation(project(":domain"))
+    implementation(project(":core"))
+
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.moshi)
+
+    // Moshi
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+
+    // OkHttp
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
 
     // Testing
     implementation(libs.kotlinx.coroutines.test)

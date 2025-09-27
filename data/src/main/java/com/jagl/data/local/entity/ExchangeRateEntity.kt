@@ -1,8 +1,8 @@
-package com.jagl.exchangeapp.data.local.entity
+package com.jagl.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.jagl.exchangeapp.data.model.ExchangeRate
+import com.jagl.domain.model.ExchangeRate
 import java.util.Date
 
 /**

@@ -1,8 +1,8 @@
-package com.jagl.exchangeapp.di
+package com.jagl.data.di
 
-import com.jagl.exchangeapp.data.api.ExchangeRateApi
-import com.jagl.exchangeapp.data.local.ExchangeDatabase
-import com.jagl.exchangeapp.data.repository.ExchangeRepository
+import com.jagl.data.api.ExchangeRateApi
+import com.jagl.data.local.ExchangeDatabase
+import com.jagl.data.repository.ExchangeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,9 +15,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
-    
+
     // La base de datos ahora se proporciona desde DatabaseModule
-    
+
     /**
      * Proporciona una instancia del repositorio de tasas de cambio
      */
