@@ -1,4 +1,4 @@
-package com.jagl.exchangeapp.ui.screens
+package com.jagl.exchangeapp.ui.screens.exchange
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jagl.exchangeapp.ui.components.AmountInput
 import com.jagl.exchangeapp.ui.components.SearchableCurrencyDropdown
-import com.jagl.exchangeapp.ui.viewmodel.ExchangeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

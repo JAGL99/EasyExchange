@@ -1,4 +1,4 @@
-package com.jagl.exchangeapp.ui.viewmodel
+package com.jagl.exchangeapp.ui.screens.exchange
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,20 +13,6 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 import javax.inject.Inject
-
-/**
- * Estado de la UI para la pantalla de conversión de monedas
- */
-data class ExchangeUiState(
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null,
-    val availableCurrencies: List<Currency> = emptyList(),
-    val fromCurrency: Currency? = null,
-    val toCurrency: Currency? = null,
-    val amount: String = "",
-    val convertedAmount: String = "",
-    val exchangeRate: Double? = null
-)
 
 /**
  * ViewModel para la pantalla de conversión de monedas

@@ -1,4 +1,4 @@
-package com.jagl.exchangeapp
+package com.jagl.exchangeapp.ui.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.jagl.exchangeapp.ui.screens.ExchangeScreen
+import com.jagl.exchangeapp.ui.screens.exchange.ExchangeScreen
 import com.jagl.exchangeapp.ui.theme.ExchangeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ExchangeAppTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.Companion.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     ExchangeScreen()
