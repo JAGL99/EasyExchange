@@ -1,8 +1,10 @@
 package com.jagl.data.di
 
-import com.jagl.data.api.ExchangeRateApi
+import com.jagl.data.api.client.CurrencyLayerApi
+import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
+import com.jagl.data.api.repository.ICurrencyLayerRepository
+import com.jagl.data.datasource.CurrencyLayerDataSource
 import com.jagl.data.local.ExchangeDatabase
-import com.jagl.data.repository.ExchangeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,10 +25,18 @@ object RepositoryModule {
      */
     @Provides
     @Singleton
-    fun provideExchangeRepository(
-        exchangeRateApi: ExchangeRateApi,
+    fun provideCurrencyLayerDataSource(
+        currencyRepository: ICurrencyLayerRepository,
         database: ExchangeDatabase
-    ): ExchangeRepository {
-        return ExchangeRepository(exchangeRateApi, database)
+    ): CurrencyLayerDataSource {
+        return CurrencyLayerDataSource(currencyRepository, database)
     }
+
+
+    @Provides
+    @Singleton
+    fun provideCurrencyLayerRepository(api: CurrencyLayerApi): ICurrencyLayerRepository {
+        return CurrencyLayerRepositoryImpl(api)
+    }
+
 }

@@ -1,12 +1,12 @@
-package com.jagl.data.repository
+package com.jagl.data.datasource
 
 
 import com.jagl.core.util.DateUtils
-import com.jagl.data.api.ExchangeRateApi
+import com.jagl.data.api.model.GetLatestRates
+import com.jagl.data.api.repository.ICurrencyLayerRepository
 import com.jagl.data.local.ExchangeDatabase
 import com.jagl.data.local.entity.ExchangeRateEntity
 import com.jagl.domain.model.Currency
-import com.jagl.domain.model.CurrencyData
 import com.jagl.domain.model.ExchangeRate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,8 +15,8 @@ import javax.inject.Inject
 /**
  * Repositorio que maneja las operaciones relacionadas con las tasas de cambio
  */
-class ExchangeRepository @Inject constructor(
-    private val api: ExchangeRateApi,
+class CurrencyLayerDataSource @Inject constructor(
+    private val api: ICurrencyLayerRepository,
     private val database: ExchangeDatabase
 ) {
     private val exchangeRateDao = database.exchangeRateDao()
@@ -26,7 +26,7 @@ class ExchangeRepository @Inject constructor(
      * Obtiene la lista de monedas disponibles
      */
     fun getAvailableCurrencies(): List<Currency> {
-        return CurrencyData.availableCurrencies
+        return emptyList()//CurrencyData.availableCurrencies
     }
 
 
@@ -54,30 +54,33 @@ class ExchangeRepository @Inject constructor(
 
                 // Si no hay datos locales para hoy, obtenerlos de la API
                 // Obtenemos todas las monedas disponibles excepto la base
-                val targetCurrencies = CurrencyData.availableCurrencies
+                val targetCurrencies = emptyList<Currency>()//CurrencyData.availableCurrencies
                     .filter { it.code != baseCurrency }.joinToString(",") { it.code }
 
-                val response = api.getLatestRates(baseCurrency, targetCurrencies)
-                if (response.success) {
-                    val rates = response.quotes.map { (quotePair, rate) ->
-                        // El formato de la clave es USDEUR (moneda base + moneda destino)
-                        val toCurrency = quotePair.substring(baseCurrency.length)
-                        ExchangeRate(
-                            fromCurrency = baseCurrency,
-                            toCurrency = toCurrency,
-                            rate = rate
-                        )
-                    }
+                val request = GetLatestRates.Request(
+                    source = baseCurrency,
+                    currencies = targetCurrencies
+                )
+                val response = api.getLatestRates(request)
+                if (response.isSuccess) {
+                    val rates = response
+                        .getOrThrow()
+                        .quotes?.map { (quotePair, rate) ->
+                            ExchangeRate(
+                                fromCurrency = baseCurrency,
+                                toCurrency = quotePair,
+                                rate = rate
+                            )
+                        } ?: emptyList()
 
                     // Guardar en la base de datos local
-                    val entities = rates.map { rate ->
+                    rates?.map { rate ->
                         ExchangeRateEntity.fromExchangeRate(
                             exchangeRate = rate,
                             date = currentDate,
                             source = baseCurrency
                         )
-                    }
-                    exchangeRateDao.insertExchangeRates(entities)
+                    }?.let { exchangeRateDao.insertExchangeRates(it) }
 
                     return@withContext Result.success(rates)
                 } else {
@@ -114,20 +117,19 @@ class ExchangeRepository @Inject constructor(
                     return@withContext Result.success(amount * localRate.rate)
                 }
 
-                // Si no hay datos locales para hoy, obtenerlos de la API
-                val response = api.getLatestRates(fromCurrency, toCurrency)
-                if (response.success) {
-                    // La clave en el mapa quotes tiene el formato USDEUR (fromCurrency + toCurrency)
-                    val quoteKey = "${fromCurrency}${toCurrency}"
-                    val rate = response.quotes[quoteKey]
+                val request = GetLatestRates.Request(
+                    source = fromCurrency,
+                    currencies = toCurrency
+                )
+                val response = api.getLatestRates(request)
+                if (response.isSuccess) {
+                    val rate = response.getOrThrow().quotes?.get(toCurrency)
                     if (rate != null) {
-                        // Guardar en la base de datos local
                         val exchangeRate = ExchangeRate(
                             fromCurrency = fromCurrency,
                             toCurrency = toCurrency,
                             rate = rate
                         )
-
                         val entity = ExchangeRateEntity.fromExchangeRate(
                             exchangeRate = exchangeRate,
                             date = currentDate,

@@ -1,6 +1,8 @@
-package com.jagl.data.api
+package com.jagl.data.api.client
 
-import com.jagl.data.api.model.ExchangeRateResponse
+
+import com.jagl.data.api.model.GetLatestRates
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -9,7 +11,7 @@ import retrofit2.http.Query
  * Utilizaremos la API de apilayer.net
  * La API key ya está incluida en la URL base
  */
-interface ExchangeRateApi {
+interface CurrencyLayerApi {
 
     /**
      * Obtiene las tasas de cambio para una moneda base
@@ -19,9 +21,13 @@ interface ExchangeRateApi {
      */
     @GET("live")
     suspend fun getLatestRates(
-        @Query("source") source: String,
-        @Query("currencies") currencies: String,
-        @Query("access_key") accessKey: String = "83b42c4384534c5fed4f6e9685c09953",
-        @Query("format") format: Int = 1
-    ): ExchangeRateResponse
+        @Query("source")
+        source: String,
+        @Query("currencies")
+        currencies: String,
+        @Query("access_key")
+        accessKey: String,
+        @Query("format")
+        format: Int
+    ): Response<GetLatestRates.Response>
 }

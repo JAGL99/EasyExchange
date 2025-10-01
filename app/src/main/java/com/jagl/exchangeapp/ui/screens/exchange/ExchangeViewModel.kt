@@ -2,7 +2,7 @@ package com.jagl.exchangeapp.ui.screens.exchange
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jagl.data.repository.ExchangeRepository
+import com.jagl.data.datasource.CurrencyLayerDataSource
 import com.jagl.domain.model.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ExchangeViewModel @Inject constructor(
-    private val repository: ExchangeRepository
+    private val repository: CurrencyLayerDataSource
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExchangeUiState())
