@@ -216,7 +216,7 @@ fun getLatestRatesResponse(
             quotes = quotes,
             error = null
         )
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         GetLatestRates.Response(
             success = false,
             terms = null,
@@ -230,9 +230,10 @@ fun getLatestRatesResponse(
 
 }
 
-fun getCurrenciesRequest(): GetCurrencies.Request{
+fun getCurrenciesRequest(): GetCurrencies.Request {
     return GetCurrencies.Request(accessKey = "asdasdasdasdsasd")
 }
+
 fun getCurrenciesResponse(): GetCurrencies.Response {
     return GetCurrencies.Response(
         success = true,

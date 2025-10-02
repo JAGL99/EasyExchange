@@ -56,7 +56,7 @@ class CurrencyLayerRepositoryTest {
 
 
     @Test
-    fun `Request bad list, get failure with no data`()= runBlocking<Unit>{
+    fun `Request bad list, get failure with no data`() = runBlocking<Unit> {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         val request = GetCurrencies.Request()
         val result = repository.getCurrencies(request)
@@ -64,7 +64,7 @@ class CurrencyLayerRepositoryTest {
     }
 
     @Test
-    fun `Request list, get success with data`() = runBlocking<Unit>{
+    fun `Request list, get success with data`() = runBlocking<Unit> {
         val adapter = moshi.adapter(GetCurrencies.Response::class.java)
         val mockResponseJson = adapter.toJson(getCurrenciesResponse())
         mockWebServer.enqueue(
@@ -84,7 +84,7 @@ class CurrencyLayerRepositoryTest {
     }
 
     @Test
-    fun `Request list with bad token, get failure with no data`() = runBlocking<Unit>{
+    fun `Request list with bad token, get failure with no data`() = runBlocking<Unit> {
         val adapter = moshi.adapter(GetCurrencies.Response::class.java)
         val mockResponseJson = adapter.toJson(getCurrenciesResponse())
         mockWebServer.enqueue(
@@ -99,7 +99,7 @@ class CurrencyLayerRepositoryTest {
     }
 
     @Test
-    fun `Request rates with bad token, get failure with no data`() = runBlocking<Unit>{
+    fun `Request rates with bad token, get failure with no data`() = runBlocking<Unit> {
         val adapter = moshi.adapter(GetCurrencies.Response::class.java)
         val mockResponseJson = adapter.toJson(getCurrenciesResponse())
         mockWebServer.enqueue(
