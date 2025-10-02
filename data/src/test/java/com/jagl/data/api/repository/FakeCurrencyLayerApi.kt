@@ -1,8 +1,10 @@
 package com.jagl.data.api.repository
 
 import com.jagl.data.api.client.CurrencyLayerApi
+import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.model.GetLatestRates
 import com.jagl.data.api.model.getCurrencies
+import com.jagl.data.api.model.getCurrenciesResponse
 import com.jagl.data.api.model.getLatestRatesResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
@@ -29,6 +31,15 @@ class FakeCurrencyLayerApi : CurrencyLayerApi {
                 Response.error(400, errorBody)
             }
         }
+    }
+
+    override suspend fun getCurrencies(accessKey: String): Response<GetCurrencies.Response> {
+        accessKey.ifEmpty {
+            val errorBody = ResponseBody.create("application/json".toMediaTypeOrNull(), "")
+            return Response.error(400, errorBody)
+        }
+        val response = getCurrenciesResponse()
+        return Response.success(response)
     }
 
 

@@ -230,6 +230,19 @@ fun getLatestRatesResponse(
 
 }
 
+fun getCurrenciesRequest(): GetCurrencies.Request{
+    return GetCurrencies.Request(accessKey = "asdasdasdasdsasd")
+}
+fun getCurrenciesResponse(): GetCurrencies.Response {
+    return GetCurrencies.Response(
+        success = true,
+        terms = "https://www.termsfeed.com/blog/sample-terms-and-conditions-template/",
+        privacy = "https://termify.io/privacy-policy-generator?gad_source=1&gad_campaignid=10836291524&gbraid=0AAAAAC6IOXLl_P31uk89uiTLnLkJzATzP&gclid=CjwKCAjw_-3GBhAYEiwAjh9fUNYYI9vIOQUMFXQWlzEQpkqNzGYYQIkjDFc8QG8kySVNFAFaZ1uy2RoCe3MQAvD_BwE",
+        error = null,
+        currencies = getCurrencies()
+    )
+}
+
 fun getError(): Error {
     return Error(201, "You have supplied an invalid Source Currency. [Example: source=EUR]")
 }

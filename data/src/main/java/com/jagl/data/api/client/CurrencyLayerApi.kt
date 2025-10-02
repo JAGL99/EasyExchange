@@ -1,6 +1,7 @@
 package com.jagl.data.api.client
 
 
+import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.model.GetLatestRates
 import retrofit2.Response
 import retrofit2.http.GET
@@ -30,4 +31,10 @@ interface CurrencyLayerApi {
         @Query("format")
         format: Int
     ): Response<GetLatestRates.Response>
+
+    @GET("list")
+    suspend fun getCurrencies(
+        @Query("access_key")
+        accessKey: String
+    ): Response<GetCurrencies.Response>
 }

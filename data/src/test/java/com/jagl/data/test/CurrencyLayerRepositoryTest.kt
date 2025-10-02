@@ -7,8 +7,11 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.jagl.data.api.client.CurrencyLayerApi
+import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.model.GetLatestRates
 import com.jagl.data.api.model.getCurrencies
+import com.jagl.data.api.model.getCurrenciesRequest
+import com.jagl.data.api.model.getCurrenciesResponse
 import com.jagl.data.api.model.getLatestRatesRequest
 import com.jagl.data.api.model.getLatestRatesResponse
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
@@ -49,6 +52,65 @@ class CurrencyLayerRepositoryTest {
     @AfterEach
     fun tearDown() {
         mockWebServer.shutdown()
+    }
+
+
+    @Test
+    fun `Request bad list, get failure with no data`()= runBlocking<Unit>{
+        mockWebServer.enqueue(MockResponse().setResponseCode(404))
+        val request = GetCurrencies.Request()
+        val result = repository.getCurrencies(request)
+        assertThat(result.isFailure).isTrue()
+    }
+
+    @Test
+    fun `Request list, get success with data`() = runBlocking<Unit>{
+        val adapter = moshi.adapter(GetCurrencies.Response::class.java)
+        val mockResponseJson = adapter.toJson(getCurrenciesResponse())
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(mockResponseJson)
+
+        )
+        val request = GetCurrencies.Request()
+        val response = repository.getCurrencies(request)
+        assertThat(response).isInstanceOf(Result::class)
+        assertThat(response.isSuccess).isTrue()
+        assertThat(response.getOrNull()).isNotNull()
+        val currencies = response.getOrNull()!!.currencies
+        assertThat(currencies).isNotNull()
+        assertThat(getCurrencies()).isEqualTo(currencies)
+    }
+
+    @Test
+    fun `Request list with bad token, get failure with no data`() = runBlocking<Unit>{
+        val adapter = moshi.adapter(GetCurrencies.Response::class.java)
+        val mockResponseJson = adapter.toJson(getCurrenciesResponse())
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(mockResponseJson)
+
+        )
+        val request = getCurrenciesRequest().copy(accessKey = "")
+        val response = repository.getCurrencies(request)
+        assertThat(response.isFailure).isTrue()
+    }
+
+    @Test
+    fun `Request rates with bad token, get failure with no data`() = runBlocking<Unit>{
+        val adapter = moshi.adapter(GetCurrencies.Response::class.java)
+        val mockResponseJson = adapter.toJson(getCurrenciesResponse())
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(mockResponseJson)
+
+        )
+        val request = getLatestRatesRequest().copy(accessKey = "")
+        val response = repository.getLatestRates(request)
+        assertThat(response.isFailure).isTrue()
     }
 
 
