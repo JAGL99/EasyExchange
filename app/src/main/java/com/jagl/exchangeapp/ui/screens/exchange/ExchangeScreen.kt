@@ -38,19 +38,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.jagl.domain.model.Currency
 import com.jagl.exchangeapp.ui.components.AmountInput
 import com.jagl.exchangeapp.ui.components.SearchableCurrencyDropdown
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExchangeScreen(
     viewModel: ExchangeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    ExchangeContent(
+        uiState,
+        snackbarHostState,
+        viewModel::updateFromCurrency,
+        viewModel::updateAmount,
+        viewModel::updateToCurrency,
+        viewModel::swapCurrencies,
+        viewModel::performConversion
+    )
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ExchangeContent(
+    uiState: ExchangeUiState,
+    snackbarHostState: SnackbarHostState,
+    updateFromCurrency: (Currency) -> Unit,
+    updateAmount: (String) -> Unit,
+    updateToCurrency: (Currency) -> Unit,
+    swapCurrencies: () -> Unit,
+    performConversion: () -> Unit,
+) {
     // Mostrar mensaje de error si existe
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let {
@@ -89,14 +111,14 @@ fun ExchangeScreen(
                 )
                 SearchableCurrencyDropdown(
                     currencies = uiState.availableCurrencies,
-                    onCurrencySelected = viewModel::updateFromCurrency
+                    onCurrencySelected = updateFromCurrency
                 )
 
                 // Monto a convertir
                 Spacer(modifier = Modifier.height(8.dp))
                 AmountInput(
                     value = uiState.amount,
-                    onValueChange = viewModel::updateAmount
+                    onValueChange = updateAmount
                 )
 
                 // Botón para intercambiar monedas
@@ -105,7 +127,7 @@ fun ExchangeScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     FilledIconButton(
-                        onClick = { viewModel.swapCurrencies() },
+                        onClick = { swapCurrencies() },
                         modifier = Modifier
                             .size(56.dp)
                             .padding(4.dp),
@@ -126,14 +148,14 @@ fun ExchangeScreen(
                 )
                 SearchableCurrencyDropdown(
                     currencies = uiState.availableCurrencies,
-                    onCurrencySelected = viewModel::updateToCurrency
+                    onCurrencySelected = updateToCurrency
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 // Botón para realizar la consulta
                 FilledTonalButton(
-                    onClick = { viewModel.performConversion() },
+                    onClick = { performConversion() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(54.dp),
@@ -224,4 +246,31 @@ fun ExchangeScreen(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ExchangeScreenPreview() {
+    ExchangeContent(
+        uiState = ExchangeUiState(
+            availableCurrencies = listOf(
+                Currency("USD", "Dólar Estadounidense"),
+                Currency("EUR", "Euro"),
+                Currency("JPY", "Yen Japonés")
+            ),
+            fromCurrency = Currency("USD", "Dólar Estadounidense"),
+            toCurrency = Currency("EUR", "Euro"),
+            amount = "100",
+            convertedAmount = "85.00",
+            exchangeRate = 0.85,
+            isLoading = false,
+            errorMessage = null
+        ),
+        snackbarHostState = remember { SnackbarHostState() },
+        updateFromCurrency = {},
+        updateAmount = {},
+        updateToCurrency = {},
+        swapCurrencies = {},
+        performConversion = {}
+    )
 }
