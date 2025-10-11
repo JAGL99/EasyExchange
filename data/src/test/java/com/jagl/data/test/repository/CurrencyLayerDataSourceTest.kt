@@ -9,6 +9,7 @@ import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.model.getCurrenciesResponse
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
 import com.jagl.data.api.repository.ICurrencyLayerRepository
+import com.jagl.data.api.utils.toCurrencyList
 import com.jagl.data.datasource.currency.CurrencyLayerDataSource
 import com.jagl.data.datasource.currency.ICurrencyDataSource
 import com.jagl.data.local.CurrencyDaoFake
@@ -67,6 +68,7 @@ class CurrencyLayerDataSourceTest {
     @Test
     fun `Request list two times, get success but withour repetition`() = runBlocking<Unit> {
         val mockResponse = getCurrenciesResponse()
+        val mockCurrencies = mockResponse.currencies!!.toCurrencyList().toTypedArray()
         val adapter = moshi.adapter(GetCurrencies.Response::class.java)
         val mockResponseJson = adapter.toJson(mockResponse)
         mockWebServer.enqueue(
@@ -78,7 +80,7 @@ class CurrencyLayerDataSourceTest {
         val firstResponse = dataSource.getAvailableCurrencies()
         assertThat(firstResponse).isNotEmpty()
         val firstLocalData = dao.getCurrencies().map { it.toCurrency() }
-        assertThat(firstLocalData).containsExactly(*mockResponse.currencies!!.toTypedArray())
+        assertThat(firstLocalData).containsExactly(*mockCurrencies)
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
@@ -88,17 +90,18 @@ class CurrencyLayerDataSourceTest {
         val secondResponse = dataSource.getAvailableCurrencies()
         assertThat(secondResponse).isNotEmpty()
         val secondLocalData = dao.getCurrencies().map { it.toCurrency() }
-        assertThat(secondLocalData).containsExactly(*mockResponse.currencies!!.toTypedArray())
+        assertThat(secondLocalData).containsExactly(*mockCurrencies)
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         val thirdResponse = dataSource.getAvailableCurrencies()
         assertThat(thirdResponse).isNotEmpty()
         val thirdLocalData = dao.getCurrencies().map { it.toCurrency() }
-        assertThat(thirdLocalData).containsExactly(*mockResponse.currencies!!.toTypedArray())
+        assertThat(thirdLocalData).containsExactly(*mockCurrencies)
     }
 
     @Test
     fun `Request list, get success with data`() = runBlocking<Unit> {
         val mockResponse = getCurrenciesResponse()
+        val mockCurrencies = mockResponse.currencies!!.toCurrencyList().toTypedArray()
         val adapter = moshi.adapter(GetCurrencies.Response::class.java)
         val mockResponseJson = adapter.toJson(mockResponse)
         mockWebServer.enqueue(
@@ -109,9 +112,9 @@ class CurrencyLayerDataSourceTest {
         )
         val response = dataSource.getAvailableCurrencies()
         assertThat(response).isNotEmpty()
-        assertThat(response).containsExactly(*mockResponse.currencies!!.toTypedArray())
+        assertThat(response).containsExactly(*mockCurrencies)
         val localData = dao.getCurrencies().map { it.toCurrency() }
-        assertThat(localData).containsExactly(*mockResponse.currencies!!.toTypedArray())
+        assertThat(localData).containsExactly(*mockCurrencies)
     }
 
 
