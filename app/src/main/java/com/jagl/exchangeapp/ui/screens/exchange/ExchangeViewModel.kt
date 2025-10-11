@@ -2,7 +2,9 @@ package com.jagl.exchangeapp.ui.screens.exchange
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jagl.data.repository.ExchangeRepository
+import com.jagl.core.util.DateUtils
+import com.jagl.data.datasource.currency.ICurrencyDataSource
+import com.jagl.data.datasource.exchangeRate.IExchangeDataSource
 import com.jagl.domain.model.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +21,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ExchangeViewModel @Inject constructor(
-    private val repository: ExchangeRepository
+    private val exchangeDataSource: IExchangeDataSource,
+    private val currencyDataSource: ICurrencyDataSource
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExchangeUiState())
@@ -32,8 +35,8 @@ class ExchangeViewModel @Inject constructor(
     /**
      * Carga la lista de monedas disponibles
      */
-    private fun loadCurrencies() {
-        val currencies = repository.getAvailableCurrencies()
+    private fun loadCurrencies() = viewModelScope.launch {
+        val currencies = currencyDataSource.getAvailableCurrencies()
         _uiState.update { currentState ->
             currentState.copy(
                 availableCurrencies = currencies,
@@ -97,6 +100,7 @@ class ExchangeViewModel @Inject constructor(
         val amount = currentState.amount.toDoubleOrNull() ?: 0.0
         val fromCurrency = currentState.fromCurrency?.code ?: return
         val toCurrency = currentState.toCurrency?.code ?: return
+        val date = DateUtils.getCurrentDate()
 
         if (amount <= 0) {
             _uiState.update { it.copy(convertedAmount = "") }
@@ -107,7 +111,7 @@ class ExchangeViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             try {
-                repository.convertCurrency(amount, fromCurrency, toCurrency)
+                exchangeDataSource.convertCurrency(amount, date, fromCurrency, toCurrency)
                     .onSuccess { convertedAmount ->
                         val formatter =
                             NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
