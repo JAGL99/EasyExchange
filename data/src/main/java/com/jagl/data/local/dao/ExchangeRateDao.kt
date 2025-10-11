@@ -1,6 +1,7 @@
 package com.jagl.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -27,27 +28,15 @@ interface ExchangeRateDao {
     suspend fun insertExchangeRates(exchangeRates: List<ExchangeRateEntity>)
 
     /**
-     * Obtiene todas las tasas de cambio para una moneda base y una fecha específica
-     */
-    @Query("SELECT * FROM exchange_rates WHERE fromCurrency = :baseCurrency AND date = :date")
-    suspend fun getExchangeRatesForDate(
-        baseCurrency: String,
-        date: String
-    ): List<ExchangeRateEntity>
-
-    /**
      * Obtiene una tasa de cambio específica para una fecha
      */
-    @Query("SELECT * FROM exchange_rates WHERE fromCurrency = :fromCurrency AND toCurrency = :toCurrency AND date = :date LIMIT 1")
+    @Query("SELECT * FROM exchange_rates WHERE fromCurrency = :fromCurrency AND toCurrency = :toCurrency AND date = :date ORDER BY date ASC , timestamp ASC")
     suspend fun getExchangeRateForDate(
         fromCurrency: String,
         toCurrency: String,
         date: String
-    ): ExchangeRateEntity?
+    ): List<ExchangeRateEntity>
 
-    /**
-     * Verifica si existen tasas de cambio para una moneda base y una fecha específica
-     */
-    @Query("SELECT COUNT(*) FROM exchange_rates WHERE fromCurrency = :baseCurrency AND date = :date")
-    suspend fun hasExchangeRatesForDate(baseCurrency: String, date: String): Int
+    @Delete
+    suspend fun deleteExchangeRate(exchangeRate: ExchangeRateEntity)
 }

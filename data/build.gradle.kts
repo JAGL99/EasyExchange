@@ -89,6 +89,9 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.assertk)
     testImplementation(libs.mockk)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.moshi)
+    testImplementation(libs.moshi.kotlin)
     testImplementation(libs.junit5.test.core)
 
     kspAndroidTest(libs.hilt.android.compiler)
