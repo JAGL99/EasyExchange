@@ -12,6 +12,8 @@ env:
 jobs:
 
   run-unit-tests:
+    permissions:
+      issues: write
     runs-on: ubuntu-latest
 
     steps:
