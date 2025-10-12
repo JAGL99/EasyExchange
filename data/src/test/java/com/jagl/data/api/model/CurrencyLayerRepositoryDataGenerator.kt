@@ -184,6 +184,10 @@ fun getCurrencies(): List<Currency> {
     )
 }
 
+fun getMapCurrencies(): Map<String, String> {
+    return getCurrencies().associate { it.code to it.name }
+}
+
 fun getLatestRatesRequest(): GetLatestRates.Request {
     return GetLatestRates.Request(
         source = "USD",
@@ -240,7 +244,7 @@ fun getCurrenciesResponse(): GetCurrencies.Response {
         terms = "https://www.termsfeed.com/blog/sample-terms-and-conditions-template/",
         privacy = "https://termify.io/privacy-policy-generator?gad_source=1&gad_campaignid=10836291524&gbraid=0AAAAAC6IOXLl_P31uk89uiTLnLkJzATzP&gclid=CjwKCAjw_-3GBhAYEiwAjh9fUNYYI9vIOQUMFXQWlzEQpkqNzGYYQIkjDFc8QG8kySVNFAFaZ1uy2RoCe3MQAvD_BwE",
         error = null,
-        currencies = getCurrencies()
+        currencies = getMapCurrencies()
     )
 }
 
