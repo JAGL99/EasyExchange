@@ -16,10 +16,13 @@ object DateUtils {
     /**
      * Obtiene la fecha actual en el formato especificado (por defecto YYYY-MM-DD)
      */
-    fun getCurrentDate(pattern: String = DATE_FORMAT_YYYY_MM_DD): String {
+    fun getDateWithFormat(
+        date: Date = Date(),
+        pattern: String = DATE_FORMAT_YYYY_MM_DD
+    ): String {
         checkValidPattern(pattern)
         val dateFormat = getSimpleDateFormat(pattern)
-        return dateFormat.format(Date())
+        return dateFormat.format(date)
     }
 
     /**

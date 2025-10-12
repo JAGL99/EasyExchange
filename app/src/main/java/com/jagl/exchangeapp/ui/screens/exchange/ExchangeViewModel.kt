@@ -100,7 +100,7 @@ class ExchangeViewModel @Inject constructor(
         val amount = currentState.amount.toDoubleOrNull() ?: 0.0
         val fromCurrency = currentState.fromCurrency?.code ?: return
         val toCurrency = currentState.toCurrency?.code ?: return
-        val date = DateUtils.getCurrentDate()
+        val date = DateUtils.getDateWithFormat()
 
         if (amount <= 0) {
             _uiState.update { it.copy(convertedAmount = "") }
