@@ -18,7 +18,7 @@ import javax.inject.Singleton
  */
 @Module
 @InstallIn(SingletonComponent::class)
-object DatabaseModule {
+object TestDatabaseModule {
 
     /**
      * Proporciona una instancia de la base de datos Room

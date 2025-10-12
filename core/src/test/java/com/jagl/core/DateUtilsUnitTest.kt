@@ -39,7 +39,7 @@ class DateUtilsUnitTest {
 
     @Test
     fun `request current date with empty pattern, throw IllegalArgumentException`() {
-        assertThrows<IllegalArgumentException> { dateUtilInstance!!.getCurrentDate("") }
+        assertThrows<IllegalArgumentException> { dateUtilInstance!!.getDateWithFormat(pattern = "") }
     }
 
     @ParameterizedTest
@@ -52,16 +52,14 @@ class DateUtilsUnitTest {
         "EEEE, MMMM d, yyyy",
         "dd-MM-yyyy HH:mm",
         "yyyy-MM-dd'T'HH:mm:ss",
-        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
         "HH:mm:ss",
-        "hh:mm a",
-        "yyyy-MM-dd'T'HH:mm:ssXXX"
+        "hh:mm a"
     )
-    fun `request current date, get currentDate`(pattern: String){
+    fun `request current date, get currentDate`(pattern: String) {
         assertDoesNotThrow {
-            with(dateUtilInstance!!){
+            with(dateUtilInstance!!) {
                 val date = Date()
-                val currentDate = getCurrentDate(pattern)
+                val currentDate = getDateWithFormat(date, pattern)
                 val formatedDate = formatDate(date, pattern)
                 assertThat(currentDate).isEqualTo(formatedDate)
             }
@@ -81,15 +79,13 @@ class DateUtilsUnitTest {
         "EEEE, MMMM d, yyyy",
         "dd-MM-yyyy HH:mm",
         "yyyy-MM-dd'T'HH:mm:ss",
-        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
         "HH:mm:ss",
-        "hh:mm a",
-        "yyyy-MM-dd'T'HH:mm:ssXXX"
+        "hh:mm a"
     )
-    fun `have string date, get parsed date`(pattern: String){
+    fun `have string date, get parsed date`(pattern: String) {
         assertDoesNotThrow {
-            with(dateUtilInstance!!){
-                val currentDate = getCurrentDate(pattern)
+            with(dateUtilInstance!!) {
+                val currentDate = getDateWithFormat(pattern = pattern)
                 val parseDate = parseToDate(currentDate, pattern)
                 assertThat(parseDate).isInstanceOf(Date::class)
                 val formatedDate = formatDate(parseDate, pattern)

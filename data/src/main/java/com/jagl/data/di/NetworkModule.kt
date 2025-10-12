@@ -1,7 +1,8 @@
 package com.jagl.data.di
 
-
-import com.jagl.data.api.ExchangeRateApi
+import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
+import com.jagl.data.api.client.CurrencyLayerApi
+import com.jagl.data.api.repository.ICurrencyLayerRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -68,7 +69,13 @@ object NetworkModule {
      */
     @Provides
     @Singleton
-    fun provideExchangeRateApi(retrofit: Retrofit): ExchangeRateApi {
-        return retrofit.create(ExchangeRateApi::class.java)
+    fun provideCurrencyLayerApi(retrofit: Retrofit): CurrencyLayerApi {
+        return retrofit.create(CurrencyLayerApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCurrencyLayerRepository(api: CurrencyLayerApi): ICurrencyLayerRepository {
+        return CurrencyLayerRepositoryImpl(api)
     }
 }
