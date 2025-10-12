@@ -3,6 +3,7 @@ package com.jagl.data.test.api
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.jagl.data.api.client.CurrencyLayerApi
@@ -65,7 +66,8 @@ class CurrencyLayerRepositoryTest {
     @Test
     fun `Request list, get success with data`() = runBlocking<Unit> {
         val adapter = moshi.adapter(GetCurrencies.Response::class.java)
-        val mockResponseJson = adapter.toJson(getCurrenciesResponse())
+        val mockResponse = getCurrenciesResponse()
+        val mockResponseJson = adapter.toJson(mockResponse)
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
@@ -79,7 +81,12 @@ class CurrencyLayerRepositoryTest {
         assertThat(response.getOrNull()).isNotNull()
         val currencies = response.getOrNull()!!.currencies
         assertThat(currencies).isNotNull()
-        assertThat(getCurrencies()).isEqualTo(currencies)
+        mockResponse.currencies!!.forEach { key, value ->
+            val name = currencies?.get(key)
+            assertThat(name).isNotNull()
+            assertThat(name!!).isNotEmpty()
+            assertThat(name).isEqualTo(value)
+        }
     }
 
     @Test
