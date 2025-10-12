@@ -43,7 +43,7 @@ object DateUtils {
         checkValidPattern(pattern)
         val dateFormat = getSimpleDateFormat(pattern)
         return dateFormat.parse(dateString)
-
+            ?: throw IllegalArgumentException("Date string could not be parsed, please check and try again")
     }
 
     private fun checkValidPattern(pattern: String) {
