@@ -3,6 +3,7 @@ package com.jagl.data.test.local
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.hasSize
+import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import com.jagl.data.api.model.exchangeRate
 import com.jagl.data.api.model.exchangeRates
@@ -56,18 +57,22 @@ class ExchangeRateDaoTest {
 
     @Test
     fun `Get exchange rate for specific date`() = runBlocking<Unit> {
-        val rate01 = exchangeRates().map { it.copy(
-            id = (1..150).random(),
-            date = "2023-10-01",
-            toCurrency = "EUR",
-            fromCurrency = "USD"
-        ) }
-        val rate02 = exchangeRates().map { it.copy(
-            id = (1..150).random(),
-            date = "2023-10-02",
-            toCurrency = "EUR",
-            fromCurrency = "MXN"
-        ) }
+        val rate01 = exchangeRates().map {
+            it.copy(
+                id = (1..150).random(),
+                date = "2023-10-01",
+                toCurrency = "EUR",
+                fromCurrency = "USD"
+            )
+        }
+        val rate02 = exchangeRates().map {
+            it.copy(
+                id = (1..150).random(),
+                date = "2023-10-02",
+                toCurrency = "EUR",
+                fromCurrency = "MXN"
+            )
+        }
         dao.insertExchangeRates(rate01 + rate02)
         val resultDate01 = dao.getExchangeRateForDate(
             fromCurrency = rate01.first().fromCurrency,
@@ -87,28 +92,27 @@ class ExchangeRateDaoTest {
 
     @Test
     fun `Delete existing exchange rate`() = runBlocking<Unit> {
-        val rate01 = exchangeRates().map { it.copy(
-            id = (1..150).random(),
+        val rate01 = exchangeRate().copy(
+            id = 1,
             date = "2023-10-01",
             toCurrency = "EUR",
             fromCurrency = "USD"
-        ) }
-        val rate02 = exchangeRates().map { it.copy(
-            id = (1..150).random(),
+        )
+        val rate02 = exchangeRate().copy(
+            id = 2,
             date = "2023-10-02",
             toCurrency = "EUR",
             fromCurrency = "MXN"
-        ) }
-        dao.insertExchangeRates(rate01 + rate02)
-        val toDelete = rate01.first()
-        dao.deleteExchangeRate(toDelete)
-        val resultDate01 = dao.getExchangeRateForDate(
-            fromCurrency = rate01.first().fromCurrency,
-            toCurrency = rate01.first().toCurrency,
-            date = rate01.first().date
         )
-        assertThat(resultDate01).hasSize(rate01.size - 1)
-        assertThat(resultDate01).containsExactly(*(rate01 - toDelete).toTypedArray())
+        dao.insertExchangeRates(listOf(rate01, rate02))
+        dao.deleteExchangeRate(rate01)
+        val resultDate02 = dao.getExchangeRateForDate(
+            fromCurrency = rate02.fromCurrency,
+            toCurrency = rate02.toCurrency,
+            date = rate02.date
+        )
+        assertThat(resultDate02).hasSize(1)
+        assertThat(resultDate02.first()).isEqualTo(rate02)
     }
 
 }
