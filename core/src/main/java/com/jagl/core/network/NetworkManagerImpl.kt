@@ -17,7 +17,7 @@ class NetworkManagerImpl @Inject constructor(
 ) : INetworkManager {
 
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
-    override fun hasInternetConnection(): Flow<Boolean> = callbackFlow {
+    override fun getInternetConnectionStatus(): Flow<Boolean> = callbackFlow {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         val callback = object : ConnectivityManager.NetworkCallback() {
@@ -40,5 +40,13 @@ class NetworkManagerImpl @Inject constructor(
         trySend(capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true)
 
         awaitClose { connectivityManager.unregisterNetworkCallback(callback) }
+    }
+
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+    override fun isConnected(): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+        return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
     }
 }

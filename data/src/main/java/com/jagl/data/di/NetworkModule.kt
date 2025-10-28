@@ -1,5 +1,6 @@
 package com.jagl.data.di
 
+import com.jagl.core.network.INetworkManager
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
 import com.jagl.data.api.client.CurrencyLayerApi
 import com.jagl.data.api.repository.ICurrencyLayerRepository
@@ -75,7 +76,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideCurrencyLayerRepository(api: CurrencyLayerApi): ICurrencyLayerRepository {
-        return CurrencyLayerRepositoryImpl(api)
+    fun provideCurrencyLayerRepository(
+        networkManager: INetworkManager,
+        api: CurrencyLayerApi
+    ): ICurrencyLayerRepository {
+        return CurrencyLayerRepositoryImpl(
+            networkManager,
+            api
+        )
     }
 }

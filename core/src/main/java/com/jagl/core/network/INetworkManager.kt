@@ -2,6 +2,8 @@ package com.jagl.core.network
 
 import kotlinx.coroutines.flow.Flow
 
-fun interface INetworkManager {
-    fun hasInternetConnection(): Flow<Boolean>
+interface INetworkManager {
+    fun getInternetConnectionStatus(): Flow<Boolean>
+
+    fun isConnected(): Boolean
 }
