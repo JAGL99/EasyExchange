@@ -17,20 +17,25 @@ object DateUtils {
      * Obtiene la fecha actual en el formato especificado (por defecto YYYY-MM-DD)
      */
     fun getDateWithFormat(
-        date: Date = Date(),
+        locale: Locale,
+        date: Date,
         pattern: String = DATE_FORMAT_YYYY_MM_DD
     ): String {
         checkValidPattern(pattern)
-        val dateFormat = getSimpleDateFormat(pattern)
+        val dateFormat = getSimpleDateFormat(pattern, locale)
         return dateFormat.format(date)
     }
 
     /**
      * Formatea una fecha en formato especificado (por defecto YYYY-MM-DD)
      */
-    fun formatDate(date: Date, pattern: String = DATE_FORMAT_YYYY_MM_DD): String {
+    fun formatDate(
+        date: Date,
+        locale: Locale,
+        pattern: String = DATE_FORMAT_YYYY_MM_DD
+    ): String {
         checkValidPattern(pattern)
-        val dateFormat = getSimpleDateFormat(pattern)
+        val dateFormat = getSimpleDateFormat(pattern, locale)
         return dateFormat.format(date)
     }
 
@@ -42,9 +47,13 @@ object DateUtils {
      * @throws Exception si el formato es inválido
      *
      */
-    fun parseToDate(dateString: String, pattern: String = DATE_FORMAT_YYYY_MM_DD): Date {
+    fun parseToDate(
+        dateString: String,
+        locale: Locale,
+        pattern: String = DATE_FORMAT_YYYY_MM_DD,
+    ): Date {
         checkValidPattern(pattern)
-        val dateFormat = getSimpleDateFormat(pattern)
+        val dateFormat = getSimpleDateFormat(pattern, locale)
         return dateFormat.parse(dateString)
             ?: throw IllegalArgumentException("Date string could not be parsed, please check and try again")
     }
@@ -53,18 +62,14 @@ object DateUtils {
         require(pattern.isNotEmpty()) { "Pattern must not be empty, please check and try again" }
     }
 
-    private fun getSimpleDateFormat(
-        pattern: String,
-        locale: Locale = Locale.getDefault()
-    ): SimpleDateFormat {
+    private fun getSimpleDateFormat(pattern: String, locale: Locale): SimpleDateFormat {
         try {
             return SimpleDateFormat(pattern, locale).apply {
                 timeZone = TimeZone.getTimeZone(DEFAULT_TIME_ZONE)
             }
         } catch (e: Exception) {
             throw IllegalArgumentException(
-                "Passed pattern is not valid, please check and try again",
-                e
+                "Passed pattern is not valid, please check and try again", e
             )
         }
     }
