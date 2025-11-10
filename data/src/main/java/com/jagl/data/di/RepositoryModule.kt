@@ -1,5 +1,6 @@
 package com.jagl.data.di
 
+import com.jagl.core.network.INetworkManager
 import com.jagl.data.api.repository.ICurrencyLayerRepository
 import com.jagl.data.datasource.currency.CurrencyLayerDataSource
 import com.jagl.data.datasource.exchangeRate.ExchangeDataSource
