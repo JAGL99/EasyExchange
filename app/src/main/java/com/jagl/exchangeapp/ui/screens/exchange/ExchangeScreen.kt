@@ -218,14 +218,9 @@ private fun ExchangeContent(
                             Spacer(modifier = Modifier.height(8.dp))
 
                             // Mostrar la tasa de cambio
-                            uiState.exchangeRate?.let { rate ->
+                            uiState.value.exchangeRate?.let { rate ->
                                 Text(
-                                    text = "1 ${uiState.fromCurrency?.code} = ${
-                                        String.format(
-                                            "%.4f",
-                                            rate
-                                        )
-                                    } ${uiState.toCurrency?.code}",
+                                    text = rate,
                                     style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.padding(vertical = 4.dp)
