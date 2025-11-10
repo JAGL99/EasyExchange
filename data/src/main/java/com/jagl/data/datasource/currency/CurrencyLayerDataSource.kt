@@ -14,6 +14,7 @@ import javax.inject.Inject
  * Repositorio que maneja las operaciones relacionadas con las tasas de cambio
  */
 class CurrencyLayerDataSource @Inject constructor(
+    private val networkManager: INetworkManager,
     private val api: ICurrencyLayerRepository,
     private val currencyDao: CurrencyDao
 ) : ICurrencyDataSource {
@@ -23,8 +24,14 @@ class CurrencyLayerDataSource @Inject constructor(
      */
     override suspend fun getAvailableCurrencies(): List<Currency> =
         withContext(Dispatchers.Default) {
+
+            if (networkManager.isConnected().not()) {
+                return@withContext emptyList()
+            }
             val request = GetCurrencies.Request()
             val result = api.getCurrencies(request)
+
+
 
             if (result.isFailure || result.getOrNull() == null) {
                 return@withContext currencyDao.getCurrencies().map { it.toCurrency() }

@@ -27,21 +27,23 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideCurrencyLayerDataSource(
+        networkManager: INetworkManager,
         currencyRepository: ICurrencyLayerRepository,
         database: IExchangeDatabase
     ): ICurrencyDataSource {
         val dao = database.currencyDao()
-        return CurrencyLayerDataSource(currencyRepository, dao)
+        return CurrencyLayerDataSource(networkManager,currencyRepository, dao)
     }
 
     @Provides
     @Singleton
     fun provideExchangerDataSource(
+        networkManager: INetworkManager,
         currencyRepository: ICurrencyLayerRepository,
         database: IExchangeDatabase
     ): IExchangeDataSource {
         val dao = database.exchangeRateDao()
-        return ExchangeDataSource(currencyRepository, dao)
+        return ExchangeDataSource(networkManager,currencyRepository, dao)
     }
 
 }

@@ -1,10 +1,12 @@
 package com.jagl.data.datasource.exchangeRate
 
 
+import com.jagl.core.network.INetworkManager
 import com.jagl.data.api.model.GetLatestRates
 import com.jagl.data.api.repository.ICurrencyLayerRepository
 import com.jagl.data.local.dao.ExchangeRateDao
 import com.jagl.data.local.entity.ExchangeRateEntity
+import com.jagl.domain.model.Currency
 import com.jagl.domain.model.ExchangeRate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,6 +16,7 @@ import javax.inject.Inject
  * Repositorio que maneja las operaciones relacionadas con las tasas de cambio
  */
 class ExchangeDataSource @Inject constructor(
+    private val networkManager: INetworkManager,
     private val api: ICurrencyLayerRepository,
     private val exchangeRateDao: ExchangeRateDao
 ) : IExchangeDataSource {
@@ -25,36 +28,43 @@ class ExchangeDataSource @Inject constructor(
      * @param toCurrency Moneda de destino
      * @return Monto convertido
      */
-    override suspend fun convertCurrency(
+    override suspend fun getExchangeRate(
         amount: Double,
         date: String,
-        fromCurrency: String,
-        toCurrency: String
-    ): Result<Double> {
+        fromCurrency: Currency,
+        toCurrency: Currency
+    ): Result<ExchangeRate> {
         return withContext(Dispatchers.IO) {
             try {
-
-                // Verificar si ya tenemos la tasa de cambio para hoy
                 val localRate =
-                    exchangeRateDao.getExchangeRateForDate(fromCurrency, toCurrency, date)
+                    exchangeRateDao.getExchangeRateForDate(fromCurrency.code, toCurrency.code, date)
 
                 if (localRate.isNotEmpty()) {
-                    // Usar datos locales
-                    return@withContext Result.success(amount * localRate.first().rate)
+                    val rate = amount * localRate.first().rate
+                    val exchangeRate = ExchangeRate(
+                        fromCurrency = fromCurrency.code,
+                        toCurrency = toCurrency.code,
+                        rate = rate
+                    )
+                    return@withContext Result.success(exchangeRate)
+                }
+
+                if (networkManager.isConnected().not()) {
+                    return@withContext Result.failure(Exception("Sin conexión a internet"))
                 }
 
                 val request = GetLatestRates.Request(
-                    source = fromCurrency,
-                    currencies = toCurrency
+                    source = fromCurrency.code,
+                    currencies = toCurrency.code
                 )
                 val response = api.getLatestRates(request)
                 if (response.isSuccess) {
                     val body = response.getOrThrow()
-                    val rate = body.quotes?.get(toCurrency)
+                    val rate = body.quotes?.get(toCurrency.code)
                     if (rate != null) {
                         val exchangeRate = ExchangeRate(
-                            fromCurrency = fromCurrency,
-                            toCurrency = toCurrency,
+                            fromCurrency = fromCurrency.code,
+                            toCurrency = toCurrency.code,
                             rate = rate
                         )
                         val entity = ExchangeRateEntity.fromExchangeRate(
@@ -65,7 +75,7 @@ class ExchangeDataSource @Inject constructor(
 
                         exchangeRateDao.insertExchangeRate(entity)
 
-                        return@withContext Result.success(amount * rate)
+                        return@withContext Result.success(exchangeRate)
                     } else {
                         return@withContext Result.failure(Exception("Moneda de destino no encontrada"))
                     }
