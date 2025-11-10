@@ -1,8 +1,8 @@
 package com.jagl.data.datasource.currency
 
+import com.jagl.core.network.INetworkManager
 import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.repository.ICurrencyLayerRepository
-import com.jagl.data.datasource.currency.ICurrencyDataSource
 import com.jagl.data.local.dao.CurrencyDao
 import com.jagl.data.local.entity.CurrencyEntity
 import com.jagl.domain.model.Currency
