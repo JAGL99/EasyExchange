@@ -77,12 +77,8 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideCurrencyLayerRepository(
-        networkManager: INetworkManager,
         api: CurrencyLayerApi
     ): ICurrencyLayerRepository {
-        return CurrencyLayerRepositoryImpl(
-            networkManager,
-            api
-        )
+        return CurrencyLayerRepositoryImpl(api)
     }
 }

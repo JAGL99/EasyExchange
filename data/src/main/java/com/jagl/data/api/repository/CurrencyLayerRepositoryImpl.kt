@@ -1,13 +1,11 @@
 package com.jagl.data.api.repository
 
-import com.jagl.core.network.INetworkManager
 import com.jagl.data.api.client.CurrencyLayerApi
 import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.model.GetLatestRates
 import retrofit2.Response
 
 class CurrencyLayerRepositoryImpl(
-    private val networkManager: INetworkManager,
     private val api: CurrencyLayerApi
 ) : ICurrencyLayerRepository {
 
@@ -28,10 +26,6 @@ class CurrencyLayerRepositoryImpl(
     }
 
     override suspend fun getLatestRates(request: GetLatestRates.Request): Result<GetLatestRates.Response> {
-
-        if (networkManager.isConnected().not()) {
-            return Result.failure(Exception("No internet connection"))
-        }
 
         if (request.accessKey.isEmpty()) {
             return Result.failure(Exception())
@@ -54,9 +48,6 @@ class CurrencyLayerRepositoryImpl(
     }
 
     override suspend fun getCurrencies(request: GetCurrencies.Request): Result<GetCurrencies.Response> {
-        if (networkManager.isConnected().not()) {
-            return Result.failure(Exception("No internet connection"))
-        }
         if (request.accessKey.isEmpty()) {
             return Result.failure(Exception())
         }
