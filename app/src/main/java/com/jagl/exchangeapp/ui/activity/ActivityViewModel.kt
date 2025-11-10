@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ActivityViewModel @Inject constructor(
-    private val networkManager: INetworkManager
+    networkManager: INetworkManager
 ) : ViewModel() {
 
     val internetConnection = networkManager.getInternetConnectionStatus()

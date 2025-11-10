@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import com.jagl.core.network.NetworkStatus
 import com.jagl.exchangeapp.ui.screens.exchange.ExchangeScreen
 import com.jagl.exchangeapp.ui.theme.ExchangeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,26 +26,24 @@ class MainActivity() : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val internetConnectionState =
-                activityViewModel.internetConnection.collectAsState(initial = false)
+            val internetConnectionState = activityViewModel.internetConnection.collectAsState(initial = NetworkStatus.Idle)
             LaunchedEffect(internetConnectionState.value) {
-                when (internetConnectionState.value) {
-                    true -> {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Conexión a Internet disponible",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    false -> {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Sin conexión a Internet",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                if (internetConnectionState.value == NetworkStatus.Unavailable) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "No hay conexión a internet",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
+
+                if (internetConnectionState.value == NetworkStatus.Available) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Conexión a internet",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
             }
 
             ExchangeAppTheme {
