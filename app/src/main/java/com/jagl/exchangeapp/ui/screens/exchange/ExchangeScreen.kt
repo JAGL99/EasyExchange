@@ -31,59 +31,60 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.jagl.core.extensions.EMPTY
 import com.jagl.domain.model.Currency
+import com.jagl.domain.model.ExchangeRate
+import com.jagl.domain.model.getEquivalent
+import com.jagl.exchangeapp.R
 import com.jagl.exchangeapp.ui.components.AmountInput
 import com.jagl.exchangeapp.ui.components.SearchableCurrencyDropdown
+import java.util.Locale
 
 @Composable
 fun ExchangeScreen(
     viewModel: ExchangeViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+
     ExchangeContent(
-        uiState,
-        snackbarHostState,
-        viewModel::updateFromCurrency,
-        viewModel::updateAmount,
-        viewModel::updateToCurrency,
-        viewModel::swapCurrencies,
-        viewModel::performConversion
+        uiState = uiState,
+        snackbarHostState = snackbarHostState,
+        onEvent = viewModel::handleEvent
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ExchangeContent(
-    uiState: ExchangeUiState,
+    uiState: State<ExchangeUiState>,
     snackbarHostState: SnackbarHostState,
-    updateFromCurrency: (Currency) -> Unit,
-    updateAmount: (String) -> Unit,
-    updateToCurrency: (Currency) -> Unit,
-    swapCurrencies: () -> Unit,
-    performConversion: () -> Unit,
+    onEvent: (ExchangeUiEvents) -> Unit
 ) {
     // Mostrar mensaje de error si existe
-    LaunchedEffect(uiState.errorMessage) {
-        uiState.errorMessage?.let {
+    LaunchedEffect(uiState.value.errorMessage) {
+        uiState.value.errorMessage?.let {
             snackbarHostState.showSnackbar(message = it)
         }
     }
 
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Conversor de Monedas") },
+                title = { Text(stringResource(R.string.currency_exchanges)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -106,19 +107,19 @@ private fun ExchangeContent(
             ) {
                 // Moneda de origen
                 Text(
-                    text = "De:",
+                    text = stringResource(R.string.from),
                     style = MaterialTheme.typography.titleMedium
                 )
                 SearchableCurrencyDropdown(
-                    currencies = uiState.availableCurrencies,
-                    onCurrencySelected = updateFromCurrency
+                    currencies = uiState.value.availableCurrencies,
+                    onCurrencySelected = { onEvent(ExchangeUiEvents.SelectFromCurrency(it)) }
                 )
 
                 // Monto a convertir
                 Spacer(modifier = Modifier.height(8.dp))
                 AmountInput(
-                    value = uiState.amount,
-                    onValueChange = updateAmount
+                    value = uiState.value.amount,
+                    onValueChange = { onEvent(ExchangeUiEvents.UpdateAmount(it)) }
                 )
 
                 // Botón para intercambiar monedas
@@ -127,7 +128,7 @@ private fun ExchangeContent(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     FilledIconButton(
-                        onClick = { swapCurrencies() },
+                        onClick = { onEvent(ExchangeUiEvents.SwapCurrencies) },
                         modifier = Modifier
                             .size(56.dp)
                             .padding(4.dp),
@@ -143,26 +144,26 @@ private fun ExchangeContent(
 
                 // Moneda de destino
                 Text(
-                    text = "A:",
+                    text = stringResource(R.string.to),
                     style = MaterialTheme.typography.titleMedium
                 )
                 SearchableCurrencyDropdown(
-                    currencies = uiState.availableCurrencies,
-                    onCurrencySelected = updateToCurrency
+                    currencies = uiState.value.availableCurrencies,
+                    onCurrencySelected = { onEvent(ExchangeUiEvents.SelectToCurrency(it)) }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 // Botón para realizar la consulta
                 FilledTonalButton(
-                    onClick = { performConversion() },
+                    onClick = { onEvent(ExchangeUiEvents.PerformConversion) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(54.dp),
                     shape = MaterialTheme.shapes.large
                 ) {
                     Text(
-                        "Calcular Conversión",
+                        text = stringResource(R.string.calculate_exchange),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(4.dp)
                     )
@@ -184,11 +185,11 @@ private fun ExchangeContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         AnimatedContent(
-                            targetState = uiState.convertedAmount,
+                            targetState = uiState.value.convertedAmount,
                             label = "result_animation"
                         ) { targetAmount ->
                             Text(
-                                text = if (targetAmount.isNotEmpty()) "Resultado" else " ",
+                                text = if (targetAmount.isNotEmpty()) stringResource(R.string.result) else String.EMPTY,
                                 style = MaterialTheme.typography.headlineSmall,
                                 color = animateColorAsState(
                                     if (targetAmount.isNotEmpty()) MaterialTheme.colorScheme.secondary
@@ -200,7 +201,7 @@ private fun ExchangeContent(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        if (uiState.isLoading) {
+                        if (uiState.value.isLoading) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(48.dp),
                                 strokeWidth = 4.dp
@@ -208,9 +209,9 @@ private fun ExchangeContent(
                             return@Column
                         }
 
-                        if (uiState.convertedAmount.isNotEmpty()) {
+                        if (uiState.value.convertedAmount.isNotEmpty()) {
                             Text(
-                                text = uiState.convertedAmount,
+                                text = uiState.value.convertedAmount,
                                 style = MaterialTheme.typography.headlineMedium,
                                 fontWeight = FontWeight.Bold
                             )
@@ -229,9 +230,9 @@ private fun ExchangeContent(
                             return@Column
                         }
 
-                        if (uiState.amount.isEmpty()) {
+                        if (uiState.value.amount.isEmpty()) {
                             Text(
-                                text = "Ingrese un monto para convertir",
+                                text = stringResource(R.string.enter_amount_to_exchange),
                                 style = MaterialTheme.typography.bodyLarge,
                                 textAlign = TextAlign.Center
                             )
@@ -246,26 +247,34 @@ private fun ExchangeContent(
 @Preview(showBackground = true)
 @Composable
 fun ExchangeScreenPreview() {
+    val uiState = remember {
+        mutableStateOf(
+            ExchangeUiState(
+                isLoading = false,
+                errorMessage = null,
+                availableCurrencies = listOf(
+                    Currency("USD", "Dólar estadounidense"),
+                    Currency("EUR", "Euro"),
+                    Currency("JPY", "Yen japonés"),
+                    Currency("GBP", "Libra esterlina"),
+                    Currency("AUD", "Dólar australiano"),
+                    Currency("CAD", "Dólar canadiense"),
+                    Currency("CHF", "Franco suizo"),
+                    Currency("CNY", "Yuan chino"),
+                    Currency("SEK", "Corona sueca"),
+                    Currency("NZD", "Dólar neozelandés")
+                ),
+                fromCurrency = Currency("USD", "Dólar estadounidense"),
+                toCurrency = Currency("EUR", "Euro"),
+                amount = "100",
+                convertedAmount = "$85.00",
+                exchangeRate = ExchangeRate("USD", "EUR", 0.85).getEquivalent(Locale.getDefault())
+            )
+        )
+    }
     ExchangeContent(
-        uiState = ExchangeUiState(
-            availableCurrencies = listOf(
-                Currency("USD", "Dólar Estadounidense"),
-                Currency("EUR", "Euro"),
-                Currency("JPY", "Yen Japonés")
-            ),
-            fromCurrency = Currency("USD", "Dólar Estadounidense"),
-            toCurrency = Currency("EUR", "Euro"),
-            amount = "100",
-            convertedAmount = "85.00",
-            exchangeRate = 0.85,
-            isLoading = false,
-            errorMessage = null
-        ),
+        uiState = uiState,
         snackbarHostState = remember { SnackbarHostState() },
-        updateFromCurrency = {},
-        updateAmount = {},
-        updateToCurrency = {},
-        swapCurrencies = {},
-        performConversion = {}
+        onEvent = {},
     )
 }
