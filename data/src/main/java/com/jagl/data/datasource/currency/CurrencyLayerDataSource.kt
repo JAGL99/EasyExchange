@@ -1,6 +1,7 @@
 package com.jagl.data.datasource.currency
 
 import com.jagl.core.network.INetworkManager
+import com.jagl.core.preferences.SharedPrefManager
 import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.repository.ICurrencyLayerRepository
 import com.jagl.data.local.dao.CurrencyDao
@@ -16,7 +17,8 @@ import javax.inject.Inject
 class CurrencyLayerDataSource @Inject constructor(
     private val networkManager: INetworkManager,
     private val api: ICurrencyLayerRepository,
-    private val currencyDao: CurrencyDao
+    private val currencyDao: CurrencyDao,
+    private val prefManager: SharedPrefManager
 ) : ICurrencyDataSource {
 
     /**
@@ -28,7 +30,8 @@ class CurrencyLayerDataSource @Inject constructor(
             if (networkManager.isConnected().not()) {
                 return@withContext emptyList()
             }
-            val request = GetCurrencies.Request()
+            val token =  prefManager.getString("TOKEN", "").orEmpty()
+            val request = GetCurrencies.Request(accessKey = token)
             val result = api.getCurrencies(request)
 
 

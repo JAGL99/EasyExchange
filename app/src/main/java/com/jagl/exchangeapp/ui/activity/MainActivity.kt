@@ -13,20 +13,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.jagl.core.network.NetworkStatus
-import com.jagl.exchangeapp.ui.screens.exchange.ExchangeScreen
+import com.jagl.exchangeapp.ui.AppNavigation
 import com.jagl.exchangeapp.ui.theme.ExchangeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity() : ComponentActivity() {
 
-    private val activityViewModel: ActivityViewModel by viewModels()
+    private val viewModel: ActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val internetConnectionState = activityViewModel.internetConnection.collectAsState(initial = NetworkStatus.Idle)
+            val internetConnectionState = viewModel.internetConnection.collectAsState(initial = NetworkStatus.Idle)
             LaunchedEffect(internetConnectionState.value) {
                 if (internetConnectionState.value == NetworkStatus.Unavailable) {
                     Toast.makeText(
@@ -35,15 +35,6 @@ class MainActivity() : ComponentActivity() {
                         Toast.LENGTH_LONG
                     ).show()
                 }
-
-                if (internetConnectionState.value == NetworkStatus.Available) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Conexión a internet",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
             }
 
             ExchangeAppTheme {
@@ -51,7 +42,7 @@ class MainActivity() : ComponentActivity() {
                     modifier = Modifier.Companion.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ExchangeScreen()
+                    AppNavigation(viewModel.getToken())
                 }
             }
         }

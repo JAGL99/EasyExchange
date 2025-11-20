@@ -1,4 +1,4 @@
-package com.jagl.exchangeapp
+package com.jagl.exchangeapp.app
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

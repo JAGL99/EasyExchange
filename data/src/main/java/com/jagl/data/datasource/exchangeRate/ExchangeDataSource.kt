@@ -2,6 +2,7 @@ package com.jagl.data.datasource.exchangeRate
 
 
 import com.jagl.core.network.INetworkManager
+import com.jagl.core.preferences.SharedPrefManager
 import com.jagl.data.api.model.GetLatestRates
 import com.jagl.data.api.repository.ICurrencyLayerRepository
 import com.jagl.data.local.dao.ExchangeRateDao
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class ExchangeDataSource @Inject constructor(
     private val networkManager: INetworkManager,
     private val api: ICurrencyLayerRepository,
-    private val exchangeRateDao: ExchangeRateDao
+    private val exchangeRateDao: ExchangeRateDao,
+    private val prefManager: SharedPrefManager
 ) : IExchangeDataSource {
 
     /**
@@ -52,11 +54,13 @@ class ExchangeDataSource @Inject constructor(
                 if (networkManager.isConnected().not()) {
                     return@withContext Result.failure(Exception("Sin conexión a internet"))
                 }
-
+                val token =  prefManager.getString("TOKEN", "").orEmpty()
                 val request = GetLatestRates.Request(
                     source = fromCurrency.code,
-                    currencies = toCurrency.code
+                    currencies = toCurrency.code,
+                    accessKey = token
                 )
+
                 val response = api.getLatestRates(request)
                 if (response.isSuccess) {
                     val body = response.getOrThrow()

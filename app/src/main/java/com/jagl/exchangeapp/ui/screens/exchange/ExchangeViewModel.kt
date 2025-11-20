@@ -82,6 +82,7 @@ class ExchangeViewModel @Inject constructor(
                 toCurrency = currentState.fromCurrency
             )
         }
+        convertAmount()
     }
 
     fun handleEvent(event: ExchangeUiEvents) {
@@ -140,7 +141,7 @@ class ExchangeViewModel @Inject constructor(
                         }
                         _uiState.update { currentState ->
                             currentState.copy(
-                                convertedAmount = formatter.format(exchangeRate),
+                                convertedAmount = formatter.format(exchangeRate.rate),
                                 exchangeRate = exchangeRate.getEquivalent(locale),
                                 isLoading = false
                             )

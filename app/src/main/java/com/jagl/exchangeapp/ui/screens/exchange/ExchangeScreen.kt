@@ -111,7 +111,8 @@ private fun ExchangeContent(
                     style = MaterialTheme.typography.titleMedium
                 )
                 SearchableCurrencyDropdown(
-                    currencies = uiState.value.availableCurrencies,
+                    currencySelected = uiState.value.fromCurrency,
+                    avableCurrencies = uiState.value.availableCurrencies,
                     onCurrencySelected = { onEvent(ExchangeUiEvents.SelectFromCurrency(it)) }
                 )
 
@@ -147,8 +148,10 @@ private fun ExchangeContent(
                     text = stringResource(R.string.to),
                     style = MaterialTheme.typography.titleMedium
                 )
+
                 SearchableCurrencyDropdown(
-                    currencies = uiState.value.availableCurrencies,
+                    currencySelected = uiState.value.toCurrency,
+                    avableCurrencies = uiState.value.availableCurrencies,
                     onCurrencySelected = { onEvent(ExchangeUiEvents.SelectToCurrency(it)) }
                 )
 
