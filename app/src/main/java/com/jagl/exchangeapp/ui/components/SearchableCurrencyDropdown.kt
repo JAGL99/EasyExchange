@@ -57,6 +57,7 @@ fun SearchableCurrencyDropdown(
             searchQuery.value = it
             expanded.value = true
         },
+        singleLine = true,
         label = { Text("Buscar moneda") },
         placeholder = { Text("Ingrese código o nombre") },
         isError = isError,
@@ -68,8 +69,6 @@ fun SearchableCurrencyDropdown(
             .padding(bottom = 4.dp)
             .then(modifier),
         colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Gray,
-            unfocusedIndicatorColor = Color.LightGray,
             errorIndicatorColor = Color.Red,
             errorLabelColor = Color.Red
         )
@@ -103,6 +102,18 @@ fun SearchableCurrencyDropdown(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSearchableCurrencyDropdown() {
+    val avableCurrencies = listOf(
+        Currency("USD", "Dólar estadounidense"),
+        Currency("EUR", "Euro"),
+        Currency("JPY", "Yen japonés"),
+        Currency("GBP", "Libra esterlina"),
+        Currency("AUD", "Dólar australiano"),
+        Currency("CAD", "Dólar canadiense"),
+        Currency("CHF", "Franco suizo"),
+        Currency("CNY", "Yuan chino"),
+        Currency("SEK", "Corona sueca"),
+        Currency("NZD", "Dólar neozelandés")
+    )
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -115,19 +126,8 @@ private fun PreviewSearchableCurrencyDropdown() {
             style = MaterialTheme.typography.titleMedium
         )
         SearchableCurrencyDropdown(
-            avableCurrencies = listOf(
-                Currency("USD", "Dólar estadounidense"),
-                Currency("EUR", "Euro"),
-                Currency("JPY", "Yen japonés"),
-                Currency("GBP", "Libra esterlina"),
-                Currency("AUD", "Dólar australiano"),
-                Currency("CAD", "Dólar canadiense"),
-                Currency("CHF", "Franco suizo"),
-                Currency("CNY", "Yuan chino"),
-                Currency("SEK", "Corona sueca"),
-                Currency("NZD", "Dólar neozelandés")
-            ),
-            currencySelected = Currency("USD", "Dólar estadounidense"),
+            avableCurrencies = avableCurrencies,
+            currencySelected = avableCurrencies.firstOrNull(),
             onCurrencySelected = {
                 Log.d("JAGL", "currency selected:$it")
             }
@@ -138,18 +138,7 @@ private fun PreviewSearchableCurrencyDropdown() {
             style = MaterialTheme.typography.titleMedium
         )
         SearchableCurrencyDropdown(
-            avableCurrencies = listOf(
-                Currency("USD", "Dólar estadounidense"),
-                Currency("EUR", "Euro"),
-                Currency("JPY", "Yen japonés"),
-                Currency("GBP", "Libra esterlina"),
-                Currency("AUD", "Dólar australiano"),
-                Currency("CAD", "Dólar canadiense"),
-                Currency("CHF", "Franco suizo"),
-                Currency("CNY", "Yuan chino"),
-                Currency("SEK", "Corona sueca"),
-                Currency("NZD", "Dólar neozelandés")
-            ),
+            avableCurrencies = avableCurrencies,
             onCurrencySelected = {
                 Log.d("JAGL", "currency selected:$it")
             }
