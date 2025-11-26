@@ -1,7 +1,5 @@
 package com.jagl.data.api.utils
 
-import com.jagl.data.api.model.CurrencyLayerError
-import com.jagl.data.api.model.AccessKeyException
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
@@ -28,21 +26,27 @@ object ApiUtils {
         }
     }
 
-    fun getErrorMessage(body: CurrencyLayerError): String {
-        return when (body.error.code) {
+    fun getErrorMessage(code: Int): String {
+        return when (code) {
             101 -> "No se ha proporcionado una clave de acceso válida, favor de intentar con otra clave"
             else -> GENERIC_ERROR
         }
     }
 
-    fun <T> safeCall(response: Response<T>, onMapResponse: ((T) -> T)? = null): Result<T> {
+    fun <T> safeCall(
+        response: Response<T>,
+        code: Int? = null,
+        onMapResponse: ((T) -> T)? = null
+    ): Result<T> {
         try {
             if (!response.isSuccessful || response.body() == null) {
-                val body = response.body() as CurrencyLayerError
-                return Result.failure(
-                    AccessKeyException(getErrorMessage(body))
-                )
+                return Result.failure(Exception(response.message()))
             }
+
+            if (code != null) {
+                return Result.failure(Exception(getErrorMessage(code)))
+            }
+
             val body = response.body()!!
 
             return when (onMapResponse == null) {
