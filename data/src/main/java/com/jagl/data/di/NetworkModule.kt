@@ -1,8 +1,9 @@
 package com.jagl.data.di
 
-import com.jagl.core.network.INetworkManager
-import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
+import com.jagl.core.preferences.SharedPrefManager
 import com.jagl.data.api.client.CurrencyLayerApi
+import com.jagl.data.api.model.ExchangeAuthInterceptor
+import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
 import com.jagl.data.api.repository.ICurrencyLayerRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -29,13 +30,16 @@ object NetworkModule {
      */
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        sharedPreferences: SharedPrefManager
+    ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-
+        val authInterceptor = ExchangeAuthInterceptor(sharedPreferences)
         return OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(authInterceptor)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .build()

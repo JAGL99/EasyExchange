@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jagl.core.preferences.SharedPrefManager
 import com.jagl.data.datasource.currency.ICurrencyDataSource
+import com.jagl.domain.model.ApiState
+import com.jagl.domain.model.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,14 +19,11 @@ class TokenViewModel @Inject constructor(
 
     fun evaluateToken(token: String, onSuccess: () -> Unit) = viewModelScope.launch {
         prefManager.saveString("TOKEN", token)
-        val isSuccess = currencyDataSource.getAvailableCurrencies().isNotEmpty()
-        if (!isSuccess) {
-            prefManager.clear()
-            println("Token inválido")
-            return@launch
-        }
-
-        onSuccess()
+        val result = currencyDataSource.getAvailableCurrencies()
+            when(result){
+                is ApiState.Error -> prefManager.clear()
+                is ApiState.Success -> onSuccess()
+            }
     }
 
 }

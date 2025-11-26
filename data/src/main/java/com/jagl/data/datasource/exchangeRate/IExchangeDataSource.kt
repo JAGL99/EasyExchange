@@ -1,5 +1,6 @@
 package com.jagl.data.datasource.exchangeRate
 
+import com.jagl.domain.model.ApiState
 import com.jagl.domain.model.Currency
 import com.jagl.domain.model.ExchangeRate
 
@@ -10,5 +11,5 @@ fun interface IExchangeDataSource {
         date: String,
         fromCurrency: Currency,
         toCurrency: Currency
-    ): Result<ExchangeRate>
+    ): ApiState<ExchangeRate>
 }

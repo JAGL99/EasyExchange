@@ -2,10 +2,6 @@ package com.jagl.data.api.model
 
 object GetCurrencies {
 
-    data class Request(
-        val accessKey: String
-    )
-
     data class Response(
         val success: Boolean,
         val terms: String?,

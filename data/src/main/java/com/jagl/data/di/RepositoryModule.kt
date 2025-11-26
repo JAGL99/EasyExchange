@@ -31,11 +31,10 @@ object RepositoryModule {
     fun provideCurrencyLayerDataSource(
         networkManager: INetworkManager,
         currencyRepository: ICurrencyLayerRepository,
-        database: IExchangeDatabase,
-        prefManager: SharedPrefManager
+        database: IExchangeDatabase
     ): ICurrencyDataSource {
         val dao = database.currencyDao()
-        return CurrencyLayerDataSource(networkManager, currencyRepository, dao, prefManager)
+        return CurrencyLayerDataSource(networkManager, currencyRepository, dao)
     }
 
     @Provides
@@ -43,11 +42,10 @@ object RepositoryModule {
     fun provideExchangerDataSource(
         networkManager: INetworkManager,
         currencyRepository: ICurrencyLayerRepository,
-        database: IExchangeDatabase,
-        prefManager: SharedPrefManager
+        database: IExchangeDatabase
     ): IExchangeDataSource {
         val dao = database.exchangeRateDao()
-        return ExchangeDataSource(networkManager, currencyRepository, dao, prefManager)
+        return ExchangeDataSource(networkManager, currencyRepository, dao)
     }
 
 }

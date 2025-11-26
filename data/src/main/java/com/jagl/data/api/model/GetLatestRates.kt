@@ -5,7 +5,6 @@ object GetLatestRates {
     data class Request(
         val source: String,
         val currencies: String,
-        val accessKey: String,
         val format: Int = 1
     )
 

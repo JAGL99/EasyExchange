@@ -6,7 +6,9 @@ import com.jagl.core.tropicalization.ITropicalization
 import com.jagl.core.util.DateUtils
 import com.jagl.data.datasource.currency.ICurrencyDataSource
 import com.jagl.data.datasource.exchangeRate.IExchangeDataSource
+import com.jagl.domain.model.ApiState
 import com.jagl.domain.model.Currency
+import com.jagl.domain.model.ExchangeRate
 import com.jagl.domain.model.getEquivalent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +19,7 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Date
 import javax.inject.Inject
+import java.util.Currency as CurrencyExchange
 
 /**
  * ViewModel para la pantalla de conversión de monedas
@@ -39,10 +42,17 @@ class ExchangeViewModel @Inject constructor(
      * Carga la lista de monedas disponibles
      */
     private fun loadCurrencies() = viewModelScope.launch {
-        val currencies = currencyDataSource.getAvailableCurrencies()
-        _uiState.update { currentState ->
-            currentState.copy(availableCurrencies = currencies)
+        val result: ApiState<List<Currency>> = currencyDataSource.getAvailableCurrencies()
+        when (result) {
+            is ApiState.Error -> println(result.message)
+            is ApiState.Success -> {
+                val currencies = result.data
+                _uiState.update { currentState ->
+                    currentState.copy(availableCurrencies = currencies)
+                }
+            }
         }
+
     }
 
     /**
@@ -129,15 +139,27 @@ class ExchangeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
             try {
-                exchangeDataSource.getExchangeRate(
+                val state: ApiState<ExchangeRate> = exchangeDataSource.getExchangeRate(
                     amount,
                     date,
                     fromCurrency!!,
                     toCurrency!!
                 )
-                    .onSuccess { exchangeRate ->
+                when (state) {
+                    is ApiState.Error -> {
+                        state.throwable?.printStackTrace()
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                errorMessage = state.message ?: "Error desconocido",
+                                isLoading = false
+                            )
+                        }
+                    }
+
+                    is ApiState.Success -> {
+                        val exchangeRate = state.data
                         val formatter = NumberFormat.getCurrencyInstance(locale).apply {
-                            currency = java.util.Currency.getInstance(toCurrency.code)
+                            currency = CurrencyExchange.getInstance(toCurrency.code)
                         }
                         _uiState.update { currentState ->
                             currentState.copy(
@@ -147,15 +169,7 @@ class ExchangeViewModel @Inject constructor(
                             )
                         }
                     }
-                    .onFailure { error ->
-                        error.printStackTrace()
-                        _uiState.update { currentState ->
-                            currentState.copy(
-                                errorMessage = error.message ?: "Error desconocido",
-                                isLoading = false
-                            )
-                        }
-                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 _uiState.update { currentState ->
