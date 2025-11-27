@@ -40,9 +40,7 @@ fun ExchangeResult(
             shape = MaterialTheme.shapes.large
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -58,35 +56,43 @@ fun ExchangeResult(
                     targetState = convertedAmount,
                     label = "result_animation"
                 ) { targetAmount ->
-                    Text(
-                        text = if (targetAmount.isNotEmpty()) stringResource(R.string.result) else String.EMPTY,
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = animateColorAsState(
-                            if (targetAmount.isNotEmpty()) MaterialTheme.colorScheme.secondary
-                            else MaterialTheme.colorScheme.surface
-                        ).value
-                    )
-                }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                if (convertedAmount.isNotEmpty()) {
-                    Text(
-                        text = convertedAmount,
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Mostrar la tasa de cambio
-                    exchangeRate?.let { rate ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Text(
-                            text = rate,
-                            style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(vertical = 4.dp)
+                            text = if (targetAmount.isNotEmpty()) stringResource(R.string.result) else String.EMPTY,
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = animateColorAsState(
+                                if (targetAmount.isNotEmpty()) MaterialTheme.colorScheme.secondary
+                                else MaterialTheme.colorScheme.surface
+                            ).value
                         )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        if (convertedAmount.isNotEmpty()) {
+                            Text(
+                                text = convertedAmount,
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // Mostrar la tasa de cambio
+                            exchangeRate?.let { rate ->
+                                Text(
+                                    text = rate,
+                                    style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }
