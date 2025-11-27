@@ -10,7 +10,6 @@ import com.jagl.data.api.client.CurrencyLayerApi
 import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.model.GetLatestRates
 import com.jagl.data.api.model.getCurrencies
-import com.jagl.data.api.model.getCurrenciesRequest
 import com.jagl.data.api.model.getCurrenciesResponse
 import com.jagl.data.api.model.getLatestRatesRequest
 import com.jagl.data.api.model.getLatestRatesResponse
@@ -58,8 +57,7 @@ class CurrencyLayerRepositoryTest {
     @Test
     fun `Request bad list, get failure with no data`() = runBlocking<Unit> {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
-        val request = GetCurrencies.Request()
-        val result = repository.getCurrencies(request)
+        val result = repository.getCurrencies()
         assertThat(result.isFailure).isTrue()
     }
 
@@ -74,8 +72,7 @@ class CurrencyLayerRepositoryTest {
                 .setBody(mockResponseJson)
 
         )
-        val request = getCurrenciesRequest()
-        val response = repository.getCurrencies(request)
+        val response = repository.getCurrencies()
         assertThat(response).isInstanceOf(Result::class)
         assertThat(response.isSuccess).isTrue()
         assertThat(response.getOrNull()).isNotNull()
@@ -99,8 +96,7 @@ class CurrencyLayerRepositoryTest {
                 .setBody(mockResponseJson)
 
         )
-        val request = getCurrenciesRequest().copy(accessKey = "")
-        val response = repository.getCurrencies(request)
+        val response = repository.getCurrencies()
         assertThat(response.isFailure).isTrue()
     }
 
@@ -114,7 +110,7 @@ class CurrencyLayerRepositoryTest {
                 .setBody(mockResponseJson)
 
         )
-        val request = getLatestRatesRequest().copy(accessKey = "")
+        val request = getLatestRatesRequest()
         val response = repository.getLatestRates(request)
         assertThat(response.isFailure).isTrue()
     }
