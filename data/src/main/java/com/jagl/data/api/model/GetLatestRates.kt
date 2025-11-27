@@ -12,14 +12,9 @@ object GetLatestRates {
         val success: Boolean,
         val terms: String?,
         val privacy: String?,
-        val error: Error?,
+        val error: ApiError?,
         val timestamp: Long?,
         val source: String?,
         val quotes: Map<String, Double>?
-    )
-
-    data class Error(
-        val code: Int,
-        val info: String
     )
 }

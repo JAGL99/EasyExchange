@@ -6,12 +6,8 @@ object GetCurrencies {
         val success: Boolean,
         val terms: String?,
         val privacy: String?,
-        val error: Error?,
+        val error: ApiError?,
         val currencies: Map<String, String>?
     )
 
-    data class Error(
-        val code: Int,
-        val info: String
-    )
 }
