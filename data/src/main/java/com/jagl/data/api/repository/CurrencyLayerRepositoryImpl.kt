@@ -15,7 +15,7 @@ class CurrencyLayerRepositoryImpl(
             currencies = request.currencies,
             format = request.format
         )
-        return safeCall(response, response.code()) { body ->
+        return safeCall(response, response.body()?.error?.code) { body ->
             body.copy(
                 quotes = body.quotes?.mapKeys {
                     it.key.removePrefix(request.source)
@@ -26,6 +26,6 @@ class CurrencyLayerRepositoryImpl(
 
     override suspend fun getCurrencies(): Result<GetCurrencies.Response> {
         val response = api.getCurrencies()
-        return safeCall(response, response.code())
+        return safeCall(response, response.body()?.error?.code)
     }
 }
