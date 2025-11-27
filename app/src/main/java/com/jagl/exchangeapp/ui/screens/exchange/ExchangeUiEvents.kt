@@ -12,4 +12,5 @@ sealed class ExchangeUiEvents {
     data class SelectToCurrency(val toCurrency: Currency) : ExchangeUiEvents()
     object SwapCurrencies : ExchangeUiEvents()
     object PerformConversion : ExchangeUiEvents()
+    object DismissError: ExchangeUiEvents()
 }

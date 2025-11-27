@@ -103,6 +103,7 @@ class ExchangeViewModel @Inject constructor(
             is ExchangeUiEvents.SelectFromCurrency -> updateFromCurrency(event.fromCurrency)
             is ExchangeUiEvents.SelectToCurrency -> updateToCurrency(event.toCurrency)
             ExchangeUiEvents.Idle -> return
+            ExchangeUiEvents.DismissError -> _uiState.update { it.copy(errorMessage = null) }
         }
     }
 
@@ -137,7 +138,7 @@ class ExchangeViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy(isLoading = true) }
             try {
                 val state: ApiState<ExchangeRate> = exchangeDataSource.getExchangeRate(
                     amount,
