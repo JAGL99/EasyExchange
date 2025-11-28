@@ -138,4 +138,48 @@ class CurrencyLayerRepositoryTest {
     }
 
 
+    @Test
+    fun `Make a request for currencies, get error response`() = runBlocking<Unit> {
+        val adapter = moshi.adapter(GetCurrencies.Response::class.java)
+        val mockResponse = getCurrenciesResponse().copy(success = false)
+        val mockResponseJson = adapter.toJson(mockResponse)
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(mockResponseJson)
+        )
+        val result = repository.getCurrencies()
+        assertThat(result.isFailure).isTrue()
+        val message = result.exceptionOrNull()?.message
+        assertThat(message).isNotNull()
+        assertThat(message!!).isNotEmpty()
+    }
+
+    @Test
+    fun `Make a request for rates, get error response`() = runBlocking {
+        val avableCurrencies = getCurrencies()
+        val source = avableCurrencies.first().code
+        val currencies = avableCurrencies.last().code
+        val adapter = moshi.adapter(GetLatestRates.Response::class.java)
+        val mockResponse = getLatestRatesResponse(
+            source = source,
+            avableCurrencies = avableCurrencies,
+            currencies = currencies
+        ).copy(success = false)
+        val mockResponseJson = adapter.toJson(mockResponse)
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(mockResponseJson)
+
+        )
+        val result = repository.getLatestRates(getLatestRatesRequest())
+        assertThat(result.isFailure).isTrue()
+        val message = result.exceptionOrNull()?.message
+        assertThat(message).isNotNull()
+        assertThat(message!!).isNotEmpty()
+
+    }
+
+
 }
