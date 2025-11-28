@@ -9,12 +9,12 @@ object GetLatestRates {
     )
 
     data class Response(
-        val success: Boolean,
-        val terms: String?,
-        val privacy: String?,
-        val error: ApiError?,
+        override val success: Boolean,
+        override val terms: String?,
+        override val privacy: String?,
+        override val error: ApiError?,
         val timestamp: Long?,
         val source: String?,
         val quotes: Map<String, Double>?
-    )
+    ) : CurrencyLayerResponse
 }

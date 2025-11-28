@@ -226,7 +226,7 @@ fun getLatestRatesResponse(
             timestamp = null,
             source = null,
             quotes = null,
-            error = getError()
+            error = getApiError()
         )
     }
 
@@ -243,8 +243,8 @@ fun getCurrenciesResponse(): GetCurrencies.Response {
     )
 }
 
-fun getError(): ApiError {
-    return ApiError(201, "You have supplied an invalid Source Currency. [Example: source=EUR]")
+fun getApiError(): ApiError {
+    return ApiError(101, "You have supplied an invalid Source Currency. [Example: source=EUR]")
 }
 
 
