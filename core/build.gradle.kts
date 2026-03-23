@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jupiter)
 }
@@ -58,6 +59,10 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
     // Retrofit
     implementation(libs.retrofit)
 
@@ -78,7 +83,7 @@ dependencies {
     kspAndroidTest(libs.hilt.android.compiler)
     testRuntimeOnly(libs.junit.jupiter.engine)
 
-    androidTestImplementation (libs.androidx.rules)
+    androidTestImplementation(libs.androidx.rules)
     androidTestImplementation(libs.turbine)
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.core.ktx.test)
@@ -97,7 +102,8 @@ tasks.register("findTodos") {
     description = "Detects TODO comments in the codebase."
 
     doLast {
-        val android = project.extensions.getByName("android") as com.android.build.gradle.BaseExtension
+        val android =
+            project.extensions.getByName("android") as com.android.build.gradle.BaseExtension
         val srcDirs = android.sourceSets["main"].java.srcDirs // Para Kotlin/Java
 
         val todos = mutableListOf<String>()

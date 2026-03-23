@@ -26,15 +26,10 @@ interface CurrencyLayerApi {
         source: String,
         @Query("currencies")
         currencies: String,
-        @Query("access_key")
-        accessKey: String,
         @Query("format")
         format: Int
     ): Response<GetLatestRates.Response>
 
     @GET("list")
-    suspend fun getCurrencies(
-        @Query("access_key")
-        accessKey: String
-    ): Response<GetCurrencies.Response>
+    suspend fun getCurrencies(): Response<GetCurrencies.Response>
 }
