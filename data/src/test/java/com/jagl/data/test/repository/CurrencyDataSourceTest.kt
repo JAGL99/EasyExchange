@@ -3,20 +3,16 @@ package com.jagl.data.test.repository
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
-import assertk.assertions.isNotEmpty
-import assertk.assertions.isTrue
 import com.jagl.core.network.INetworkManager
 import com.jagl.core.network.NetworkStatus
 import com.jagl.data.api.client.CurrencyLayerApi
 import com.jagl.data.api.model.GetCurrencies
-import com.jagl.data.api.model.getCurrencies
 import com.jagl.data.api.model.getCurrenciesResponse
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
 import com.jagl.data.api.repository.ICurrencyLayerRepository
 import com.jagl.data.api.utils.toCurrencyList
 import com.jagl.data.datasource.currency.CurrencyLayerDataSource
 import com.jagl.data.datasource.currency.ICurrencyDataSource
-import com.jagl.data.datasource.exchangeRate.ExchangeDataSource
 import com.jagl.data.local.CurrencyDaoFake
 import com.jagl.data.local.dao.CurrencyDao
 import com.squareup.moshi.Moshi
@@ -33,7 +29,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 
-class CurrencyLayerDataSourceTest {
+class CurrencyDataSourceTest {
 
     private lateinit var dao: CurrencyDao
     private lateinit var mockWebServer: MockWebServer
@@ -46,7 +42,6 @@ class CurrencyLayerDataSourceTest {
     @BeforeEach
     fun setUp() {
         dao = CurrencyDaoFake()
-
         mockWebServer = MockWebServer()
         moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
@@ -89,7 +84,7 @@ class CurrencyLayerDataSourceTest {
         }
         dataSource = CurrencyLayerDataSource(networkManager,repository, dao)
         val currencies = dataSource.getAvailableCurrencies()
-        //assertThat(currencies).isEmpty()
+        assertThat(currencies).isEmpty()
         val localData = dao.getCurrencies()
         assertThat(localData).isEmpty()
     }
@@ -98,7 +93,7 @@ class CurrencyLayerDataSourceTest {
     fun `Request bad list, get empty data`() = runBlocking<Unit> {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
         val currencies = dataSource.getAvailableCurrencies()
-        //assertThat(currencies).isEmpty()
+        assertThat(currencies).isEmpty()
         val localData = dao.getCurrencies()
         assertThat(localData).isEmpty()
     }
@@ -116,7 +111,7 @@ class CurrencyLayerDataSourceTest {
 
         )
         val firstResponse = dataSource.getAvailableCurrencies()
-        //assertThat(firstResponse).isNotEmpty()
+        assertThat(firstResponse).isNotEmpty()
         val firstLocalData = dao.getCurrencies().map { it.toCurrency() }
         assertThat(firstLocalData).containsExactly(*mockCurrencies)
         mockWebServer.enqueue(

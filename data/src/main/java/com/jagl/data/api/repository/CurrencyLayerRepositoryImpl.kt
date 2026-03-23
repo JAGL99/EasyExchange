@@ -3,7 +3,7 @@ package com.jagl.data.api.repository
 import com.jagl.data.api.client.CurrencyLayerApi
 import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.model.GetLatestRates
-import com.jagl.data.api.utils.ApiUtils.safeCall
+import com.jagl.data.api.utils.ApiUtils.safeResultCall
 import com.jagl.data.api.utils.ApiUtils.safeMap
 
 class CurrencyLayerRepositoryImpl(
@@ -11,7 +11,7 @@ class CurrencyLayerRepositoryImpl(
 ) : ICurrencyLayerRepository {
 
     override suspend fun getLatestRates(request: GetLatestRates.Request): Result<GetLatestRates.Response> =
-        safeCall {
+        safeResultCall {
             val response = api.getLatestRates(
                 source = request.source,
                 currencies = request.currencies,
@@ -27,7 +27,7 @@ class CurrencyLayerRepositoryImpl(
             }
         }
 
-    override suspend fun getCurrencies(): Result<GetCurrencies.Response> = safeCall {
+    override suspend fun getCurrencies(): Result<GetCurrencies.Response> = safeResultCall {
         val response = api.getCurrencies()
         safeMap(response)
     }

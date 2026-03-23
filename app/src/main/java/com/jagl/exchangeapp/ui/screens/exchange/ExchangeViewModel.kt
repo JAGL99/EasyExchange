@@ -148,7 +148,6 @@ class ExchangeViewModel @Inject constructor(
                 )
                 when (state) {
                     is ApiState.Error -> {
-                        state.throwable?.printStackTrace()
                         _uiState.update { currentState ->
                             currentState.copy(
                                 errorMessage = state.message ?: "Error desconocido",
