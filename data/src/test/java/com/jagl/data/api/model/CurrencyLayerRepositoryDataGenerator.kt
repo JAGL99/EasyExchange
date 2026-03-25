@@ -1,6 +1,5 @@
 package com.jagl.data.api.model
 
-import com.jagl.data.api.model.GetLatestRates.Error
 import com.jagl.domain.model.Currency
 import java.time.Instant
 import java.util.Date
@@ -192,7 +191,6 @@ fun getLatestRatesRequest(): GetLatestRates.Request {
     return GetLatestRates.Request(
         source = "USD",
         currencies = "AUD,EUR,GBP,PLN",
-        accessKey = "ASDFDFDSGSDFDS12312ASASDSA",
         format = 1
     )
 }
@@ -228,15 +226,12 @@ fun getLatestRatesResponse(
             timestamp = null,
             source = null,
             quotes = null,
-            error = getError()
+            error = getApiError()
         )
     }
 
 }
 
-fun getCurrenciesRequest(): GetCurrencies.Request {
-    return GetCurrencies.Request(accessKey = "asdasdasdasdsasd")
-}
 
 fun getCurrenciesResponse(): GetCurrencies.Response {
     return GetCurrencies.Response(
@@ -248,8 +243,8 @@ fun getCurrenciesResponse(): GetCurrencies.Response {
     )
 }
 
-fun getError(): Error {
-    return Error(201, "You have supplied an invalid Source Currency. [Example: source=EUR]")
+fun getApiError(): ApiError {
+    return ApiError(101, "You have supplied an invalid Source Currency. [Example: source=EUR]")
 }
 
 

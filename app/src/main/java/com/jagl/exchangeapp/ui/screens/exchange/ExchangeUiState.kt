@@ -13,5 +13,6 @@ data class ExchangeUiState(
     val toCurrency: Currency? = null,
     val amount: String = "",
     val convertedAmount: String = "",
-    val exchangeRate: Double? = null
+    val exchangeRate: String? = null,
+    val showExitDialog: Boolean = false,
 )

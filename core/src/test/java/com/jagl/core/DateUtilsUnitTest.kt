@@ -12,6 +12,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import java.util.Date
+import java.util.Locale
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -21,10 +22,12 @@ import java.util.Date
 class DateUtilsUnitTest {
 
     private var dateUtilInstance: DateUtils? = null
+    private var locale: Locale? = null
 
     @BeforeEach
     fun setUp() {
         dateUtilInstance = DateUtils
+        locale = Locale("es","MXN")
     }
 
     @AfterEach
@@ -39,7 +42,7 @@ class DateUtilsUnitTest {
 
     @Test
     fun `request current date with empty pattern, throw IllegalArgumentException`() {
-        assertThrows<IllegalArgumentException> { dateUtilInstance!!.getDateWithFormat(pattern = "") }
+        assertThrows<IllegalArgumentException> { dateUtilInstance!!.getDateWithFormat(locale = locale!!,pattern = "", date = Date()) }
     }
 
     @ParameterizedTest
@@ -53,14 +56,15 @@ class DateUtilsUnitTest {
         "dd-MM-yyyy HH:mm",
         "yyyy-MM-dd'T'HH:mm:ss",
         "HH:mm:ss",
-        "hh:mm a"
+        "hh:mm a",
+        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     )
     fun `request current date, get currentDate`(pattern: String) {
         assertDoesNotThrow {
             with(dateUtilInstance!!) {
                 val date = Date()
-                val currentDate = getDateWithFormat(date, pattern)
-                val formatedDate = formatDate(date, pattern)
+                val currentDate = getDateWithFormat(locale = locale!!,date, pattern)
+                val formatedDate = formatDate(date, locale!!,pattern)
                 assertThat(currentDate).isEqualTo(formatedDate)
             }
 
@@ -80,15 +84,16 @@ class DateUtilsUnitTest {
         "dd-MM-yyyy HH:mm",
         "yyyy-MM-dd'T'HH:mm:ss",
         "HH:mm:ss",
-        "hh:mm a"
+        "hh:mm a",
+        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     )
     fun `have string date, get parsed date`(pattern: String) {
         assertDoesNotThrow {
             with(dateUtilInstance!!) {
-                val currentDate = getDateWithFormat(pattern = pattern)
-                val parseDate = parseToDate(currentDate, pattern)
+                val currentDate = getDateWithFormat(locale = locale!!,pattern = pattern, date = Date())
+                val parseDate = parseToDate(currentDate, locale = locale!!,pattern)
                 assertThat(parseDate).isInstanceOf(Date::class)
-                val formatedDate = formatDate(parseDate, pattern)
+                val formatedDate = formatDate(parseDate, locale = locale!!,pattern)
                 assertThat(formatedDate).isEqualTo(currentDate)
             }
         }
