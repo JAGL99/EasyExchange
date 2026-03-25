@@ -1,11 +1,12 @@
 package com.jagl.data.test.repository
 
 import assertk.assertThat
+import assertk.assertions.hasClass
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isGreaterThan
 import assertk.assertions.isNotEmpty
-import assertk.assertions.isTrue
 import com.jagl.core.network.INetworkManager
 import com.jagl.core.network.NetworkStatus
 import com.jagl.data.api.client.CurrencyLayerApi
@@ -14,10 +15,12 @@ import com.jagl.data.api.model.getCurrencies
 import com.jagl.data.api.model.getLatestRatesResponse
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
 import com.jagl.data.api.repository.ICurrencyLayerRepository
+import com.jagl.data.api.utils.ApiUtils
 import com.jagl.data.datasource.exchangeRate.ExchangeDataSource
 import com.jagl.data.datasource.exchangeRate.IExchangeDataSource
 import com.jagl.data.local.ExchangeRateDaoFake
 import com.jagl.data.local.dao.ExchangeRateDao
+import com.jagl.domain.model.ApiState
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.Flow
@@ -64,11 +67,12 @@ class ExchangeDataSourceTest {
                     emit(NetworkStatus.Available)
                 }
             }
+
             override fun isConnected(): Boolean {
                 return true
             }
         }
-        dataSource = ExchangeDataSource(networkManager,repository, dao)
+        dataSource = ExchangeDataSource(networkManager, repository, dao)
     }
 
     @AfterEach
@@ -77,24 +81,26 @@ class ExchangeDataSourceTest {
     }
 
     @Test
-    fun `Request without internet, get empty data`() = runBlocking<Unit>{
+    fun `Request without internet, get empty data`() = runBlocking<Unit> {
         networkManager = object : INetworkManager {
             override fun getInternetConnectionStatus(): Flow<NetworkStatus> {
                 return flow {
                     emit(NetworkStatus.Unavailable)
                 }
             }
+
             override fun isConnected(): Boolean {
                 return false
             }
         }
-        dataSource = ExchangeDataSource(networkManager,repository, dao)
+        dataSource = ExchangeDataSource(networkManager, repository, dao)
         val date = "2025-01-25"
         val fromCurrency = getCurrencies().first()
         val toCurrency = getCurrencies().last()
-        val result = dataSource.getExchangeRate(1.0, date, fromCurrency, toCurrency)
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()?.message == "Sin conexión a internet").isTrue()
+        val apiState = dataSource.getExchangeRate(1.0, date, fromCurrency, toCurrency)
+        assertThat(apiState).hasClass(ApiState.Error::class)
+        val error = (apiState as ApiState.Error)
+        assertThat(error.message).isEqualTo(ApiUtils.NO_INTERNET_ERROR)
         val exchange = dao.getExchangeRateForDate(fromCurrency.code, toCurrency.code, date)
         assertThat(exchange).isEmpty()
     }
@@ -105,8 +111,8 @@ class ExchangeDataSourceTest {
         val date = "2025-01-25"
         val fromCurrency = getCurrencies().first()
         val toCurrency = getCurrencies().last()
-        val result = dataSource.getExchangeRate(1.0, date, fromCurrency, toCurrency)
-        assertThat(result.isFailure).isTrue()
+        val apiState = dataSource.getExchangeRate(1.0, date, fromCurrency, toCurrency)
+        assertThat(apiState).hasClass(ApiState.Error::class)
         val exchange = dao.getExchangeRateForDate(fromCurrency.code, toCurrency.code, date)
         assertThat(exchange).isEmpty()
     }
@@ -132,22 +138,23 @@ class ExchangeDataSourceTest {
                 .setResponseCode(200)
                 .setBody(mockResponseJson)
         )
-        val firstResult = dataSource.getExchangeRate(
+        val firstApiState = dataSource.getExchangeRate(
             amount = 1.0,
             date = "2025-11-25",
             fromCurrency = fromCurrency,
             toCurrency = toCurrency
         )
 
-        assertThat(firstResult.isSuccess).isTrue()
-        assertDoesNotThrow {
-            val body = firstResult.getOrThrow()
-            assertThat(body.toCurrency).isEqualTo(toCurrency.code)
-            assertThat(body.fromCurrency).isEqualTo(fromCurrency.code)
-            assertThat(body.rate > 0.0).isTrue()
-        }
+        assertThat(firstApiState).hasClass(ApiState.Success::class)
+        val firstResult = firstApiState as ApiState.Success
 
-        val firstExchange = dao.getExchangeRateForDate(fromCurrency.code, toCurrency.code, "2025-11-25")
+        val body = firstResult.data
+        assertThat(body.toCurrency).isEqualTo(toCurrency.code)
+        assertThat(body.fromCurrency).isEqualTo(fromCurrency.code)
+        assertThat(body.rate).isGreaterThan(0.0)
+
+        val firstExchange =
+            dao.getExchangeRateForDate(fromCurrency.code, toCurrency.code, "2025-11-25")
         assertThat(firstExchange).isNotEmpty()
         assertThat(firstExchange).hasSize(1)
 
@@ -157,14 +164,15 @@ class ExchangeDataSourceTest {
                 .setBody(mockResponseJson)
         )
 
-        val secondResult = dataSource.getExchangeRate(
+        val secondApiState = dataSource.getExchangeRate(
             amount = 1.0,
             date = "2025-11-25",
             fromCurrency = fromCurrency,
             toCurrency = toCurrency
         )
-        assertThat(secondResult.isSuccess).isTrue()
-        val secondExchange = dao.getExchangeRateForDate(fromCurrency.code, toCurrency.code, "2025-11-25")
+        assertThat(secondApiState).hasClass(ApiState.Success::class)
+        val secondExchange =
+            dao.getExchangeRateForDate(fromCurrency.code, toCurrency.code, "2025-11-25")
         assertThat(secondExchange).hasSize(1)
     }
 
@@ -190,40 +198,40 @@ class ExchangeDataSourceTest {
                 .setBody(mockResponseJson)
         )
         var currency: Double = 0.0
-        val firstResult = dataSource.getExchangeRate(
+        val firstApiState = dataSource.getExchangeRate(
             amount = 1.0,
             date = "2025-11-25",
             fromCurrency = fromCurrency,
             toCurrency = toCurrency
         )
 
-        assertThat(firstResult.isSuccess).isTrue()
-        assertDoesNotThrow {
-            val body = firstResult.getOrThrow()
-            currency = body.rate
-            assertThat(body.toCurrency).isEqualTo(toCurrency.code)
-            assertThat(body.fromCurrency).isEqualTo(fromCurrency.code)
-            assertThat(body.rate > 0.0).isTrue()
-        }
 
+        assertThat(firstApiState).hasClass(ApiState.Success::class)
+        val firstResult = firstApiState as ApiState.Success
 
-        val firstExchange = dao.getExchangeRateForDate(fromCurrency.code, toCurrency.code, "2025-11-25")
+        val firstData = firstResult.data
+        currency = firstData.rate
+        assertThat(firstData.toCurrency).isEqualTo(toCurrency.code)
+        assertThat(firstData.fromCurrency).isEqualTo(fromCurrency.code)
+        assertThat(firstData.rate).isEqualTo(currency)
+
+        val firstExchange =
+            dao.getExchangeRateForDate(fromCurrency.code, toCurrency.code, "2025-11-25")
         assertThat(firstExchange).isNotEmpty()
         assertThat(firstExchange).hasSize(1)
 
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
-        val secondResult = dataSource.getExchangeRate(
+        val secondApiState = dataSource.getExchangeRate(
             amount = 1.0,
             date = "2025-11-25",
             fromCurrency = fromCurrency,
             toCurrency = toCurrency
         )
-        /*
-        assertThat(secondResult.isSuccess).isTrue()
-        assertDoesNotThrow {
-            val body = firstResult.getOrThrow()
-            assertThat(body.rate).isEqualTo(currency)
-        }
-         */
+
+        assertThat(secondApiState).hasClass(ApiState.Success::class)
+        val secondResult = secondApiState as ApiState.Success
+        val secondData = secondResult.data
+        assertThat(secondData.rate).isEqualTo(currency)
+
     }
 }
