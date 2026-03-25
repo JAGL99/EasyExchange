@@ -2,7 +2,11 @@ package com.jagl.data.test.repository
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.corresponds
+import assertk.assertions.hasClass
 import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNotEmpty
 import com.jagl.core.network.INetworkManager
 import com.jagl.core.network.NetworkStatus
 import com.jagl.data.api.client.CurrencyLayerApi
@@ -10,11 +14,13 @@ import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.model.getCurrenciesResponse
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
 import com.jagl.data.api.repository.ICurrencyLayerRepository
+import com.jagl.data.api.utils.ApiUtils
 import com.jagl.data.api.utils.toCurrencyList
 import com.jagl.data.datasource.currency.CurrencyLayerDataSource
 import com.jagl.data.datasource.currency.ICurrencyDataSource
 import com.jagl.data.local.CurrencyDaoFake
 import com.jagl.data.local.dao.CurrencyDao
+import com.jagl.domain.model.ApiState
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.Flow
@@ -83,8 +89,10 @@ class CurrencyDataSourceTest {
             }
         }
         dataSource = CurrencyLayerDataSource(networkManager,repository, dao)
-        val currencies = dataSource.getAvailableCurrencies()
-        assertThat(currencies).isEmpty()
+        val apiState = dataSource.getAvailableCurrencies()
+        assertThat(apiState).hasClass(ApiState.Error::class)
+        val error = (apiState as ApiState.Error)
+        assertThat(error.message).isEqualTo(ApiUtils.NO_INTERNET_ERROR)
         val localData = dao.getCurrencies()
         assertThat(localData).isEmpty()
     }
@@ -92,8 +100,8 @@ class CurrencyDataSourceTest {
     @Test
     fun `Request bad list, get empty data`() = runBlocking<Unit> {
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
-        val currencies = dataSource.getAvailableCurrencies()
-        assertThat(currencies).isEmpty()
+        val apiState = dataSource.getAvailableCurrencies()
+        assertThat(apiState).hasClass(ApiState.Error::class)
         val localData = dao.getCurrencies()
         assertThat(localData).isEmpty()
     }
@@ -104,29 +112,35 @@ class CurrencyDataSourceTest {
         val mockCurrencies = mockResponse.currencies!!.toCurrencyList().toTypedArray()
         val adapter = moshi.adapter(GetCurrencies.Response::class.java)
         val mockResponseJson = adapter.toJson(mockResponse)
+
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
                 .setBody(mockResponseJson)
 
         )
-        val firstResponse = dataSource.getAvailableCurrencies()
-        assertThat(firstResponse).isNotEmpty()
+        val firstApiResult = dataSource.getAvailableCurrencies()
+        assertThat(firstApiResult).hasClass(ApiState.Success::class)
+        val firstResponse = (firstApiResult as ApiState.Success)
+
+        assertThat(firstResponse.data).isNotEmpty()
         val firstLocalData = dao.getCurrencies().map { it.toCurrency() }
         assertThat(firstLocalData).containsExactly(*mockCurrencies)
+
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
                 .setBody(mockResponseJson)
 
         )
-        val secondResponse = dataSource.getAvailableCurrencies()
-        //assertThat(secondResponse).isNotEmpty()
+        val secondApiResult = dataSource.getAvailableCurrencies()
+        assertThat(secondApiResult).hasClass(ApiState.Success::class)
         val secondLocalData = dao.getCurrencies().map { it.toCurrency() }
         assertThat(secondLocalData).containsExactly(*mockCurrencies)
+
         mockWebServer.enqueue(MockResponse().setResponseCode(404))
-        val thirdResponse = dataSource.getAvailableCurrencies()
-        //assertThat(thirdResponse).isNotEmpty()
+        val thirdApiResult = dataSource.getAvailableCurrencies()
+        assertThat(thirdApiResult).hasClass(ApiState.Success::class)
         val thirdLocalData = dao.getCurrencies().map { it.toCurrency() }
         assertThat(thirdLocalData).containsExactly(*mockCurrencies)
     }
@@ -143,9 +157,11 @@ class CurrencyDataSourceTest {
                 .setBody(mockResponseJson)
 
         )
-        val response = dataSource.getAvailableCurrencies()
-        //assertThat(response).isNotEmpty()
-        //assertThat(response).containsExactly(*mockCurrencies)
+        val apiResult = dataSource.getAvailableCurrencies()
+
+        assertThat(apiResult).hasClass(ApiState.Success::class)
+        val responseData = (apiResult as ApiState.Success).data
+        assertThat(responseData).containsExactly(*mockCurrencies)
         val localData = dao.getCurrencies().map { it.toCurrency() }
         assertThat(localData).containsExactly(*mockCurrencies)
     }
