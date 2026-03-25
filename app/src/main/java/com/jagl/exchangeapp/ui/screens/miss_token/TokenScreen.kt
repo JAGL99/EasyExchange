@@ -67,7 +67,11 @@ fun TokenScreen(
         TextField(
             value = uiState.value.token,
             onValueChange = {
-                viewModel.handleEvent(TokenUiEvent.UpdateToken(it))
+                val isValidToken =
+                    it.matches(Regex("^[a-zA-Z0-9]{0,76}$")) // Only allow alphanumeric characters and limit length to 76
+                if (isValidToken) {
+                    viewModel.handleEvent(TokenUiEvent.UpdateToken(it))
+                }
             },
             label = { Text("Token") },
             modifier = Modifier.fillMaxWidth()
