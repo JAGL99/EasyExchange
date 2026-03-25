@@ -58,8 +58,8 @@ fun SearchableCurrencyDropdown(
             expanded.value = true
         },
         singleLine = true,
-        label = { Text("Buscar moneda") },
-        placeholder = { Text("Ingrese código o nombre") },
+        label = { Text(stringResource(R.string.search_currency)) },
+        placeholder = { Text(stringResource(R.string.enter_code_or_name)) },
         isError = isError,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         keyboardActions = KeyboardActions.Default,
@@ -91,7 +91,7 @@ fun SearchableCurrencyDropdown(
         }
     } else if (searchQuery.value.isNotEmpty() && filteredCurrencies.isEmpty()) {
         Text(
-            text = "No se encontraron coincidencias",
+            text = stringResource(R.string.no_currency_match),
             color = Color.Red,
             modifier = Modifier.padding(8.dp)
         )
@@ -128,9 +128,7 @@ private fun PreviewSearchableCurrencyDropdown() {
         SearchableCurrencyDropdown(
             avableCurrencies = avableCurrencies,
             currencySelected = avableCurrencies.firstOrNull(),
-            onCurrencySelected = {
-                Log.d("JAGL", "currency selected:$it")
-            }
+            onCurrencySelected = {}
         )
 
         Text(
@@ -139,9 +137,7 @@ private fun PreviewSearchableCurrencyDropdown() {
         )
         SearchableCurrencyDropdown(
             avableCurrencies = avableCurrencies,
-            onCurrencySelected = {
-                Log.d("JAGL", "currency selected:$it")
-            }
+            onCurrencySelected = {}
         )
     }
 

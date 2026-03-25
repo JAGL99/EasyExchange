@@ -10,4 +10,9 @@
     <string name="exit_confirmation">Deseas salir de la app?</string>
     <string name="exit">Salir</string>
     <string name="cancel">Cancelar</string>
+    <string name="amount">Monto</string>
+    <string name="enter_amount">Ingrese el monto</string>
+    <string name="search_currency">Buscar moneda</string>
+    <string name="enter_code_or_name">Ingrese código o nombre</string>
+    <string name="no_currency_match">No se encontraron coincidencias</string>
 </resources>
