@@ -7,4 +7,7 @@
     <string name="result">Resultado</string>
     <string name="enter_amount_to_exchange">Ingrese un monto para convertir</string>
     <string name="swap_button">swap_button</string>
+    <string name="exit_confirmation">Deseas salir de la app?</string>
+    <string name="exit">Salir</string>
+    <string name="cancel">Cancelar</string>
 </resources>

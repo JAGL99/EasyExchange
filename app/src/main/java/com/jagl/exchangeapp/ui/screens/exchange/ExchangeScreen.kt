@@ -1,5 +1,7 @@
 package com.jagl.exchangeapp.ui.screens.exchange
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
@@ -20,13 +23,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +44,7 @@ import com.jagl.exchangeapp.ui.components.AnimatedAlert
 import com.jagl.exchangeapp.ui.components.ExchangeResult
 import com.jagl.exchangeapp.ui.components.SearchableCurrencyDropdown
 import com.jagl.exchangeapp.ui.components.SwapButton
+import hilt_aggregated_deps._dagger_hilt_android_internal_lifecycle_HiltWrapper_HiltViewModelFactory_ActivityCreatorEntryPoint
 import java.util.Locale
 
 @Composable
@@ -75,6 +80,9 @@ private fun ExchangeContent(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
+
+        BackHandler { onEvent(ExchangeUiEvents.ShowExitDialog) }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -159,6 +167,31 @@ private fun ExchangeContent(
                     onDismiss = {
                         onEvent(ExchangeUiEvents.DismissError)
                     }
+                )
+            }
+
+            if (uiState.value.showExitDialog) {
+                val activity = LocalContext.current as? Activity
+                AlertDialog(
+                    onDismissRequest = { onEvent(ExchangeUiEvents.DismissExitDialog) },
+                    title = { Text(stringResource(R.string.exit_confirmation)) },
+                    confirmButton = {
+                        FilledTonalButton(
+                            onClick = { activity?.finish() },
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Text(stringResource(R.string.exit))
+                        }
+                    },
+                    dismissButton = {
+                        FilledTonalButton(
+                            onClick = { onEvent(ExchangeUiEvents.DismissExitDialog) },
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Text(stringResource(R.string.cancel))
+                        }
+                    }
+
                 )
             }
         }

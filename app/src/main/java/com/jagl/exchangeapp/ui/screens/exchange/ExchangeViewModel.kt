@@ -104,6 +104,8 @@ class ExchangeViewModel @Inject constructor(
             is ExchangeUiEvents.SelectToCurrency -> updateToCurrency(event.toCurrency)
             ExchangeUiEvents.Idle -> return
             ExchangeUiEvents.DismissError -> _uiState.update { it.copy(errorMessage = null) }
+            ExchangeUiEvents.ShowExitDialog -> _uiState.update { it.copy(showExitDialog = true) }
+            ExchangeUiEvents.DismissExitDialog -> _uiState.update { it.copy(showExitDialog = false) }
         }
     }
 
