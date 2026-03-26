@@ -42,9 +42,23 @@ class TokenViewModel @Inject constructor(
             TokenUiEvent.DismissError -> dismissError()
             is TokenUiEvent.ShowError -> showError(event.message)
             is TokenUiEvent.UpdateToken -> updateToken(event.token)
+            is TokenUiEvent.OpenBrowser -> openBrowser()
+            is TokenUiEvent.ShowPreviousStep -> updateStep(-1)
+            is TokenUiEvent.ShowNextStep -> updateStep(1)
             else -> Unit
         }
     }
+
+    private fun updateStep(newStep: Int) {
+        _uiState.update { currentState ->
+            currentState.copy(step = currentState.step + newStep)
+        }
+    }
+
+    private fun openBrowser() = viewModelScope.launch {
+        _uiEvent.emit(TokenUiEvent.OpenBrowser)
+    }
+
 
     private fun dismissError() {
         _uiState.update { currentState ->
