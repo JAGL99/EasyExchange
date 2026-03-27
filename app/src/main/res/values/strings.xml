@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ExchangeApp</string>
+    <string name="app_name">Easy Exchange</string>
     <string name="currency_exchanges">Conversor de Monedas</string>
     <string name="from">De:</string>
     <string name="to">A:</string>
@@ -15,4 +15,11 @@
     <string name="search_currency">Buscar moneda</string>
     <string name="enter_code_or_name">Ingrese código o nombre</string>
     <string name="no_currency_match">No se encontraron coincidencias</string>
+    <string name="wellcome_title">¡Bienvenido a %1$s!</string>
+    <string name="wellcome_message">Esta es una iniciativa sin fines de lucro diseñada para ofrecerte conversiones de moneda precisas. Para mantener este servicio gratuito y evitar límites de uso compartidos, nuestra aplicación utiliza un modelo de <b>"Trae tu propia llave" (API Key)</b>.</string>
+    <string name="token_instructions">¿Cómo empezar?\n1.Crea una cuenta gratuita en exchangeratesapi.io.\n2.Copia tu "API Access Key" personal desde tu panel de control.\n3.Pégala en el campo de abajo.\n\n<i>Tu token se almacena únicamente en este dispositivo y se usa exclusivamente para tus consultas personales.</i></string>
+    <string name="procced">Continuar</string>
+    <string name="get_token">Obtener token</string>
+    <string name="no_empty_token">El token no puede estar vacío</string>
+    <string name="enter_your_token">Ingresa tu token</string>
 </resources>
