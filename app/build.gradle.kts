@@ -67,12 +67,12 @@ dependencies {
 
     // Tooling
     implementation(libs.androidx.ui.tooling.preview)
-    
+
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
@@ -105,7 +105,7 @@ dependencies {
     kspAndroidTest(libs.hilt.android.compiler)
     testRuntimeOnly(libs.junit.jupiter.engine)
 
-    androidTestImplementation (libs.androidx.rules)
+    androidTestImplementation(libs.androidx.rules)
     androidTestImplementation(libs.turbine)
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.core.ktx.test)
@@ -117,4 +117,18 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+task("createMissingGoogleServicesJson") {
+    doFirst {
+        val googleServicesFile = file("google-services.json")
+        if (!googleServicesFile.exists()) {
+            googleServicesFile.writeText("{}")
+        }
+    }
+}
+
+// Obliga a la tarea de Google a esperar a que verifiquemos si el archivo existe
+tasks.matching { it.name.contains("processDebugGoogleServices") }.configureEach {
+    dependsOn("createMissingGoogleServicesJson")
 }
