@@ -41,6 +41,7 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     junitPlatform {

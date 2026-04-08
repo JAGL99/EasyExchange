@@ -2,6 +2,7 @@ package com.jagl.exchangeapp.ui.screens.exchange
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jagl.core.tropicalization.ITropicalization
 import com.jagl.core.util.DateUtils
 import com.jagl.data.datasource.currency.ICurrencyDataSource
@@ -10,6 +11,7 @@ import com.jagl.domain.model.ApiState
 import com.jagl.domain.model.Currency
 import com.jagl.domain.model.ExchangeRate
 import com.jagl.domain.model.getEquivalent
+import com.jagl.exchangeapp.analytics.FirebaseAnalyticsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,9 +44,16 @@ class ExchangeViewModel @Inject constructor(
      * Carga la lista de monedas disponibles
      */
     private fun loadCurrencies() = viewModelScope.launch {
+        FirebaseAnalyticsHelper.logEvent(
+            FirebaseAnalyticsHelper.Event.DATA_LOAD,
+            mapOf(FirebaseAnalyticsHelper.Param.DATA_TYPE to "currencies")
+        )
         val result: ApiState<List<Currency>> = currencyDataSource.getAvailableCurrencies()
         when (result) {
-            is ApiState.Error -> println(result.message)
+            is ApiState.Error -> {
+                FirebaseCrashlytics.getInstance().recordException(Exception(result.message))
+            }
+
             is ApiState.Success -> {
                 val currencies = result.data
                 _uiState.update { currentState ->
@@ -97,14 +106,55 @@ class ExchangeViewModel @Inject constructor(
 
     fun handleEvent(event: ExchangeUiEvents) {
         when (event) {
-            ExchangeUiEvents.PerformConversion -> convertAmount()
-            ExchangeUiEvents.SwapCurrencies -> swapCurrencies()
+            ExchangeUiEvents.PerformConversion -> {
+                FirebaseAnalyticsHelper.logEvent(
+                    FirebaseAnalyticsHelper.Event.USER_INTERACTION,
+                    mapOf(FirebaseAnalyticsHelper.Param.INTERACTION_TYPE to "perform_conversion")
+                )
+                convertAmount()
+            }
+
+            ExchangeUiEvents.SwapCurrencies -> {
+                FirebaseAnalyticsHelper.logEvent(
+                    FirebaseAnalyticsHelper.Event.USER_INTERACTION,
+                    mapOf(FirebaseAnalyticsHelper.Param.INTERACTION_TYPE to "swap_currencies")
+                )
+                swapCurrencies()
+            }
+
             is ExchangeUiEvents.UpdateAmount -> updateAmount(event.amount)
-            is ExchangeUiEvents.SelectFromCurrency -> updateFromCurrency(event.fromCurrency)
-            is ExchangeUiEvents.SelectToCurrency -> updateToCurrency(event.toCurrency)
+            is ExchangeUiEvents.SelectFromCurrency -> {
+                FirebaseAnalyticsHelper.logEvent(
+                    FirebaseAnalyticsHelper.Event.CURRENCY_SELECTION,
+                    mapOf(
+                        FirebaseAnalyticsHelper.Param.DATA_TYPE to "from_currency",
+                        FirebaseAnalyticsHelper.Param.RESULT to event.fromCurrency.code
+                    )
+                )
+                updateFromCurrency(event.fromCurrency)
+            }
+
+            is ExchangeUiEvents.SelectToCurrency -> {
+                FirebaseAnalyticsHelper.logEvent(
+                    FirebaseAnalyticsHelper.Event.CURRENCY_SELECTION,
+                    mapOf(
+                        FirebaseAnalyticsHelper.Param.DATA_TYPE to "to_currency",
+                        FirebaseAnalyticsHelper.Param.RESULT to event.toCurrency.code
+                    )
+                )
+                updateToCurrency(event.toCurrency)
+            }
+
             ExchangeUiEvents.Idle -> return
             ExchangeUiEvents.DismissError -> _uiState.update { it.copy(errorMessage = null) }
-            ExchangeUiEvents.ShowExitDialog -> _uiState.update { it.copy(showExitDialog = true) }
+            ExchangeUiEvents.ShowExitDialog -> {
+                FirebaseAnalyticsHelper.logEvent(
+                    FirebaseAnalyticsHelper.Event.USER_INTERACTION,
+                    mapOf(FirebaseAnalyticsHelper.Param.INTERACTION_TYPE to "show_exit_dialog")
+                )
+                _uiState.update { it.copy(showExitDialog = true) }
+            }
+
             ExchangeUiEvents.DismissExitDialog -> _uiState.update { it.copy(showExitDialog = false) }
         }
     }
@@ -139,6 +189,13 @@ class ExchangeViewModel @Inject constructor(
             return
         }
 
+        FirebaseAnalyticsHelper.logEvent(
+            FirebaseAnalyticsHelper.Event.CURRENCY_CONVERSION,
+            mapOf(
+                FirebaseAnalyticsHelper.Param.DATA_TYPE to "conversion_attempt"
+            )
+        )
+
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
@@ -150,15 +207,27 @@ class ExchangeViewModel @Inject constructor(
                 )
                 when (state) {
                     is ApiState.Error -> {
+                        FirebaseAnalyticsHelper.logEvent(
+                            FirebaseAnalyticsHelper.Event.CONVERSION_RESULT,
+                            mapOf(
+                                FirebaseAnalyticsHelper.Param.ERROR_MESSAGE to state.message
+                            )
+                        )
                         _uiState.update { currentState ->
                             currentState.copy(
-                                errorMessage = state.message ?: "Error desconocido",
+                                errorMessage = state.message,
                                 isLoading = false
                             )
                         }
                     }
 
                     is ApiState.Success -> {
+                        FirebaseAnalyticsHelper.logEvent(
+                            FirebaseAnalyticsHelper.Event.CONVERSION_RESULT,
+                            mapOf(
+                                FirebaseAnalyticsHelper.Param.RESULT to "conversion_success"
+                            )
+                        )
                         val exchangeRate = state.data
                         val formatter = NumberFormat.getCurrencyInstance(locale).apply {
                             currency = CurrencyExchange.getInstance(toCurrency.code)
@@ -173,7 +242,7 @@ class ExchangeViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                FirebaseCrashlytics.getInstance().recordException(e)
                 _uiState.update { currentState ->
                     currentState.copy(
                         errorMessage = e.message ?: "Error desconocido",

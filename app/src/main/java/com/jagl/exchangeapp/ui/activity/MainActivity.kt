@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.jagl.core.network.NetworkStatus
+import com.jagl.exchangeapp.analytics.FirebaseAnalyticsHelper
 import com.jagl.exchangeapp.ui.AppNavigation
 import com.jagl.exchangeapp.ui.theme.ExchangeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +35,10 @@ class MainActivity() : ComponentActivity() {
                         "No hay conexión a internet",
                         Toast.LENGTH_LONG
                     ).show()
+                    FirebaseAnalyticsHelper.logEvent(
+                        FirebaseAnalyticsHelper.Event.ERROR_OCCURRED,
+                        mapOf(FirebaseAnalyticsHelper.Param.ERROR_MESSAGE to "No internet connection")
+                    )
                 }
             }
 
