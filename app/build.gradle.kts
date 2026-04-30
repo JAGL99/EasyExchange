@@ -11,6 +11,10 @@ plugins {
 }
 
 android {
+    val versionMajor = 0
+    val versionMinor = 1
+    val versionPatch = 0
+
     namespace = "com.jagl.exchangeapp"
     compileSdk = 35
 
@@ -18,8 +22,8 @@ android {
         applicationId = "com.jagl.exchangeapp"
         minSdk = 24
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.1"
+        versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
+        versionName = "$versionMajor.$versionMinor.$versionPatch"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -117,18 +121,4 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-}
-
-task("createMissingGoogleServicesJson") {
-    doFirst {
-        val googleServicesFile = file("google-services.json")
-        if (!googleServicesFile.exists()) {
-            googleServicesFile.writeText("{}")
-        }
-    }
-}
-
-// Obliga a la tarea de Google a esperar a que verifiquemos si el archivo existe
-tasks.matching { it.name.contains("processDebugGoogleServices") }.configureEach {
-    dependsOn("createMissingGoogleServicesJson")
 }
