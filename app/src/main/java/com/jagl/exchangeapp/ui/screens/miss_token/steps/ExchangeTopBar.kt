@@ -59,7 +59,7 @@ fun ExchangeTopBar(
 @Preview(showBackground = true)
 @Composable
 fun ExchangeTopBarPreview() {
-    val appIcon = ImageVector.vectorResource(id = R.drawable.sparks)
+    val appIcon = ImageVector.vectorResource(id = R.drawable.ic_launcher_foreground)
     val textResourceId = R.string.app_name
     ExchangeTopBar(appIcon, textResourceId)
 }
