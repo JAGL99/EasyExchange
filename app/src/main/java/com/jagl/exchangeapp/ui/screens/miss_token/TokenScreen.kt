@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jagl.exchangeapp.ui.components.AnimatedAlert
+import com.jagl.exchangeapp.ui.components.FullScreenLoader
 import com.jagl.exchangeapp.ui.screens.miss_token.steps.FirstStepContent
 import com.jagl.exchangeapp.ui.screens.miss_token.steps.LastStepContent
 import kotlinx.coroutines.flow.collectLatest
@@ -76,16 +77,6 @@ private fun TokenScreenContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        uiState.value.errorMessage?.let { error ->
-            AnimatedAlert(
-                message = error,
-                onDismiss = {
-                    onEvent(TokenUiEvent.DismissError)
-                }
-            )
-        }
-
         AnimatedContent(
             targetState = uiState.value.step,
             transitionSpec = {
@@ -107,6 +98,8 @@ private fun TokenScreenContent(
             }
         }
     }
+
+    FullScreenLoader(isVisible = uiState.value.isLoading)
 }
 
 @Preview(showBackground = true)

@@ -1,4 +1,4 @@
-package com.jagl.exchangeapp.ui.screens.miss_token.steps
+package com.jagl.exchangeapp.ui.components
 
 import android.graphics.Color
 import androidx.compose.foundation.layout.Box

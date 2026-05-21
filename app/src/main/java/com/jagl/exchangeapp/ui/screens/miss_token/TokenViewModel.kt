@@ -7,6 +7,7 @@ import com.jagl.data.datasource.currency.ICurrencyDataSource
 import com.jagl.domain.model.ApiState
 import com.jagl.exchangeapp.analytics.FirebaseAnalyticsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -73,8 +74,13 @@ class TokenViewModel @Inject constructor(
                 )
                 updateStep(1)
             }
-
             else -> Unit
+        }
+    }
+
+    private fun updateLoading(isLoading: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(isLoading = isLoading)
         }
     }
 
@@ -106,6 +112,7 @@ class TokenViewModel @Inject constructor(
     }
 
     private fun evaluateToken(state: TokenUiState) = viewModelScope.launch {
+        updateLoading(true)
         prefManager.saveString("TOKEN", state.token)
         val result = currencyDataSource.getAvailableCurrencies()
         when (result) {
@@ -115,7 +122,7 @@ class TokenViewModel @Inject constructor(
             }
 
             is ApiState.Success -> _uiEvent.emit(TokenUiEvent.TokenIsValid)
-        }
+        }.also { updateLoading(false) }
     }
 
 }

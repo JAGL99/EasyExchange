@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.jagl.exchangeapp.R
 import com.jagl.exchangeapp.ui.components.EasyExchangeButton
 import com.jagl.exchangeapp.ui.components.SpacerH16
+import com.jagl.exchangeapp.ui.components.SpacerH32
 import com.jagl.exchangeapp.ui.components.SpacerH8
 import com.jagl.exchangeapp.ui.screens.miss_token.TokenUiEvent
 
@@ -49,7 +52,6 @@ fun FirstStepContent(onEvent: (TokenUiEvent) -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -81,15 +83,16 @@ fun FirstStepContent(onEvent: (TokenUiEvent) -> Unit) {
                 fontSize = 18.sp
             )
 
-            SpacerH16()
+            SpacerH32()
 
             EasyExchangeButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(72.dp),
+                modifier = Modifier.fillMaxWidth(),
                 textResourceId = R.string.procced,
+                icon = Icons.AutoMirrored.Filled.ArrowForward,
                 onClick = { onEvent(TokenUiEvent.ShowNextStep) }
             )
+
+            SpacerH16()
         }
     }
 }

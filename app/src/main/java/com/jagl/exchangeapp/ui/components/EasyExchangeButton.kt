@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +28,7 @@ fun EasyExchangeButton(
     textResourceId: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
     enabled: Boolean = true
 ) {
     val brush =
@@ -54,12 +56,16 @@ fun EasyExchangeButton(
                 style = MaterialTheme.typography.bodyLarge,
                 fontSize = 18.sp
             )
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.padding(start = 8.dp)
-            )
+
+            icon?.let {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+
         }
 
     }
