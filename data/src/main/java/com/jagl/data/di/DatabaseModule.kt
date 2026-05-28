@@ -14,14 +14,14 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
- * Módulo de Hilt que proporciona las dependencias de la base de datos
+ * Hilt module that provides database dependencies
  */
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
     /**
-     * Proporciona una instancia de la base de datos Room
+     * Provides a Room database instance
      */
     @Provides
     @Singleton
@@ -34,7 +34,7 @@ object DatabaseModule {
     }
 
     /**
-     * Proporciona el DAO para acceder a las tasas de cambio
+     * Provides the DAO to access exchange rates
      */
     @Provides
     @Singleton

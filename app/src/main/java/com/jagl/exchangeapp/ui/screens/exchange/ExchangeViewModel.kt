@@ -24,7 +24,7 @@ import javax.inject.Inject
 import java.util.Currency as CurrencyExchange
 
 /**
- * ViewModel para la pantalla de conversión de monedas
+ * ViewModel for the currency conversion screen
  */
 @HiltViewModel
 class ExchangeViewModel @Inject constructor(
@@ -41,7 +41,7 @@ class ExchangeViewModel @Inject constructor(
     }
 
     /**
-     * Carga la lista de monedas disponibles
+     * Loads the list of available currencies
      */
     private fun loadCurrencies() = viewModelScope.launch {
         FirebaseAnalyticsHelper.logEvent(
@@ -52,6 +52,9 @@ class ExchangeViewModel @Inject constructor(
         when (result) {
             is ApiState.Error -> {
                 FirebaseCrashlytics.getInstance().recordException(Exception(result.message))
+                _uiState.update { currentState ->
+                    currentState.copy(errorMessage = result.message)
+                }
             }
 
             is ApiState.Success -> {
@@ -65,7 +68,7 @@ class ExchangeViewModel @Inject constructor(
     }
 
     /**
-     * Actualiza la moneda de origen
+     * Updates the source currency
      */
     fun updateFromCurrency(currency: Currency) {
         _uiState.update { currentState ->
@@ -74,7 +77,7 @@ class ExchangeViewModel @Inject constructor(
     }
 
     /**
-     * Actualiza la moneda de destino
+     * Updates the target currency
      */
     fun updateToCurrency(currency: Currency) {
         _uiState.update { currentState ->
@@ -83,7 +86,7 @@ class ExchangeViewModel @Inject constructor(
     }
 
     /**
-     * Actualiza el monto a convertir
+     * Updates the amount to be converted
      */
     fun updateAmount(amount: String) {
         _uiState.update { currentState ->
@@ -92,7 +95,7 @@ class ExchangeViewModel @Inject constructor(
     }
 
     /**
-     * Intercambia las monedas de origen y destino
+     * Swaps the source and target currencies
      */
     fun swapCurrencies() {
         _uiState.update { currentState ->
@@ -180,12 +183,12 @@ class ExchangeViewModel @Inject constructor(
         }
 
         if (evaluateCurrency(fromCurrency, availableCurrencies)) {
-            _uiState.update { it.copy(errorMessage = "Seleccione una divisa inicial valida") }
+            _uiState.update { it.copy(errorMessage = "Select a valid source currency") }
             return
         }
 
         if (evaluateCurrency(toCurrency, availableCurrencies)) {
-            _uiState.update { it.copy(errorMessage = "Seleccione una divisa destino valida") }
+            _uiState.update { it.copy(errorMessage = "Select a valid target currency") }
             return
         }
 
@@ -245,7 +248,7 @@ class ExchangeViewModel @Inject constructor(
                 FirebaseCrashlytics.getInstance().recordException(e)
                 _uiState.update { currentState ->
                     currentState.copy(
-                        errorMessage = e.message ?: "Error desconocido",
+                        errorMessage = e.message ?: "Unknown error",
                         isLoading = false
                     )
                 }

@@ -32,7 +32,7 @@ class MainActivity() : ComponentActivity() {
                 if (internetConnectionState.value == NetworkStatus.Unavailable) {
                     Toast.makeText(
                         this@MainActivity,
-                        "No hay conexión a internet",
+                        "No internet connection",
                         Toast.LENGTH_LONG
                     ).show()
                     FirebaseAnalyticsHelper.logEvent(

@@ -6,7 +6,7 @@ import java.util.Locale
 import java.util.TimeZone
 
 /**
- * Utilidades para manejar fechas
+ * Utilities for handling dates
  */
 object DateUtils {
 
@@ -14,7 +14,7 @@ object DateUtils {
     const val DEFAULT_TIME_ZONE = "UTC"
 
     /**
-     * Obtiene la fecha actual en el formato especificado (por defecto YYYY-MM-DD)
+     * Gets the current date in the specified format (defaults to YYYY-MM-DD)
      */
     fun getDateWithFormat(
         locale: Locale,
@@ -27,7 +27,7 @@ object DateUtils {
     }
 
     /**
-     * Formatea una fecha en formato especificado (por defecto YYYY-MM-DD)
+     * Formats a date in the specified format (defaults to YYYY-MM-DD)
      */
     fun formatDate(
         date: Date,
@@ -40,11 +40,11 @@ object DateUtils {
     }
 
     /**
-     * Parsea una fecha en el formato especificado (por defecto YYYY-MM-DD)
-     * @param dateString Fecha a parsear.
-     * @param pattern Patrón.
+     * Parses a date in the specified format (defaults to YYYY-MM-DD)
+     * @param dateString Date to parse.
+     * @param pattern Pattern.
      * @return A {@code Date} parsed from the string.
-     * @throws Exception si el formato es inválido
+     * @throws Exception if the format is invalid
      *
      */
     fun parseToDate(

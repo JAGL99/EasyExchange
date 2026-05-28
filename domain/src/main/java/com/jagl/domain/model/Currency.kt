@@ -1,7 +1,7 @@
 package com.jagl.domain.model
 
 /**
- * Modelo de datos que representa una moneda
+ * Data model representing a currency
  */
 data class Currency(
     val code: String,

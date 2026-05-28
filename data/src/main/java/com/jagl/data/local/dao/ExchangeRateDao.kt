@@ -8,27 +8,27 @@ import androidx.room.Query
 import com.jagl.data.local.entity.ExchangeRateEntity
 
 /**
- * DAO para acceder a las tasas de cambio en la base de datos
+ * DAO to access exchange rates in the database
  */
 @Dao
 interface ExchangeRateDao {
 
     /**
-     * Inserta una tasa de cambio en la base de datos
-     * Si ya existe, la reemplaza
+     * Inserts an exchange rate into the database.
+     * If it already exists, it's replaced.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertExchangeRate(exchangeRate: ExchangeRateEntity)
 
     /**
-     * Inserta una lista de tasas de cambio en la base de datos
-     * Si ya existen, las reemplaza
+     * Inserts a list of exchange rates into the database.
+     * If they already exist, they are replaced.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertExchangeRates(exchangeRates: List<ExchangeRateEntity>)
 
     /**
-     * Obtiene una tasa de cambio específica para una fecha
+     * Gets a specific exchange rate for a date
      */
     @Query("SELECT * FROM exchange_rates WHERE fromCurrency = :fromCurrency AND toCurrency = :toCurrency AND date = :date ORDER BY date ASC , timestamp ASC")
     suspend fun getExchangeRateForDate(

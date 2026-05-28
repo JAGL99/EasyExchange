@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.jagl.domain.model.Currency
 
 /**
- * Entidad para almacenar las tasas de cambio en la base de datos local
+ * Entity for storing currencies in the local database
  */
 @Entity(tableName = "currencies")
 data class CurrencyEntity(
@@ -14,7 +14,7 @@ data class CurrencyEntity(
     val name: String
 ) {
     /**
-     * Convierte la entidad a un modelo de dominio
+     * Converts the entity to a domain model
      */
     fun toCurrency(): Currency {
         return Currency(
@@ -25,7 +25,7 @@ data class CurrencyEntity(
 
     companion object {
         /**
-         * Crea una entidad a partir de un modelo de dominio
+         * Creates an entity from a domain model
          */
         fun fromCurrency(
             currency: Currency
