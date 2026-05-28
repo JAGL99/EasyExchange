@@ -1,15 +1,13 @@
 package com.jagl.exchangeapp.ui.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jagl.core.extensions.EMPTY
 import com.jagl.domain.model.ExchangeRate
 import com.jagl.domain.model.getEquivalent
@@ -31,27 +30,21 @@ import java.util.Locale
 fun ExchangeResult(
     convertedAmount: String,
     exchangeRate: String,
-    isLoading: Boolean,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
         ElevatedCard(
             modifier = Modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.large
+            shape = MaterialTheme.shapes.large,
+            colors = CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.onPrimary,
+                contentColor = MaterialTheme.colorScheme.primary
+            )
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(48.dp),
-                        strokeWidth = 4.dp
-                    )
-                    return@Column
-                }
-
                 AnimatedContent(
                     targetState = convertedAmount,
                     label = "result_animation"
@@ -66,10 +59,6 @@ fun ExchangeResult(
                         Text(
                             text = if (targetAmount.isNotEmpty()) stringResource(R.string.result) else String.EMPTY,
                             style = MaterialTheme.typography.headlineSmall,
-                            color = animateColorAsState(
-                                if (targetAmount.isNotEmpty()) MaterialTheme.colorScheme.secondary
-                                else MaterialTheme.colorScheme.surface
-                            ).value
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -81,17 +70,36 @@ fun ExchangeResult(
                                 fontWeight = FontWeight.Bold
                             )
 
-                            Spacer(modifier = Modifier.height(8.dp))
+                            SpacerH8()
 
                             // Mostrar la tasa de cambio
-                            exchangeRate?.let { rate ->
-                                Text(
-                                    text = rate,
-                                    style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(vertical = 4.dp)
-                                )
-                            }
+                            val fromData = exchangeRate.substringBefore("=")
+                            val toData = exchangeRate.substringAfter("=")
+
+                            Text(
+                                text = fromData,
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 30.sp
+                            )
+
+                            Text(
+                                text = "=",
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 20.sp
+                            )
+
+                            Text(
+                                text = toData,
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 30.sp
+                            )
+
                         }
                     }
                 }
@@ -107,8 +115,7 @@ private fun Preview() {
     val locale = Locale.US
     ExchangeResult(
         convertedAmount = "1",
-        exchangeRate = exchange.getEquivalent(locale),
-        isLoading = false
+        exchangeRate = exchange.getEquivalent(locale)
     )
 }
 

@@ -27,13 +27,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jagl.domain.model.Currency
 import com.jagl.domain.model.ExchangeRate
@@ -41,10 +42,11 @@ import com.jagl.domain.model.getEquivalent
 import com.jagl.exchangeapp.R
 import com.jagl.exchangeapp.ui.components.AmountInput
 import com.jagl.exchangeapp.ui.components.AnimatedAlert
+import com.jagl.exchangeapp.ui.components.EasyExchangeButton
 import com.jagl.exchangeapp.ui.components.ExchangeResult
+import com.jagl.exchangeapp.ui.components.FullScreenLoader
 import com.jagl.exchangeapp.ui.components.SearchableCurrencyDropdown
 import com.jagl.exchangeapp.ui.components.SwapButton
-import hilt_aggregated_deps._dagger_hilt_android_internal_lifecycle_HiltWrapper_HiltViewModelFactory_ActivityCreatorEntryPoint
 import java.util.Locale
 
 @Composable
@@ -59,6 +61,8 @@ fun ExchangeScreen(
         snackbarHostState = snackbarHostState,
         onEvent = viewModel::handleEvent
     )
+
+    FullScreenLoader(isVisible = uiState.value.isLoading)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,8 +77,8 @@ private fun ExchangeContent(
             TopAppBar(
                 title = { Text(stringResource(R.string.currency_exchanges)) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         },
@@ -101,10 +105,11 @@ private fun ExchangeContent(
                     onSwap = { onEvent(ExchangeUiEvents.SwapCurrencies) }
                 )
 
-                // Moneda de origen
                 Text(
+                    textAlign = TextAlign.Start,
                     text = stringResource(R.string.from),
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontSize = 18.sp
                 )
 
                 SearchableCurrencyDropdown(
@@ -120,10 +125,11 @@ private fun ExchangeContent(
                     onValueChange = { onEvent(ExchangeUiEvents.UpdateAmount(it)) }
                 )
 
-                // Moneda de destino
                 Text(
+                    textAlign = TextAlign.Start,
                     text = stringResource(R.string.to),
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontSize = 18.sp
                 )
 
                 SearchableCurrencyDropdown(
@@ -135,28 +141,24 @@ private fun ExchangeContent(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 // Botón para realizar la consulta
-                FilledTonalButton(
+                EasyExchangeButton(
+                    textResourceId = R.string.calculate_exchange,
                     onClick = { onEvent(ExchangeUiEvents.PerformConversion) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(54.dp),
-                    shape = MaterialTheme.shapes.large
-                ) {
-                    Text(
-                        text = stringResource(R.string.calculate_exchange),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(4.dp)
-                    )
-                }
+                        .height(54.dp)
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+
+
                 uiState.value.exchangeRate?.let { exchangeRate ->
-                    ExchangeResult(
-                        convertedAmount = uiState.value.convertedAmount,
-                        exchangeRate = exchangeRate,
-                        isLoading = uiState.value.isLoading
-                    )
+                    if (!uiState.value.isLoading)
+                        ExchangeResult(
+                            convertedAmount = uiState.value.convertedAmount,
+                            exchangeRate = exchangeRate
+                        )
                 }
 
             }
