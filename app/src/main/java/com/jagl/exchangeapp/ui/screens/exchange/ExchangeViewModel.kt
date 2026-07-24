@@ -178,17 +178,22 @@ class ExchangeViewModel @Inject constructor(
         )
 
         if (amount <= 0) {
-            _uiState.update { it.copy(convertedAmount = "") }
+            _uiState.update { it.copy(exchangeRate = null, errorMessage = "Amount must be more than zero") }
             return
         }
 
         if (evaluateCurrency(fromCurrency, availableCurrencies)) {
-            _uiState.update { it.copy(errorMessage = "Select a valid source currency") }
+            _uiState.update { it.copy(errorMessage = "Select a valid source currency",  exchangeRate = null) }
             return
         }
 
         if (evaluateCurrency(toCurrency, availableCurrencies)) {
-            _uiState.update { it.copy(errorMessage = "Select a valid target currency") }
+            _uiState.update { it.copy(errorMessage = "Select a valid target currency", exchangeRate = null) }
+            return
+        }
+
+        if (fromCurrency == toCurrency) {
+            _uiState.update { it.copy(errorMessage = "Source and target currencies must be different", exchangeRate = null) }
             return
         }
 
