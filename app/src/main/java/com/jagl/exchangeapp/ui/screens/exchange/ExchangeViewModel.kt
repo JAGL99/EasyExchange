@@ -114,6 +114,7 @@ class ExchangeViewModel @Inject constructor(
                     FirebaseAnalyticsHelper.Event.USER_INTERACTION,
                     mapOf(FirebaseAnalyticsHelper.Param.INTERACTION_TYPE to "perform_conversion")
                 )
+                clearCurrentRate()
                 convertAmount()
             }
 
@@ -163,6 +164,13 @@ class ExchangeViewModel @Inject constructor(
     }
 
     /**
+     * Clear current exchange rate
+     */
+    private fun clearCurrentRate() {
+        _uiState.update { it.copy(exchangeRate = null) }
+    }
+
+    /**
      * Converts the amount from the source currency to the target currency
      */
     private fun convertAmount() {
@@ -178,22 +186,22 @@ class ExchangeViewModel @Inject constructor(
         )
 
         if (amount <= 0) {
-            _uiState.update { it.copy(exchangeRate = null, errorMessage = "Amount must be more than zero") }
+            _uiState.update { it.copy(errorMessage = "Amount must be more than zero") }
             return
         }
 
         if (evaluateCurrency(fromCurrency, availableCurrencies)) {
-            _uiState.update { it.copy(errorMessage = "Select a valid source currency",  exchangeRate = null) }
+            _uiState.update { it.copy(errorMessage = "Select a valid source currency") }
             return
         }
 
         if (evaluateCurrency(toCurrency, availableCurrencies)) {
-            _uiState.update { it.copy(errorMessage = "Select a valid target currency", exchangeRate = null) }
+            _uiState.update { it.copy(errorMessage = "Select a valid target currency") }
             return
         }
 
         if (fromCurrency == toCurrency) {
-            _uiState.update { it.copy(errorMessage = "Source and target currencies must be different", exchangeRate = null) }
+            _uiState.update { it.copy(errorMessage = "Source and target currencies must be different") }
             return
         }
 
