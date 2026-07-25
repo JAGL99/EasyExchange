@@ -33,6 +33,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = true
             }
