@@ -6,7 +6,7 @@
 .DS_Store
 /build
 /captures
-/console-config
+/configuration
 .externalNativeBuild
 .cxx
 app/release
