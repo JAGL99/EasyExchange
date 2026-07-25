@@ -1,4 +1,8 @@
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
+
 plugins {
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
@@ -6,8 +10,6 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.safeargs)
     alias(libs.plugins.jupiter)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -31,6 +33,9 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = true
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
