@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.jagl.core.util.UiUtils
 import com.jagl.domain.model.Currency
 import com.jagl.exchangeapp.R
+import com.jagl.exchangeapp.ui.theme.ExchangeAppTheme
 
 @Composable
 fun SearchableCurrencyDropdown(
@@ -68,6 +69,8 @@ fun SearchableCurrencyDropdown(
             .padding(bottom = 4.dp)
             .then(modifier),
         colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedContainerColor = MaterialTheme.colorScheme.background,
             errorIndicatorColor = MaterialTheme.colorScheme.error,
             errorLabelColor = MaterialTheme.colorScheme.error
         )
@@ -101,44 +104,44 @@ fun SearchableCurrencyDropdown(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSearchableCurrencyDropdown() {
-    val avableCurrencies = listOf(
-        Currency("USD", "Dólar estadounidense"),
-        Currency("EUR", "Euro"),
-        Currency("JPY", "Yen japonés"),
-        Currency("GBP", "Libra esterlina"),
-        Currency("AUD", "Dólar australiano"),
-        Currency("CAD", "Dólar canadiense"),
-        Currency("CHF", "Franco suizo"),
-        Currency("CNY", "Yuan chino"),
-        Currency("SEK", "Corona sueca"),
-        Currency("NZD", "Dólar neozelandés")
-    )
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        Text(
-            text = stringResource(R.string.from),
-            style = MaterialTheme.typography.titleMedium
+    ExchangeAppTheme {
+        val avableCurrencies = listOf(
+            Currency("USD", "Dólar estadounidense"),
+            Currency("EUR", "Euro"),
+            Currency("JPY", "Yen japonés"),
+            Currency("GBP", "Libra esterlina"),
+            Currency("AUD", "Dólar australiano"),
+            Currency("CAD", "Dólar canadiense"),
+            Currency("CHF", "Franco suizo"),
+            Currency("CNY", "Yuan chino"),
+            Currency("SEK", "Corona sueca"),
+            Currency("NZD", "Dólar neozelandés")
         )
-        SearchableCurrencyDropdown(
-            avableCurrencies = avableCurrencies,
-            currencySelected = avableCurrencies.firstOrNull(),
-            onCurrencySelected = {}
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.from),
+                style = MaterialTheme.typography.titleMedium
+            )
+            SearchableCurrencyDropdown(
+                avableCurrencies = avableCurrencies,
+                currencySelected = avableCurrencies.firstOrNull(),
+                onCurrencySelected = {}
+            )
 
-        Text(
-            text = stringResource(R.string.to),
-            style = MaterialTheme.typography.titleMedium
-        )
-        SearchableCurrencyDropdown(
-            avableCurrencies = avableCurrencies,
-            onCurrencySelected = {}
-        )
+            Text(
+                text = stringResource(R.string.to),
+                style = MaterialTheme.typography.titleMedium
+            )
+            SearchableCurrencyDropdown(
+                avableCurrencies = avableCurrencies,
+                onCurrencySelected = {}
+            )
+        }
     }
-
-
 }
