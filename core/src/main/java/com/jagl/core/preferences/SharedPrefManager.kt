@@ -21,23 +21,6 @@ class SharedPrefManager(context: Context) {
     }
 
 
-    fun saveInt(key: String?, value: Int) {
-        editor.putInt(key, value)
-        editor.apply()
-    }
-
-
-    fun getInt(key: String?, defaultValue: Int): Int {
-        return sharedPreferences.getInt(key, defaultValue)
-    }
-
-
-    fun remove(key: String?) {
-        editor.remove(key)
-        editor.apply()
-    }
-
-
     fun clear() {
         editor.clear()
         editor.apply()
@@ -45,14 +28,5 @@ class SharedPrefManager(context: Context) {
 
     companion object {
         private const val PREF_NAME = "MyAppPrefs"
-        private var instance: SharedPrefManager? = null
-
-        @Synchronized
-        fun getInstance(context: Context): SharedPrefManager {
-            if (instance == null) {
-                instance = SharedPrefManager(context)
-            }
-            return instance!!
-        }
     }
 }
