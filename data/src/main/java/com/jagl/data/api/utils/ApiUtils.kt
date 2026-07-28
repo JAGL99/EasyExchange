@@ -10,16 +10,16 @@ import java.net.UnknownHostException
 
 object ApiUtils {
 
-    const val GENERIC_ERROR = "Ups algo fallo. Inténtalo de nuevo más tarde."
-    const val REQUEST_ERROR = "Hubo un problema con la solicitud. Verifica tu conexión o datos."
-    const val CONNECTION_ERROR = "No se pudo conectar al servidor. Verifica tu conexión a Internet."
+    const val GENERIC_ERROR = "Oops, something went wrong. Please try again later."
+    const val REQUEST_ERROR = "There was a problem with the request. Please check your connection or data."
+    const val CONNECTION_ERROR = "Could not connect to the server. Please check your internet connection."
     const val NO_INTERNET_ERROR =
-        "No se tiene conexión a internet, conectate a una red y vuelvelo a intentar"
+        "No internet connection, please connect to a network and try again"
     const val INVALID_TOKEN_ERROR =
-        "No se ha proporcionado una clave de acceso válida, favor de intentar con otra clave"
+        "A valid access key has not been provided, please try another key"
 
-    const val NO_RATE_ERROR = "No se encontro un tipo de cambio valido para estas divisas, favor de intentar otra opción"
-    const val TIME_OUT_ERROR = "La conexión ha expirado. Inténtalo de nuevo más tarde."
+    const val NO_RATE_ERROR = "No valid exchange rate was found for these currencies, please try another option"
+    const val TIME_OUT_ERROR = "The connection has expired. Please try again later."
 
     private fun getCurrencyLayerCodeMessage(code: Int): String {
         return when (code) {

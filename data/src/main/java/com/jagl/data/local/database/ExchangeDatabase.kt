@@ -8,7 +8,7 @@ import com.jagl.data.local.entity.CurrencyEntity
 import com.jagl.data.local.entity.ExchangeRateEntity
 
 /**
- * Base de datos de Room para la aplicación
+ * Room database for the application
  */
 @Database(
     entities = [
@@ -21,7 +21,7 @@ import com.jagl.data.local.entity.ExchangeRateEntity
 abstract class ExchangeDatabase : RoomDatabase(), IExchangeDatabase {
 
     /**
-     * DAO para acceder a las tasas de cambio
+     * DAO to access exchange rates
      */
     abstract override fun exchangeRateDao(): ExchangeRateDao
 

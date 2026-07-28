@@ -4,7 +4,7 @@
     <string name="from">De:</string>
     <string name="to">A:</string>
     <string name="calculate_exchange">Calcular Conversión</string>
-    <string name="result">Resultado</string>
+    <string name="result">Tipo de cambio actual</string>>
     <string name="enter_amount_to_exchange">Ingrese un monto para convertir</string>
     <string name="swap_button">swap_button</string>
     <string name="exit_confirmation">Deseas salir de la app?</string>
@@ -15,11 +15,17 @@
     <string name="search_currency">Buscar moneda</string>
     <string name="enter_code_or_name">Ingrese código o nombre</string>
     <string name="no_currency_match">No se encontraron coincidencias</string>
-    <string name="wellcome_title">¡Bienvenido a %1$s!</string>
-    <string name="wellcome_message">Esta es una iniciativa sin fines de lucro diseñada para ofrecerte conversiones de moneda precisas. Para mantener este servicio gratuito y evitar límites de uso compartidos, nuestra aplicación utiliza un modelo de <b>"Trae tu propia llave" (API Key)</b>.</string>
-    <string name="token_instructions">¿Cómo empezar?\n1.Crea una cuenta gratuita en exchangeratesapi.io.\n2.Copia tu "API Access Key" personal desde tu panel de control.\n3.Pégala en el campo de abajo.\n\n<i>Tu token se almacena únicamente en este dispositivo y se usa exclusivamente para tus consultas personales.</i></string>
+    <string name="wellcome_title">¡Hola!\nBienvenido.</string>
+    <string name="wellcome_message">Esta app utiliza exchangeratesapi.io para obtener tasas de cambio actualizadas de más de 200 monedas.\n\nPara empezar a manejar tus divisas solo necesitas tu token de acceso.\n\nEn la siguiente pantalla te explicamos dónde conseguir tu token y cómo activarlo fácilmente.</string>
+    <string name="wellcome_token_link">Obtener mi token de acceso</string>
+    <string name="token_header_instructions">Cómo obtener tu Access Key</string>
+    <string name="token_message_instruction_1">1. Crea una cuenta gratuita en</string>
+    <string name="token_message_instruction_2">2. Verifica tu correo electrónico.</string>
+    <string name="token_message_instruction_3">3. Copia tu Access Key desde el panel de control.</string>
+    <string name="token_message_instruction_4">4.Pega la clave en la configuración de la app.</string>
+    <string name="token_message_link">exchangeratesapi.io</string>
+    <string name="token_footer_instructions">Tu token se almacena únicamente en este dispositivo y se usa exclusivamente para tus consultas personales.</string>
     <string name="procced">Continuar</string>
-    <string name="get_token">Obtener token</string>
     <string name="no_empty_token">El token no puede estar vacío</string>
     <string name="enter_your_token">Ingresa tu token</string>
 </resources>

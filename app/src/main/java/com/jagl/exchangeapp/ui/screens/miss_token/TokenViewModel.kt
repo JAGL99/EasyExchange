@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.jagl.core.preferences.SharedPrefManager
 import com.jagl.data.datasource.currency.ICurrencyDataSource
 import com.jagl.domain.model.ApiState
+import com.jagl.exchangeapp.analytics.FirebaseAnalyticsHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,14 +40,47 @@ class TokenViewModel @Inject constructor(
 
     fun handleEvent(event: TokenUiEvent) {
         when (event) {
-            TokenUiEvent.CheckToken -> evaluateToken(uiState.value)
+            TokenUiEvent.CheckToken -> {
+                FirebaseAnalyticsHelper.logEvent(
+                    FirebaseAnalyticsHelper.Event.USER_INTERACTION,
+                    mapOf(FirebaseAnalyticsHelper.Param.INTERACTION_TYPE to "check_token")
+                )
+                evaluateToken(uiState.value)
+            }
+
             TokenUiEvent.DismissError -> dismissError()
             is TokenUiEvent.ShowError -> showError(event.message)
             is TokenUiEvent.UpdateToken -> updateToken(event.token)
-            is TokenUiEvent.OpenBrowser -> openBrowser()
-            is TokenUiEvent.ShowPreviousStep -> updateStep(-1)
-            is TokenUiEvent.ShowNextStep -> updateStep(1)
+            is TokenUiEvent.OpenBrowser -> {
+                FirebaseAnalyticsHelper.logEvent(
+                    FirebaseAnalyticsHelper.Event.NAVIGATION,
+                    mapOf(FirebaseAnalyticsHelper.Param.NAVIGATION_DESTINATION to "browser")
+                )
+                openBrowser()
+            }
+
+            is TokenUiEvent.ShowPreviousStep -> {
+                FirebaseAnalyticsHelper.logEvent(
+                    FirebaseAnalyticsHelper.Event.NAVIGATION,
+                    mapOf(FirebaseAnalyticsHelper.Param.NAVIGATION_DESTINATION to "previous_step")
+                )
+                updateStep(-1)
+            }
+
+            is TokenUiEvent.ShowNextStep -> {
+                FirebaseAnalyticsHelper.logEvent(
+                    FirebaseAnalyticsHelper.Event.NAVIGATION,
+                    mapOf(FirebaseAnalyticsHelper.Param.NAVIGATION_DESTINATION to "next_step")
+                )
+                updateStep(1)
+            }
             else -> Unit
+        }
+    }
+
+    private fun updateLoading(isLoading: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(isLoading = isLoading)
         }
     }
 
@@ -77,6 +112,7 @@ class TokenViewModel @Inject constructor(
     }
 
     private fun evaluateToken(state: TokenUiState) = viewModelScope.launch {
+        updateLoading(true)
         prefManager.saveString("TOKEN", state.token)
         val result = currencyDataSource.getAvailableCurrencies()
         when (result) {
@@ -86,7 +122,7 @@ class TokenViewModel @Inject constructor(
             }
 
             is ApiState.Success -> _uiEvent.emit(TokenUiEvent.TokenIsValid)
-        }
+        }.also { updateLoading(false) }
     }
 
 }

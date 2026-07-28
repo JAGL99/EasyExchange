@@ -11,7 +11,7 @@ import com.jagl.domain.model.Currency
 import javax.inject.Inject
 
 /**
- * Repositorio que maneja las operaciones relacionadas con las tasas de cambio
+ * Data source that handles operations related to currencies.
  */
 class CurrencyLayerDataSource @Inject constructor(
     private val networkManager: INetworkManager,
@@ -19,6 +19,12 @@ class CurrencyLayerDataSource @Inject constructor(
     private val currencyDao: CurrencyDao,
 ) : ICurrencyDataSource {
 
+    /**
+     * Gets the list of available currencies.
+     * It first checks the local database. If it's empty, it fetches the data from the API
+     * and stores it in the local database.
+     * @return An [ApiState] with a list of [Currency] objects.
+     */
     override suspend fun getAvailableCurrencies(): ApiState<List<Currency>> = safeApiStateCall {
         val localData = currencyDao.getCurrencies().map { it.toCurrency() }
 

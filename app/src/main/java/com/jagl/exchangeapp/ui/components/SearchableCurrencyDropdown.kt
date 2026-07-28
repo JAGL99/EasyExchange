@@ -1,6 +1,5 @@
 package com.jagl.exchangeapp.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,9 +26,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jagl.core.util.UiUtils
 import com.jagl.domain.model.Currency
 import com.jagl.exchangeapp.R
-import com.jagl.core.util.UiUtils
 
 @Composable
 fun SearchableCurrencyDropdown(
@@ -69,8 +68,8 @@ fun SearchableCurrencyDropdown(
             .padding(bottom = 4.dp)
             .then(modifier),
         colors = TextFieldDefaults.colors(
-            errorIndicatorColor = Color.Red,
-            errorLabelColor = Color.Red
+            errorIndicatorColor = MaterialTheme.colorScheme.error,
+            errorLabelColor = MaterialTheme.colorScheme.error
         )
     )
 

@@ -8,17 +8,17 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 /**
- * Interfaz para la API de tasas de cambio
- * Utilizaremos la API de apilayer.net
- * La API key ya está incluida en la URL base
+ * Interface for the exchange rates API.
+ * We will use the apilayer.net API.
+ * The API key is already included in the base URL.
  */
 interface CurrencyLayerApi {
 
     /**
-     * Obtiene las tasas de cambio para una moneda base
-     * @param source Código de la moneda base (ej. USD, EUR)
-     * @param currencies Lista de códigos de monedas separados por comas para obtener sus tasas
-     * @return Respuesta con las tasas de cambio
+     * Gets the exchange rates for a base currency
+     * @param source Base currency code (e.g., USD, EUR)
+     * @param currencies Comma-separated list of currency codes to get their rates
+     * @return Response with the exchange rates
      */
     @GET("live")
     suspend fun getLatestRates(

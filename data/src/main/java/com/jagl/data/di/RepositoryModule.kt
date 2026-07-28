@@ -15,16 +15,16 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
- * Módulo de Hilt que proporciona el repositorio para la aplicación
+ * Hilt module that provides the repository for the application
  */
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
 
-    // La base de datos ahora se proporciona desde DatabaseModule
+    // The database is now provided from DatabaseModule
 
     /**
-     * Proporciona una instancia del repositorio de tasas de cambio
+     * Provides an instance of the exchange rate repository
      */
     @Provides
     @Singleton

@@ -14,7 +14,7 @@ import com.jagl.domain.model.ExchangeRate
 import javax.inject.Inject
 
 /**
- * Repositorio que maneja las operaciones relacionadas con las tasas de cambio
+ * Data source that handles operations related to exchange rates.
  */
 class ExchangeDataSource @Inject constructor(
     private val networkManager: INetworkManager,
@@ -23,11 +23,14 @@ class ExchangeDataSource @Inject constructor(
 ) : IExchangeDataSource {
 
     /**
-     * Convierte un monto de una moneda a otra
-     * @param amount Monto a convertir
-     * @param fromCurrency Moneda de origen
-     * @param toCurrency Moneda de destino
-     * @return Monto convertido
+     * Gets the exchange rate for a given amount, date, and currencies.
+     * It first checks the local database. If it's not present, it fetches the data from the API
+     * and stores it in the local database.
+     * @param amount The amount to convert.
+     * @param date The date of the exchange rate.
+     * @param fromCurrency The source currency.
+     * @param toCurrency The target currency.
+     * @return An [ApiState] with an [ExchangeRate] object.
      */
     override suspend fun getExchangeRate(
         amount: Double,

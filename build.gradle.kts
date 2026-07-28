@@ -8,4 +8,6 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.jupiter) apply false
     alias(libs.plugins.safeargs) apply false
+    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
 }

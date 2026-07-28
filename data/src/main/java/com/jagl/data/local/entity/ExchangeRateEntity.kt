@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.jagl.domain.model.ExchangeRate
 
 /**
- * Entidad para almacenar las tasas de cambio en la base de datos local
+ * Entity for storing exchange rates in the local database
  */
 @Entity(tableName = "exchange_rates")
 data class ExchangeRateEntity(
@@ -18,7 +18,7 @@ data class ExchangeRateEntity(
     val date: String
 ) {
     /**
-     * Convierte la entidad a un modelo de dominio
+     * Converts the entity to a domain model
      */
     fun toExchangeRate(): ExchangeRate {
         return ExchangeRate(
@@ -30,7 +30,7 @@ data class ExchangeRateEntity(
 
     companion object {
         /**
-         * Crea una entidad a partir de un modelo de dominio
+         * Creates an entity from a domain model
          */
         fun fromExchangeRate(
             exchangeRate: ExchangeRate,

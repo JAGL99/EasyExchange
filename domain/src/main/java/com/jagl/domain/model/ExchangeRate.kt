@@ -3,7 +3,7 @@ package com.jagl.domain.model
 import java.util.Locale
 
 /**
- * Modelo de datos que representa una tasa de cambio entre dos monedas
+ * Data model representing an exchange rate between two currencies
  */
 
 data class ExchangeRate(

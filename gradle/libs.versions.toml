@@ -27,6 +27,9 @@ androidTestCore = "1.2.2"
 junitJupiter = "5.9.3"
 safeargs = "2.8.9"
 runner = "1.5.0"
+googleServices = "4.4.4"
+crashlytics = "2.9.1"
+firebaseBom = "32.1.0"
 
 [libraries]
 # AndroidX
@@ -94,6 +97,11 @@ hilt-android-compiler = { group = "com.google.dagger",name ="hilt-android-compil
 hilt-android-testing = { group = "com.google.dagger",name ="hilt-android-testing", version.ref = "hiltAndroidTesting" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
+# Firebase Boom
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -103,4 +111,6 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "safeargs" }
 jupiter = { id = "de.mannodermaus.android-junit5", version.ref = "jupiter" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 
