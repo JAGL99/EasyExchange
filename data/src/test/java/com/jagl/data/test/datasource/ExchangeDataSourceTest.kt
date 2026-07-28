@@ -1,4 +1,4 @@
-package com.jagl.data.test.repository
+package com.jagl.data.test.datasource
 
 import assertk.assertThat
 import assertk.assertions.hasClass
@@ -7,6 +7,7 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isNotEmpty
+import assertk.assertions.isNotNull
 import com.jagl.core.network.INetworkManager
 import com.jagl.core.network.NetworkStatus
 import com.jagl.data.api.client.CurrencyLayerApi
@@ -30,8 +31,11 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvFileSource
+import org.junit.jupiter.params.provider.CsvSource
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
@@ -233,5 +237,107 @@ class ExchangeDataSourceTest {
         val secondData = secondResult.data
         assertThat(secondData.rate).isEqualTo(currency)
 
+    }
+    
+    @Test
+    fun `Request integer number, get correct conversion`() = runBlocking<Unit> {
+        val currencies = getCurrencies()
+        val fromCurrency = getCurrencies().first()
+        val toCurrency = getCurrencies().last()
+        val timeStamp = Date.from(Instant.now()).time
+        val mockResponse = getLatestRatesResponse(
+            source = fromCurrency.code,
+            avableCurrencies = currencies,
+            currencies = toCurrency.code
+        )
+            .copy(
+                timestamp = timeStamp
+            )
+        val baseQuote = mockResponse.quotes?.get(fromCurrency.code+toCurrency.code)
+        val adapter = moshi.adapter(GetLatestRates.Response::class.java)
+        val mockResponseJson = adapter.toJson(mockResponse)
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(mockResponseJson)
+        )
+        val amountToExchange = 1.0
+        val exchangeRate = dataSource.getExchangeRate(
+            amount = amountToExchange,
+            date = "2025-11-25",
+            fromCurrency = fromCurrency,
+            toCurrency = toCurrency
+        ) as ApiState.Success
+
+        assertThat(baseQuote).isNotNull()
+        val expectedRate = amountToExchange * baseQuote!!
+        assertThat(exchangeRate.data.rate).isEqualTo(expectedRate)
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = ["/exchangeAmmount.csv"])
+    fun `Request integer and decimal number, get correct conversion`(temporalAmount: String) = runBlocking<Unit> {
+        val currencies = getCurrencies()
+        val fromCurrency = getCurrencies().first()
+        val toCurrency = getCurrencies().last()
+        val timeStamp = Date.from(Instant.now()).time
+        val mockResponse = getLatestRatesResponse(
+            source = fromCurrency.code,
+            avableCurrencies = currencies,
+            currencies = toCurrency.code
+        )
+            .copy(
+                timestamp = timeStamp
+            )
+        val baseQuote = mockResponse.quotes?.get(fromCurrency.code+toCurrency.code)
+        val adapter = moshi.adapter(GetLatestRates.Response::class.java)
+        val mockResponseJson = adapter.toJson(mockResponse)
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(mockResponseJson)
+        )
+        val amountToExchange = temporalAmount.toDouble()
+        val exchangeRate = dataSource.getExchangeRate(
+            amount = amountToExchange,
+            date = "2025-11-25",
+            fromCurrency = fromCurrency,
+            toCurrency = toCurrency
+        ) as ApiState.Success
+
+        assertThat(baseQuote).isNotNull()
+        val expectedRate = amountToExchange * baseQuote!!
+        assertThat(exchangeRate.data.rate).isEqualTo(expectedRate)
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = ["/exchangeAmmount.csv"])
+    fun `Request integer and decimal number, get correct base rate`(temporalAmount: String) = runBlocking<Unit> {
+        val currencies = getCurrencies()
+        val fromCurrency = getCurrencies().first()
+        val toCurrency = getCurrencies().last()
+        val timeStamp = Date.from(Instant.now()).time
+        val mockResponse = getLatestRatesResponse(
+            source = fromCurrency.code,
+            avableCurrencies = currencies,
+            currencies = toCurrency.code
+        ).copy(timestamp = timeStamp)
+        val baseQuote = mockResponse.quotes?.get(fromCurrency.code+toCurrency.code)
+        val adapter = moshi.adapter(GetLatestRates.Response::class.java)
+        val mockResponseJson = adapter.toJson(mockResponse)
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(mockResponseJson)
+        )
+        val amountToExchange = temporalAmount.toDouble()
+        val exchangeRate = dataSource.getExchangeRate(
+            amount = amountToExchange,
+            date = "2025-11-25",
+            fromCurrency = fromCurrency,
+            toCurrency = toCurrency
+        ) as ApiState.Success
+        assertThat(baseQuote).isNotNull()
+        assertThat(exchangeRate.data.baseRate).isEqualTo(baseQuote)
     }
 }

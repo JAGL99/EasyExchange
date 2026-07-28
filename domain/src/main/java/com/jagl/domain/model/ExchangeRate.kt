@@ -9,9 +9,10 @@ import java.util.Locale
 data class ExchangeRate(
     val fromCurrency: String,
     val toCurrency: String,
-    val rate: Double
+    val rate: Double,
+    val baseRate: Double
 )
 
 fun ExchangeRate.getEquivalent(locale: Locale): String {
-    return "1 ${this.fromCurrency} = ${String.format(locale, "%.4f", this.rate)} ${this.toCurrency}"
+    return "1 ${this.fromCurrency} = ${String.format(locale, "%.4f", this.baseRate)} ${this.toCurrency}"
 }

@@ -1,8 +1,7 @@
-package com.jagl.data.test.repository
+package com.jagl.data.test.datasource
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
-import assertk.assertions.corresponds
 import assertk.assertions.hasClass
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
