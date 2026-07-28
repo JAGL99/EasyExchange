@@ -111,7 +111,7 @@ fun ExchangeResult(
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    val exchange = ExchangeRate("USD", "MXN", 12.0)
+    val exchange = ExchangeRate.previewObject
     val locale = Locale.US
     ExchangeResult(
         convertedAmount = "1",

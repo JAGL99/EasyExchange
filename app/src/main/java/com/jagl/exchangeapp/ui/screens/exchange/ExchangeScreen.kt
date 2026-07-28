@@ -224,7 +224,7 @@ fun ExchangeScreenPreview() {
                 toCurrency = Currency("EUR", "Euro"),
                 amount = "100",
                 convertedAmount = "$85.00",
-                exchangeRate = ExchangeRate("USD", "EUR", 0.85).getEquivalent(Locale.getDefault())
+                exchangeRate = ExchangeRate.previewObject.getEquivalent(Locale.getDefault())
             )
         )
     }
