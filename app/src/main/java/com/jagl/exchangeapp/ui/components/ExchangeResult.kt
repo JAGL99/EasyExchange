@@ -70,7 +70,7 @@ fun ExchangeResult(
                                 fontWeight = FontWeight.Bold
                             )
 
-                            SpacerH8()
+                            SpacerH32()
 
                             // Mostrar la tasa de cambio
                             val fromData = exchangeRate.substringBefore("=")
@@ -89,7 +89,7 @@ fun ExchangeResult(
                                 style = MaterialTheme.typography.bodyLarge,
                                 textAlign = TextAlign.Center,
                                 color = MaterialTheme.colorScheme.primary,
-                                fontSize = 20.sp
+                                fontSize = 25.sp
                             )
 
                             Text(

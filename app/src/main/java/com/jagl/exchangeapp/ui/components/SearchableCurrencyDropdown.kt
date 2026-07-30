@@ -58,7 +58,6 @@ fun SearchableCurrencyDropdown(
             expanded.value = true
         },
         singleLine = true,
-        label = { Text(stringResource(R.string.search_currency)) },
         placeholder = { Text(stringResource(R.string.enter_code_or_name)) },
         isError = isError,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
