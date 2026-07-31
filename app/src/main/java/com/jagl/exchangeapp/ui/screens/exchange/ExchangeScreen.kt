@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,7 +28,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -46,7 +46,11 @@ import com.jagl.exchangeapp.ui.components.EasyExchangeButton
 import com.jagl.exchangeapp.ui.components.ExchangeResult
 import com.jagl.exchangeapp.ui.components.FullScreenLoader
 import com.jagl.exchangeapp.ui.components.SearchableCurrencyDropdown
+import com.jagl.exchangeapp.ui.components.SpacerH16
+import com.jagl.exchangeapp.ui.components.SpacerH4
 import com.jagl.exchangeapp.ui.components.SwapButton
+import com.jagl.exchangeapp.ui.theme.ExchangeAppTheme
+import com.jagl.exchangeapp.ui.utils.ErrorMessageUtils
 import java.util.Locale
 
 @Composable
@@ -99,18 +103,16 @@ private fun ExchangeContent(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-
-                SwapButton(
-                    modifier = Modifier.align(Alignment.End),
-                    onSwap = { onEvent(ExchangeUiEvents.SwapCurrencies) }
-                )
+                SpacerH4()
 
                 Text(
                     textAlign = TextAlign.Start,
                     text = stringResource(R.string.from),
                     style = MaterialTheme.typography.bodyMedium,
-                    fontSize = 18.sp
+                    fontSize = 20.sp
                 )
+
+                SpacerH4()
 
                 SearchableCurrencyDropdown(
                     currencySelected = uiState.value.fromCurrency,
@@ -118,19 +120,23 @@ private fun ExchangeContent(
                     onCurrencySelected = { onEvent(ExchangeUiEvents.SelectFromCurrency(it)) }
                 )
 
-                // Monto a convertir
-                Spacer(modifier = Modifier.height(8.dp))
+                SpacerH16()
+
                 AmountInput(
                     value = uiState.value.amount,
                     onValueChange = { onEvent(ExchangeUiEvents.UpdateAmount(it)) }
                 )
 
+                SpacerH16()
+
                 Text(
                     textAlign = TextAlign.Start,
                     text = stringResource(R.string.to),
                     style = MaterialTheme.typography.bodyMedium,
-                    fontSize = 18.sp
+                    fontSize = 20.sp
                 )
+
+                SpacerH4()
 
                 SearchableCurrencyDropdown(
                     currencySelected = uiState.value.toCurrency,
@@ -138,16 +144,23 @@ private fun ExchangeContent(
                     onCurrencySelected = { onEvent(ExchangeUiEvents.SelectToCurrency(it)) }
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                SpacerH16()
 
                 // Botón para realizar la consulta
-                EasyExchangeButton(
-                    textResourceId = R.string.calculate_exchange,
-                    onClick = { onEvent(ExchangeUiEvents.PerformConversion) },
+                Row(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .height(54.dp)
-                )
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    EasyExchangeButton(
+                        textResourceId = R.string.calculate_exchange,
+                        onClick = { onEvent(ExchangeUiEvents.PerformConversion) },
+                    )
+
+                    SwapButton(onSwap = { onEvent(ExchangeUiEvents.SwapCurrencies) })
+                }
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -165,7 +178,7 @@ private fun ExchangeContent(
 
             uiState.value.errorMessage?.let { error ->
                 AnimatedAlert(
-                    message = error,
+                    message = stringResource(error),
                     onDismiss = {
                         onEvent(ExchangeUiEvents.DismissError)
                     }
@@ -203,34 +216,36 @@ private fun ExchangeContent(
 @Preview(showBackground = true)
 @Composable
 fun ExchangeScreenPreview() {
-    val uiState = remember {
-        mutableStateOf(
-            ExchangeUiState(
-                isLoading = false,
-                errorMessage = null,
-                availableCurrencies = listOf(
-                    Currency("USD", "Dólar estadounidense"),
-                    Currency("EUR", "Euro"),
-                    Currency("JPY", "Yen japonés"),
-                    Currency("GBP", "Libra esterlina"),
-                    Currency("AUD", "Dólar australiano"),
-                    Currency("CAD", "Dólar canadiense"),
-                    Currency("CHF", "Franco suizo"),
-                    Currency("CNY", "Yuan chino"),
-                    Currency("SEK", "Corona sueca"),
-                    Currency("NZD", "Dólar neozelandés")
-                ),
-                fromCurrency = Currency("USD", "Dólar estadounidense"),
-                toCurrency = Currency("EUR", "Euro"),
-                amount = "100",
-                convertedAmount = "$85.00",
-                exchangeRate = ExchangeRate("USD", "EUR", 0.85).getEquivalent(Locale.getDefault())
+    ExchangeAppTheme {
+        val uiState = remember {
+            mutableStateOf(
+                ExchangeUiState(
+                    isLoading = false,
+                    errorMessage = null,
+                    availableCurrencies = listOf(
+                        Currency("USD", "Dólar estadounidense"),
+                        Currency("EUR", "Euro"),
+                        Currency("JPY", "Yen japonés"),
+                        Currency("GBP", "Libra esterlina"),
+                        Currency("AUD", "Dólar australiano"),
+                        Currency("CAD", "Dólar canadiense"),
+                        Currency("CHF", "Franco suizo"),
+                        Currency("CNY", "Yuan chino"),
+                        Currency("SEK", "Corona sueca"),
+                        Currency("NZD", "Dólar neozelandés")
+                    ),
+                    fromCurrency = Currency("USD", "Dólar estadounidense"),
+                    toCurrency = Currency("EUR", "Euro"),
+                    amount = "100",
+                    convertedAmount = "$85.00",
+                    exchangeRate = ExchangeRate.previewObject.getEquivalent(Locale.getDefault())
+                )
             )
+        }
+        ExchangeContent(
+            uiState = uiState,
+            snackbarHostState = remember { SnackbarHostState() },
+            onEvent = {},
         )
     }
-    ExchangeContent(
-        uiState = uiState,
-        snackbarHostState = remember { SnackbarHostState() },
-        onEvent = {},
-    )
 }

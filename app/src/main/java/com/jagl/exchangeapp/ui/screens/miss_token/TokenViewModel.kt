@@ -6,8 +6,8 @@ import com.jagl.core.preferences.SharedPrefManager
 import com.jagl.data.datasource.currency.ICurrencyDataSource
 import com.jagl.domain.model.ApiState
 import com.jagl.exchangeapp.analytics.FirebaseAnalyticsHelper
+import com.jagl.exchangeapp.ui.utils.ErrorMessageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -108,7 +108,8 @@ class TokenViewModel @Inject constructor(
     }
 
     private fun showError(message: String) {
-        _uiState.update { it.copy(errorMessage = message) }
+        val errorMessage = ErrorMessageUtils.getErrorMessage(message)
+        _uiState.update { it.copy(errorMessage = errorMessage) }
     }
 
     private fun evaluateToken(state: TokenUiState) = viewModelScope.launch {

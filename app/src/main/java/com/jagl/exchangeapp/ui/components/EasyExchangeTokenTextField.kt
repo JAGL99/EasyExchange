@@ -53,7 +53,7 @@ fun EasyExchangeTokenTextField(
         supportingText = {
             uiState.value.errorMessage?.let {
                 Text(
-                    text = it,
+                    text = stringResource(it),
                     color = MaterialTheme.colorScheme.error
                 )
             }

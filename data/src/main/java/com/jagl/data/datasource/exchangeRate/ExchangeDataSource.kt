@@ -11,6 +11,8 @@ import com.jagl.data.local.entity.ExchangeRateEntity
 import com.jagl.domain.model.ApiState
 import com.jagl.domain.model.Currency
 import com.jagl.domain.model.ExchangeRate
+import java.util.Calendar
+import java.util.TimeZone
 import javax.inject.Inject
 
 /**
@@ -46,11 +48,13 @@ class ExchangeDataSource @Inject constructor(
         )
 
         if (lastExchange.isNotEmpty()) {
-            val rate = amount * lastExchange.first().rate
+            val baseRate = lastExchange.first().rate
+            val rate = amount * baseRate
             val exchangeRate = ExchangeRate(
                 fromCurrency = fromCurrency.code,
                 toCurrency = toCurrency.code,
-                rate = rate
+                rate = rate,
+                baseRate = baseRate
             )
             return@safeApiStateCall ApiState.Success(exchangeRate)
         }
@@ -79,15 +83,16 @@ class ExchangeDataSource @Inject constructor(
         val exchangeRate = ExchangeRate(
             fromCurrency = fromCurrency.code,
             toCurrency = toCurrency.code,
-            rate = rate
+            rate = rate,
+            baseRate = rate
         )
         val entity = ExchangeRateEntity.fromExchangeRate(
             exchangeRate = exchangeRate,
             date = date,
-            timestamp = body.timestamp ?: 0
+            timestamp = body.timestamp ?: Calendar.getInstance(TimeZone.getDefault()).time.time
         )
         exchangeRateDao.insertExchangeRate(entity)
-        return@safeApiStateCall ApiState.Success(exchangeRate)
+        return@safeApiStateCall ApiState.Success(exchangeRate.copy(rate = rate * amount))
 
     }
 }

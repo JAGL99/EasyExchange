@@ -17,17 +17,6 @@ data class ExchangeRateEntity(
     val timestamp: Long,
     val date: String
 ) {
-    /**
-     * Converts the entity to a domain model
-     */
-    fun toExchangeRate(): ExchangeRate {
-        return ExchangeRate(
-            fromCurrency = fromCurrency,
-            toCurrency = toCurrency,
-            rate = rate
-        )
-    }
-
     companion object {
         /**
          * Creates an entity from a domain model
