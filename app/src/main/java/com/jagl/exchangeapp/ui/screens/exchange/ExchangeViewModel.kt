@@ -11,7 +11,9 @@ import com.jagl.domain.model.ApiState
 import com.jagl.domain.model.Currency
 import com.jagl.domain.model.ExchangeRate
 import com.jagl.domain.model.getEquivalent
+import com.jagl.exchangeapp.R
 import com.jagl.exchangeapp.analytics.FirebaseAnalyticsHelper
+import com.jagl.exchangeapp.ui.utils.ErrorMessageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -53,7 +55,8 @@ class ExchangeViewModel @Inject constructor(
             is ApiState.Error -> {
                 FirebaseCrashlytics.getInstance().recordException(Exception(result.message))
                 _uiState.update { currentState ->
-                    currentState.copy(errorMessage = result.message)
+                    val erroMessage = ErrorMessageUtils.getErrorMessage(result.message)
+                    currentState.copy(errorMessage = erroMessage)
                 }
             }
 
@@ -186,22 +189,22 @@ class ExchangeViewModel @Inject constructor(
         )
 
         if (amount <= 0) {
-            _uiState.update { it.copy(errorMessage = "Amount must be more than zero") }
+            _uiState.update { it.copy(errorMessage = R.string.error_no_internet) }
             return
         }
 
         if (evaluateCurrency(fromCurrency, availableCurrencies)) {
-            _uiState.update { it.copy(errorMessage = "Select a valid source currency") }
+            _uiState.update { it.copy(errorMessage = R.string.error_invalid_source_currency) }
             return
         }
 
         if (evaluateCurrency(toCurrency, availableCurrencies)) {
-            _uiState.update { it.copy(errorMessage = "Select a valid target currency") }
+            _uiState.update { it.copy(errorMessage =  R.string.error_invalid_target_currency) }
             return
         }
 
         if (fromCurrency == toCurrency) {
-            _uiState.update { it.copy(errorMessage = "Source and target currencies must be different") }
+            _uiState.update { it.copy(errorMessage = R.string.error_same_source_and_target) }
             return
         }
 
@@ -230,8 +233,9 @@ class ExchangeViewModel @Inject constructor(
                             )
                         )
                         _uiState.update { currentState ->
+                            val erroMessage = ErrorMessageUtils.getErrorMessage(state.message)
                             currentState.copy(
-                                errorMessage = state.message,
+                                errorMessage = erroMessage,
                                 isLoading = false
                             )
                         }
@@ -260,8 +264,9 @@ class ExchangeViewModel @Inject constructor(
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)
                 _uiState.update { currentState ->
+                    val erroMessage = ErrorMessageUtils.getErrorMessage(e.message.orEmpty())
                     currentState.copy(
-                        errorMessage = e.message ?: "Unknown error",
+                        errorMessage = erroMessage,
                         isLoading = false
                     )
                 }

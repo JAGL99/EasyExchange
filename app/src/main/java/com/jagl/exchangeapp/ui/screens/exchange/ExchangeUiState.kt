@@ -7,7 +7,7 @@ import com.jagl.domain.model.Currency
  */
 data class ExchangeUiState(
     val isLoading: Boolean = false,
-    val errorMessage: String? = null,
+    val errorMessage: Int? = null,
     val availableCurrencies: List<Currency> = emptyList(),
     val fromCurrency: Currency? = null,
     val toCurrency: Currency? = null,

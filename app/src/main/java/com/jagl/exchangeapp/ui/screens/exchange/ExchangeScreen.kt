@@ -50,6 +50,7 @@ import com.jagl.exchangeapp.ui.components.SpacerH16
 import com.jagl.exchangeapp.ui.components.SpacerH4
 import com.jagl.exchangeapp.ui.components.SwapButton
 import com.jagl.exchangeapp.ui.theme.ExchangeAppTheme
+import com.jagl.exchangeapp.ui.utils.ErrorMessageUtils
 import java.util.Locale
 
 @Composable
@@ -177,7 +178,7 @@ private fun ExchangeContent(
 
             uiState.value.errorMessage?.let { error ->
                 AnimatedAlert(
-                    message = error,
+                    message = stringResource(error),
                     onDismiss = {
                         onEvent(ExchangeUiEvents.DismissError)
                     }

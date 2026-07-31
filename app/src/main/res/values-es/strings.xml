@@ -29,4 +29,15 @@
     <string name="procced">Continuar</string>
     <string name="no_empty_token">El token no puede estar vacío</string>
     <string name="enter_your_token">Ingresa tu token</string>
+    <string name="error_generic">Vaya, algo salió mal. Por favor, inténtalo de nuevo más tarde.</string>
+    <string name="error_request">Hubo un problema con la solicitud. Por favor, verifica tu conexión o los datos.</string>
+    <string name="error_connection">No se pudo conectar al servidor. Por favor, verifica tu conexión a internet.</string>
+    <string name="error_no_internet">No hay conexión a internet, por favor conéctate a una red e inténtalo de nuevo</string>
+    <string name="error_invalid_token">No se ha proporcionado una clave de acceso válida, por favor prueba con otra clave</string>
+    <string name="error_no_rate">No se encontró un tipo de cambio válido para estas monedas, por favor prueba con otra opción</string>
+    <string name="error_timeout">La conexión ha expirado. Por favor, inténtalo de nuevo más tarde.</string>
+    <string name="error_no_amount">El monto debe ser mayor que cero</string>
+    <string name="error_invalid_source_currency">Selecciona una moneda de origen válida</string>
+    <string name="error_invalid_target_currency">Selecciona una moneda de destino válida</string>
+    <string name="error_same_source_and_target">Las monedas de origen y destino deben ser diferentes</string>
 </resources>

@@ -28,4 +28,15 @@
     <string name="procced">Continue</string>
     <string name="no_empty_token">Token cannot be empty</string>
     <string name="enter_your_token">Enter your token</string>
+    <string name="error_generic">Oops, something went wrong. Please try again later.</string>
+    <string name="error_request">There was a problem with the request. Please check your connection or data.</string>
+    <string name="error_connection">Could not connect to the server. Please check your internet connection.</string>
+    <string name="error_no_internet">No internet connection, please connect to a network and try again</string>
+    <string name="error_invalid_token">A valid access key has not been provided, please try another key</string>
+    <string name="error_no_rate">No valid exchange rate was found for these currencies, please try another option</string>
+    <string name="error_timeout">The connection has expired. Please try again later.</string>
+    <string name="error_no_amount">Amount must be more than zero</string>
+    <string name="error_invalid_source_currency">Select a valid source currency</string>
+    <string name="error_invalid_target_currency">Select a valid target currency</string>
+    <string name="error_same_source_and_target">Source and target currencies must be different</string>
 </resources>
