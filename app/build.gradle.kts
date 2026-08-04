@@ -15,15 +15,17 @@ plugins {
 android {
     val versionMajor = 0
     val versionMinor = 1
-    val versionPatch = 0
+    val versionPatch = 1
+    val currencCompileSdk = 36
+    val currentMinSdk = 24
 
     namespace = "com.jagl.exchangeapp"
-    compileSdk = 35
+    compileSdk = currencCompileSdk
 
     defaultConfig {
         applicationId = "com.jagl.exchangeapp"
-        minSdk = 24
-        targetSdk = 35
+        minSdk = currentMinSdk
+        targetSdk = currencCompileSdk
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName = "$versionMajor.$versionMinor.$versionPatch"
 
