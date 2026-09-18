@@ -1,5 +1,7 @@
 package com.jagl.data.di
 
+import android.os.Build
+import androidx.multidex.BuildConfig
 import com.jagl.data.api.client.FrankfurterApi
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
 import com.jagl.data.api.repository.ICurrencyLayerRepository
@@ -57,7 +59,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://apilayer.net/api/")
+            .baseUrl("https://api.frankfurter.dev/v2/")
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
