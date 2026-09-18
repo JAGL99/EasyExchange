@@ -1,6 +1,6 @@
 package com.jagl.data.api.utils
 
-import com.jagl.data.api.model.CurrencyLayerResponse
+import com.jagl.data.api.model.CurrencyLayerResponseError
 import com.jagl.domain.model.ApiState
 import retrofit2.HttpException
 import retrofit2.Response
@@ -62,7 +62,7 @@ object ApiUtils {
         ApiState.Error(getErrorMessage(e.cause))
     }
 
-    fun <T : CurrencyLayerResponse> safeMap(
+    fun <T : CurrencyLayerResponseError> safeMap(
         response: Response<T>,
         onMapResponse: ((T) -> T)? = null
     ): Result<T> {
@@ -73,7 +73,7 @@ object ApiUtils {
             val body = response.body()!!
 
             if (!body.success) {
-                val message = body.error?.code?.let { code ->
+                val message = body.error?.status?.let { code ->
                     getCurrencyLayerCodeMessage(code)
                 } ?: GENERIC_ERROR
                 return Result.failure(Exception(message))

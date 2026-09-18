@@ -10,7 +10,7 @@ import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
 import com.jagl.core.network.INetworkManager
 import com.jagl.core.network.NetworkStatus
-import com.jagl.data.api.client.CurrencyLayerApi
+import com.jagl.data.api.client.FrankfurterApi
 import com.jagl.data.api.model.GetLatestRates
 import com.jagl.data.api.model.getCurrencies
 import com.jagl.data.api.model.getLatestRatesResponse
@@ -31,11 +31,9 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvFileSource
-import org.junit.jupiter.params.provider.CsvSource
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
@@ -59,7 +57,7 @@ class ExchangeDataSourceTest {
         moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
-        val api: CurrencyLayerApi = Retrofit.Builder()
+        val api: FrankfurterApi = Retrofit.Builder()
             .baseUrl(mockWebServer.url("/"))
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

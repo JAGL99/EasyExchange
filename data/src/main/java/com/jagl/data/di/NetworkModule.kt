@@ -1,7 +1,7 @@
 package com.jagl.data.di
 
 import com.jagl.core.preferences.SharedPrefManager
-import com.jagl.data.api.client.CurrencyLayerApi
+import com.jagl.data.api.client.FrankfurterApi
 import com.jagl.data.api.model.ExchangeAuthInterceptor
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
 import com.jagl.data.api.repository.ICurrencyLayerRepository
@@ -74,14 +74,14 @@ object NetworkModule {
      */
     @Provides
     @Singleton
-    fun provideCurrencyLayerApi(retrofit: Retrofit): CurrencyLayerApi {
-        return retrofit.create(CurrencyLayerApi::class.java)
+    fun provideCurrencyLayerApi(retrofit: Retrofit): FrankfurterApi {
+        return retrofit.create(FrankfurterApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideCurrencyLayerRepository(
-        api: CurrencyLayerApi
+        api: FrankfurterApi
     ): ICurrencyLayerRepository {
         return CurrencyLayerRepositoryImpl(api)
     }

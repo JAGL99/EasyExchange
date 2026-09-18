@@ -8,7 +8,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
 import com.jagl.core.network.INetworkManager
 import com.jagl.core.network.NetworkStatus
-import com.jagl.data.api.client.CurrencyLayerApi
+import com.jagl.data.api.client.FrankfurterApi
 import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.model.getCurrenciesResponse
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
@@ -51,7 +51,7 @@ class CurrencyDataSourceTest {
         moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
-        val api: CurrencyLayerApi = Retrofit.Builder()
+        val api: FrankfurterApi = Retrofit.Builder()
             .baseUrl(mockWebServer.url("/"))
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

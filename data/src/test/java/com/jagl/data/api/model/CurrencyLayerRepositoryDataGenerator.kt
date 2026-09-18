@@ -189,8 +189,8 @@ fun getMapCurrencies(): Map<String, String> {
 
 fun getLatestRatesRequest(): GetLatestRates.Request {
     return GetLatestRates.Request(
-        source = "USD",
-        currencies = "AUD,EUR,GBP,PLN",
+        base = "USD",
+        quotes = "AUD,EUR,GBP,PLN",
         format = 1
     )
 }

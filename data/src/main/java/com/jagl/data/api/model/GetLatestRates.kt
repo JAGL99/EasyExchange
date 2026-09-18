@@ -3,18 +3,20 @@ package com.jagl.data.api.model
 object GetLatestRates {
 
     data class Request(
-        val source: String,
-        val currencies: String,
-        val format: Int = 1
+        val base: String,
+        val quotes: String,
     )
 
     data class Response(
-        override val success: Boolean,
-        override val terms: String?,
-        override val privacy: String?,
-        override val error: ApiError?,
-        val timestamp: Long?,
-        val source: String?,
-        val quotes: Map<String, Double>?
-    ) : CurrencyLayerResponse
+        val rate : Rate?,
+        override val status: Int?,
+        override val message: String?
+    ) : CurrencyLayerResponseError
+
+    data class Rate(
+        val date : String,
+        val base : String,
+        val range: Double,
+        val quote: String
+    )
 }

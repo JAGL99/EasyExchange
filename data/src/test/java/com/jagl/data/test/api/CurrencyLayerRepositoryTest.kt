@@ -6,7 +6,7 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
-import com.jagl.data.api.client.CurrencyLayerApi
+import com.jagl.data.api.client.FrankfurterApi
 import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.model.GetLatestRates
 import com.jagl.data.api.model.getCurrencies
@@ -31,7 +31,7 @@ import retrofit2.create
 class CurrencyLayerRepositoryTest {
 
     private lateinit var repository: CurrencyLayerRepositoryImpl
-    private lateinit var api: CurrencyLayerApi
+    private lateinit var api: FrankfurterApi
     private lateinit var mockWebServer: MockWebServer
     private lateinit var moshi: Moshi
 
@@ -125,8 +125,8 @@ class CurrencyLayerRepositoryTest {
 
         )
         val request = getLatestRatesRequest().copy(
-            source = source,
-            currencies = currencies
+            base = source,
+            quotes = currencies
         )
         val responde = repository.getLatestRates(request)
         assertThat(responde).isInstanceOf(Result::class)

@@ -64,8 +64,8 @@ class ExchangeDataSource @Inject constructor(
 
 
         val request = GetLatestRates.Request(
-            source = fromCurrency.code,
-            currencies = toCurrency.code
+            base = fromCurrency.code,
+            quotes = toCurrency.code
         )
 
         val result = api.getLatestRates(request)

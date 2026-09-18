@@ -3,11 +3,17 @@ package com.jagl.data.api.model
 object GetCurrencies {
 
     data class Response(
-        override val success: Boolean,
-        override val terms: String?,
-        override val privacy: String?,
-        override val error: ApiError?,
-        val currencies: Map<String, String>?
-    ) : CurrencyLayerResponse
+        val currencies: List<Currencie>?,
+        override val status: Int?,
+        override val message: String?
+    ) : CurrencyLayerResponseError
 
+    data class Currencie(
+        val isoCode: String,
+        val isoNumeric: String,
+        val name: String,
+        val symbol: String,
+        val startDate: String,
+        val endDate: String
+    )
 }
