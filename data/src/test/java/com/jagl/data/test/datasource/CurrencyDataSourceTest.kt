@@ -10,6 +10,7 @@ import com.jagl.core.network.INetworkManager
 import com.jagl.core.network.NetworkStatus
 import com.jagl.data.api.client.FrankfurterApi
 import com.jagl.data.api.model.GetCurrencies
+import com.jagl.data.api.model.GetCurrencies.CurrencyDto
 import com.jagl.data.api.model.getCurrenciesResponse
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
 import com.jagl.data.api.repository.ICurrencyLayerRepository
@@ -21,6 +22,7 @@ import com.jagl.data.local.CurrencyDaoFake
 import com.jagl.data.local.dao.CurrencyDao
 import com.jagl.domain.model.ApiState
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -108,8 +110,9 @@ class CurrencyDataSourceTest {
     @Test
     fun `Request list two times, get success but withour repetition`() = runBlocking<Unit> {
         val mockResponse = getCurrenciesResponse()
-        val mockCurrencies = mockResponse.currencies!!.toCurrencyList().toTypedArray()
-        val adapter = moshi.adapter(GetCurrencies.Response::class.java)
+        val mockCurrencies = mockResponse.toCurrencyList().toTypedArray()
+        val type = Types.newParameterizedType(List::class.java, CurrencyDto::class.java)
+        val adapter = moshi.adapter<List<CurrencyDto>>(type)
         val mockResponseJson = adapter.toJson(mockResponse)
 
         mockWebServer.enqueue(
@@ -147,8 +150,9 @@ class CurrencyDataSourceTest {
     @Test
     fun `Request list, get success with data`() = runBlocking<Unit> {
         val mockResponse = getCurrenciesResponse()
-        val mockCurrencies = mockResponse.currencies!!.toCurrencyList().toTypedArray()
-        val adapter = moshi.adapter(GetCurrencies.Response::class.java)
+        val mockCurrencies = mockResponse.toCurrencyList().toTypedArray()
+        val type = Types.newParameterizedType(List::class.java, CurrencyDto::class.java)
+        val adapter = moshi.adapter<List<CurrencyDto>>(type)
         val mockResponseJson = adapter.toJson(mockResponse)
         mockWebServer.enqueue(
             MockResponse()

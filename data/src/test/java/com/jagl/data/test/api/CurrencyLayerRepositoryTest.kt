@@ -8,13 +8,16 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.jagl.data.api.client.FrankfurterApi
 import com.jagl.data.api.model.GetCurrencies
+import com.jagl.data.api.model.GetCurrencies.CurrencyDto
 import com.jagl.data.api.model.GetLatestRates
+import com.jagl.data.api.model.GetLatestRates.RateDto
 import com.jagl.data.api.model.getCurrencies
 import com.jagl.data.api.model.getCurrenciesResponse
 import com.jagl.data.api.model.getLatestRatesRequest
 import com.jagl.data.api.model.getLatestRatesResponse
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
@@ -82,7 +85,8 @@ class CurrencyLayerRepositoryTest {
 
     @Test
     fun `Make a request for currencies, get the same data`() = runBlocking<Unit> {
-        val adapter = moshi.adapter(GetCurrencies.Response::class.java)
+        val type = Types.newParameterizedType(List::class.java, CurrencyDto::class.java)
+        val adapter = moshi.adapter<List<CurrencyDto>>(type)
         val mockResponse = getCurrenciesResponse()
         val mockResponseJson = adapter.toJson(mockResponse)
         mockWebServer.enqueue(
@@ -95,13 +99,13 @@ class CurrencyLayerRepositoryTest {
         assertThat(result).isInstanceOf(Result::class)
         assertThat(result.isSuccess).isTrue()
         assertThat(result.getOrNull()).isNotNull()
-        val currencies = result.getOrNull()!!.currencies
+        val currencies = result.getOrNull()!!
         assertThat(currencies).isNotNull()
-        mockResponse.currencies!!.forEach { key, value ->
-            val name = currencies?.get(key)
-            assertThat(name).isNotNull()
-            assertThat(name!!).isNotEmpty()
-            assertThat(name).isEqualTo(value)
+        mockResponse.forEachIndexed { i ,value->
+            val currency = currencies.getOrNull(i)
+            assertThat(currency).isNotNull()
+            assertThat(currency!!.name).isNotEmpty()
+            assertThat(currency.isoCode).isEqualTo(value.isoCode)
         }
     }
 
@@ -110,7 +114,8 @@ class CurrencyLayerRepositoryTest {
         val avableCurrencies = getCurrencies()
         val source = avableCurrencies.first().code
         val currencies = avableCurrencies.last().code
-        val adapter = moshi.adapter(GetLatestRates.Response::class.java)
+        val type = Types.newParameterizedType(List::class.java, RateDto::class.java)
+        val adapter = moshi.adapter<List<RateDto>>(type)
         val mockResponseJson = adapter.toJson(
             getLatestRatesResponse(
                 source = source,
@@ -132,16 +137,18 @@ class CurrencyLayerRepositoryTest {
         assertThat(responde).isInstanceOf(Result::class)
         assertThat(responde.isSuccess).isTrue()
         assertThat(responde.getOrNull()).isNotNull()
-        val key = responde.getOrNull()!!.quotes!!.keys.first()
-        assertThat(currencies).isEqualTo(key)
+        val rate = responde.getOrNull()!!.first()
+
+        assertThat(currencies).isEqualTo(rate.quote)
 
     }
 
 
     @Test
     fun `Make a request for currencies, get error response`() = runBlocking<Unit> {
-        val adapter = moshi.adapter(GetCurrencies.Response::class.java)
-        val mockResponse = getCurrenciesResponse().copy(success = false)
+        val type = Types.newParameterizedType(List::class.java, CurrencyDto::class.java)
+        val adapter = moshi.adapter<List<CurrencyDto>>(type)
+        val mockResponse = emptyList<CurrencyDto>()
         val mockResponseJson = adapter.toJson(mockResponse)
         mockWebServer.enqueue(
             MockResponse()
@@ -160,12 +167,9 @@ class CurrencyLayerRepositoryTest {
         val avableCurrencies = getCurrencies()
         val source = avableCurrencies.first().code
         val currencies = avableCurrencies.last().code
-        val adapter = moshi.adapter(GetLatestRates.Response::class.java)
-        val mockResponse = getLatestRatesResponse(
-            source = source,
-            avableCurrencies = avableCurrencies,
-            currencies = currencies
-        ).copy(success = false)
+        val type = Types.newParameterizedType(List::class.java, RateDto::class.java)
+        val adapter = moshi.adapter<List<RateDto>>(type)
+        val mockResponse = emptyList<RateDto>()
         val mockResponseJson = adapter.toJson(mockResponse)
         mockWebServer.enqueue(
             MockResponse()

@@ -16,8 +16,8 @@ object GetLatestRates {
         val date: String,
         @SerialName("base")
         val base: String,
-        @SerialName("range")
-        val range: Double,
+        @SerialName("rate")
+        val rate: Double,
         @SerialName("quote")
         val quote: String
     )

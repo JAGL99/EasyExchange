@@ -11,7 +11,7 @@ import assertk.assertions.isNotNull
 import com.jagl.core.network.INetworkManager
 import com.jagl.core.network.NetworkStatus
 import com.jagl.data.api.client.FrankfurterApi
-import com.jagl.data.api.model.GetLatestRates
+import com.jagl.data.api.model.GetLatestRates.RateDto
 import com.jagl.data.api.model.getCurrencies
 import com.jagl.data.api.model.getLatestRatesResponse
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
@@ -23,6 +23,7 @@ import com.jagl.data.local.ExchangeRateDaoFake
 import com.jagl.data.local.dao.ExchangeRateDao
 import com.jagl.domain.model.ApiState
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -129,11 +130,13 @@ class ExchangeDataSourceTest {
             source = fromCurrency.code,
             avableCurrencies = currencies,
             currencies = toCurrency.code
-        )
-            .copy(
-                timestamp = timeStamp
+        ).map {
+            it.copy(
+                date = timeStamp.toString()
             )
-        val adapter = moshi.adapter(GetLatestRates.Response::class.java)
+        }
+        val type = Types.newParameterizedType(List::class.java, RateDto::class.java)
+        val adapter = moshi.adapter<List<RateDto>>(type)
         val mockResponseJson = adapter.toJson(mockResponse)
         mockWebServer.enqueue(
             MockResponse()
@@ -188,11 +191,13 @@ class ExchangeDataSourceTest {
             source = fromCurrency.code,
             avableCurrencies = currencies,
             currencies = toCurrency.code
-        )
-            .copy(
-                timestamp = timeStamp
+        ).map {
+            it.copy(
+                date = timeStamp.toString()
             )
-        val adapter = moshi.adapter(GetLatestRates.Response::class.java)
+        }
+        val type = Types.newParameterizedType(List::class.java, RateDto::class.java)
+        val adapter = moshi.adapter<List<RateDto>>(type)
         val mockResponseJson = adapter.toJson(mockResponse)
         mockWebServer.enqueue(
             MockResponse()
@@ -236,7 +241,7 @@ class ExchangeDataSourceTest {
         assertThat(secondData.rate).isEqualTo(currency)
 
     }
-    
+
     @Test
     fun `Request integer number, get correct conversion`() = runBlocking<Unit> {
         val currencies = getCurrencies()
@@ -247,12 +252,16 @@ class ExchangeDataSourceTest {
             source = fromCurrency.code,
             avableCurrencies = currencies,
             currencies = toCurrency.code
-        )
-            .copy(
-                timestamp = timeStamp
+        ).map {
+            it.copy(
+                date = timeStamp.toString()
             )
-        val baseQuote = mockResponse.quotes?.get(fromCurrency.code+toCurrency.code)
-        val adapter = moshi.adapter(GetLatestRates.Response::class.java)
+        }
+        val baseQuote = mockResponse.find {
+            it.base ==  fromCurrency.code && it.quote == toCurrency.code
+        }
+        val type = Types.newParameterizedType(List::class.java, RateDto::class.java)
+        val adapter = moshi.adapter<List<RateDto>>(type)
         val mockResponseJson = adapter.toJson(mockResponse)
         mockWebServer.enqueue(
             MockResponse()
@@ -268,74 +277,87 @@ class ExchangeDataSourceTest {
         ) as ApiState.Success
 
         assertThat(baseQuote).isNotNull()
-        val expectedRate = amountToExchange * baseQuote!!
+        val expectedRate = amountToExchange * baseQuote!!.rate
         assertThat(exchangeRate.data.rate).isEqualTo(expectedRate)
     }
 
     @ParameterizedTest
     @CsvFileSource(resources = ["/exchangeAmmount.csv"])
-    fun `Request integer and decimal number, get correct conversion`(temporalAmount: String) = runBlocking<Unit> {
-        val currencies = getCurrencies()
-        val fromCurrency = getCurrencies().first()
-        val toCurrency = getCurrencies().last()
-        val timeStamp = Date.from(Instant.now()).time
-        val mockResponse = getLatestRatesResponse(
-            source = fromCurrency.code,
-            avableCurrencies = currencies,
-            currencies = toCurrency.code
-        )
-            .copy(
-                timestamp = timeStamp
+    fun `Request integer and decimal number, get correct conversion`(temporalAmount: String) =
+        runBlocking<Unit> {
+            val currencies = getCurrencies()
+            val fromCurrency = getCurrencies().first()
+            val toCurrency = getCurrencies().last()
+            val timeStamp = Date.from(Instant.now()).time
+            val mockResponse = getLatestRatesResponse(
+                source = fromCurrency.code,
+                avableCurrencies = currencies,
+                currencies = toCurrency.code
+            ).map {
+                it.copy(
+                    date = timeStamp.toString()
+                )
+            }
+            val baseQuote = mockResponse.find {
+                it.base ==  fromCurrency.code && it.quote == toCurrency.code
+            }
+            val type = Types.newParameterizedType(List::class.java, RateDto::class.java)
+            val adapter = moshi.adapter<List<RateDto>>(type)
+            val mockResponseJson = adapter.toJson(mockResponse)
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(mockResponseJson)
             )
-        val baseQuote = mockResponse.quotes?.get(fromCurrency.code+toCurrency.code)
-        val adapter = moshi.adapter(GetLatestRates.Response::class.java)
-        val mockResponseJson = adapter.toJson(mockResponse)
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(mockResponseJson)
-        )
-        val amountToExchange = temporalAmount.toDouble()
-        val exchangeRate = dataSource.getExchangeRate(
-            amount = amountToExchange,
-            date = "2025-11-25",
-            fromCurrency = fromCurrency,
-            toCurrency = toCurrency
-        ) as ApiState.Success
+            val amountToExchange = temporalAmount.toDouble()
+            val exchangeRate = dataSource.getExchangeRate(
+                amount = amountToExchange,
+                date = "2025-11-25",
+                fromCurrency = fromCurrency,
+                toCurrency = toCurrency
+            ) as ApiState.Success
 
-        assertThat(baseQuote).isNotNull()
-        val expectedRate = amountToExchange * baseQuote!!
-        assertThat(exchangeRate.data.rate).isEqualTo(expectedRate)
-    }
+            assertThat(baseQuote).isNotNull()
+            val expectedRate = amountToExchange * baseQuote!!.rate
+            assertThat(exchangeRate.data.rate).isEqualTo(expectedRate)
+        }
 
     @ParameterizedTest
     @CsvFileSource(resources = ["/exchangeAmmount.csv"])
-    fun `Request integer and decimal number, get correct base rate`(temporalAmount: String) = runBlocking<Unit> {
-        val currencies = getCurrencies()
-        val fromCurrency = getCurrencies().first()
-        val toCurrency = getCurrencies().last()
-        val timeStamp = Date.from(Instant.now()).time
-        val mockResponse = getLatestRatesResponse(
-            source = fromCurrency.code,
-            avableCurrencies = currencies,
-            currencies = toCurrency.code
-        ).copy(timestamp = timeStamp)
-        val baseQuote = mockResponse.quotes?.get(fromCurrency.code+toCurrency.code)
-        val adapter = moshi.adapter(GetLatestRates.Response::class.java)
-        val mockResponseJson = adapter.toJson(mockResponse)
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(mockResponseJson)
-        )
-        val amountToExchange = temporalAmount.toDouble()
-        val exchangeRate = dataSource.getExchangeRate(
-            amount = amountToExchange,
-            date = "2025-11-25",
-            fromCurrency = fromCurrency,
-            toCurrency = toCurrency
-        ) as ApiState.Success
-        assertThat(baseQuote).isNotNull()
-        assertThat(exchangeRate.data.baseRate).isEqualTo(baseQuote)
-    }
+    fun `Request integer and decimal number, get correct base rate`(temporalAmount: String) =
+        runBlocking<Unit> {
+            val currencies = getCurrencies()
+            val fromCurrency = getCurrencies().first()
+            val toCurrency = getCurrencies().last()
+            val timeStamp = Date.from(Instant.now()).time
+            val mockResponse = getLatestRatesResponse(
+                source = fromCurrency.code,
+                avableCurrencies = currencies,
+                currencies = toCurrency.code
+            ).map {
+                it.copy(
+                    date = timeStamp.toString()
+                )
+            }
+            val baseQuote = mockResponse.find {
+                it.base ==  fromCurrency.code && it.quote == toCurrency.code
+            }
+            val type = Types.newParameterizedType(List::class.java, RateDto::class.java)
+            val adapter = moshi.adapter<List<RateDto>>(type)
+            val mockResponseJson = adapter.toJson(mockResponse)
+            mockWebServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(mockResponseJson)
+            )
+            val amountToExchange = temporalAmount.toDouble()
+            val exchangeRate = dataSource.getExchangeRate(
+                amount = amountToExchange,
+                date = "2025-11-25",
+                fromCurrency = fromCurrency,
+                toCurrency = toCurrency
+            ) as ApiState.Success
+            assertThat(baseQuote).isNotNull()
+            assertThat(exchangeRate.data.baseRate).isEqualTo(baseQuote!!.rate)
+        }
 }
