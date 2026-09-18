@@ -24,7 +24,7 @@ interface FrankfurterApi {
         base: String,
         @Query("quotes")
         quotes: String
-    ): Response<GetLatestRates.Response>
+    ): Response<List<GetLatestRates.RateDto>?>
 
     /**
      * Gets the list of available currencies
@@ -32,5 +32,5 @@ interface FrankfurterApi {
      */
 
     @GET("currencies")
-    suspend fun getCurrencies(): Response<GetCurrencies.Response>
+    suspend fun getCurrencies(): Response<List<GetCurrencies.CurrencyDto>?>
 }

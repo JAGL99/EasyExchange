@@ -76,23 +76,23 @@ class ExchangeDataSource @Inject constructor(
         }
 
         val body = result.getOrNull()
-        val rate = body?.quotes?.get(toCurrency.code)
+        val rate = body?.firstOrNull()
         if (rate == null)
             return@safeApiStateCall ApiState.Error(ApiUtils.NO_RATE_ERROR)
 
         val exchangeRate = ExchangeRate(
             fromCurrency = fromCurrency.code,
             toCurrency = toCurrency.code,
-            rate = rate,
-            baseRate = rate
+            rate = rate.range,
+            baseRate = rate.range
         )
         val entity = ExchangeRateEntity.fromExchangeRate(
             exchangeRate = exchangeRate,
             date = date,
-            timestamp = body.timestamp ?: Calendar.getInstance(TimeZone.getDefault()).time.time
+            timestamp = Calendar.getInstance(TimeZone.getDefault()).time.time
         )
         exchangeRateDao.insertExchangeRate(entity)
-        return@safeApiStateCall ApiState.Success(exchangeRate.copy(rate = rate * amount))
+        return@safeApiStateCall ApiState.Success(exchangeRate.copy(rate = rate.range * amount))
 
     }
 }

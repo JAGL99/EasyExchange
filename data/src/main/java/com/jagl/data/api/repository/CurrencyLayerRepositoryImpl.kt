@@ -6,28 +6,34 @@ import com.jagl.data.api.model.GetLatestRates
 import com.jagl.data.api.utils.ApiUtils.safeResultCall
 import com.jagl.data.api.utils.ApiUtils.safeMap
 
+/**
+ * Implementation of the ICurrencyLayerRepository interface that uses the FrankfurterApi to fetch currency data.
+ *
+ * @param api The FrankfurterApi instance used to make API calls.
+ */
 class CurrencyLayerRepositoryImpl(
     private val api: FrankfurterApi
 ) : ICurrencyLayerRepository {
 
-    override suspend fun getLatestRates(request: GetLatestRates.Request): Result<GetLatestRates.Response> =
+    /**
+     * Fetches the latest exchange rates for a given base currency and a list of quote currencies.
+     * @param request The request containing the base currency and quote currencies.
+     * @return A Result containing a list of RateDto objects or an error.
+     */
+    override suspend fun getLatestRates(request: GetLatestRates.Request): Result<List<GetLatestRates.RateDto>> =
         safeResultCall {
             val response = api.getLatestRates(
                 base = request.base,
-                quotes = request.quotes,
-                format = request.format
+                quotes = request.quotes
             )
-
-            safeMap(response) { body ->
-                body.copy(
-                    quotes = body.quotes?.mapKeys {
-                        it.key.removePrefix(request.base)
-                    }
-                )
-            }
+            safeMap(response)
         }
 
-    override suspend fun getCurrencies(): Result<GetCurrencies.Response> = safeResultCall {
+    /**
+     * Fetches the list of available currencies.
+     * @return A Result containing a list of CurrencyDto objects or an error.
+     */
+    override suspend fun getCurrencies(): Result<List<GetCurrencies.CurrencyDto>> = safeResultCall {
         val response = api.getCurrencies()
         safeMap(response)
     }
