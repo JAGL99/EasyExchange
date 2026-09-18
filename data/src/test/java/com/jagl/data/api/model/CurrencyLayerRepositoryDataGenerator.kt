@@ -1,5 +1,6 @@
 package com.jagl.data.api.model
 
+import com.jagl.data.api.model.GetCurrencies.CurrencyDto
 import com.jagl.domain.model.Currency
 import java.time.Instant
 import java.util.Date
@@ -183,23 +184,204 @@ fun getCurrencies(): List<Currency> {
     )
 }
 
+fun getCurrenciesDto(): List<CurrencyDto> {
+    return listOf(
+        CurrencyDto("AED", "784", "United Arab Emirates Dirham", "د.إ", "1996-04-11", "2026-09-20"),
+        CurrencyDto("AFN", "971", "Afghan Afghani", "؋", "1999-01-04", "2026-09-18"),
+        CurrencyDto("ALL", "008", "Albanian Lek", "L", "1998-07-07", "2026-09-18"),
+        CurrencyDto("AMD", "051", "Armenian Dram", "֏", "1994-03-31", "2026-09-18"),
+        CurrencyDto("ANG", "532", "Netherlands Antillean Guilder", "ƒ", "1971-12-18", "2026-09-20"),
+        CurrencyDto("AOA", "973", "Angolan Kwanza", "Kz", "1999-01-04", "2026-09-18"),
+        CurrencyDto("ARS", "032", "Argentine Peso", "$", "1998-07-07", "2026-09-18"),
+        CurrencyDto("AUD", "036", "Australian Dollar", "$", "1981-01-02", "2026-09-20"),
+        CurrencyDto("AWG", "533", "Aruban Florin", "ƒ", "1999-01-04", "2026-09-18"),
+        CurrencyDto("AZN", "944", "Azerbaijani Manat", "₼", "2006-01-02", "2026-09-18"),
+        CurrencyDto(
+            "BAM",
+            "977",
+            "Bosnia and Herzegovina Convertible Mark",
+            "КМ",
+            "1999-01-04",
+            "2026-09-20"
+        ),
+        CurrencyDto("BBD", "052", "Barbadian Dollar", "$", "1993-04-13", "2026-09-18"),
+        CurrencyDto("BDT", "050", "Bangladeshi Taka", "৳", "1998-07-07", "2026-09-18"),
+        CurrencyDto("BHD", "048", "Bahraini Dinar", "د.ب", "1998-07-07", "2026-09-20"),
+        CurrencyDto("BIF", "108", "Burundian Franc", "Fr", "1999-01-04", "2026-09-18"),
+        CurrencyDto("BMD", "060", "Bermudian Dollar", "$", "1972-02-06", "2026-09-20"),
+        CurrencyDto("BND", "096", "Brunei Dollar", "$", "1981-01-02", "2026-09-20"),
+        CurrencyDto("BOB", "068", "Bolivian Boliviano", "Bs.", "1998-07-07", "2026-09-18"),
+        CurrencyDto("BRL", "986", "Brazilian Real", "R$", "1994-07-01", "2026-09-18"),
+        CurrencyDto("BSD", "044", "Bahamian Dollar", "$", "1999-01-04", "2026-09-18"),
+        CurrencyDto("BTN", "064", "Bhutanese Ngultrum", "Nu.", "1994-03-01", "2026-09-20"),
+        CurrencyDto("BWP", "072", "Botswana Pula", "P", "1999-01-04", "2026-09-18"),
+        CurrencyDto("BYN", "933", "Belarusian Ruble", "Br", "2004-09-14", "2026-09-18"),
+        CurrencyDto("BZD", "084", "Belize Dollar", "$", "1999-01-04", "2026-09-18"),
+        CurrencyDto("CAD", "124", "Canadian Dollar", "$", "1953-05-11", "2026-09-20"),
+        CurrencyDto("CDF", "976", "Congolese Franc", "Fr", "1999-04-02", "2026-09-18"),
+        CurrencyDto("CHF", "756", "Swiss Franc", "CHF", "1949-12-21", "2026-09-20"),
+        CurrencyDto("CLP", "152", "Chilean Peso", "$", "1982-08-09", "2026-09-18"),
+        CurrencyDto("CMD", null, "COMESA Dollar", null, "1998-01-01", "2026-09-20"),
+        CurrencyDto("CNH", "", "Chinese Renminbi Yuan Offshore", "¥", "2011-08-19", "2026-09-18"),
+        CurrencyDto("CNY", "156", "Chinese Renminbi Yuan", "¥", "1981-01-02", "2026-09-20"),
+        CurrencyDto("COP", "170", "Colombian Peso", "$", "1998-07-07", "2026-09-18"),
+        CurrencyDto("CRC", "188", "Costa Rican Colón", "₡", "1999-01-04", "2026-09-18"),
+        CurrencyDto("CUP", "192", "Cuban Peso", "$", "1999-01-04", "2026-09-18"),
+        CurrencyDto("CVE", "132", "Cape Verdean Escudo", "$", "1998-07-08", "2026-09-20"),
+        CurrencyDto("CZK", "203", "Czech Koruna", "Kč", "1991-01-01", "2026-09-20"),
+        CurrencyDto("DJF", "262", "Djiboutian Franc", "Fdj", "1999-01-04", "2026-09-18"),
+        CurrencyDto("DKK", "208", "Danish Krone", "kr.", "1949-12-21", "2026-09-20"),
+        CurrencyDto("DOP", "214", "Dominican Peso", "$", "1999-01-04", "2026-09-18"),
+        CurrencyDto("DZD", "012", "Algerian Dinar", "د.ج", "1998-07-07", "2026-09-18"),
+        CurrencyDto("EGP", "818", "Egyptian Pound", "ج.م", "1994-03-24", "2026-09-20"),
+        CurrencyDto("ERN", "232", "Eritrean Nakfa", "Nfk", "1999-01-04", "2026-09-18"),
+        CurrencyDto("ETB", "230", "Ethiopian Birr", "Br", "1998-07-07", "2026-09-18"),
+        CurrencyDto("EUR", "978", "Euro", "€", "1999-01-04", "2026-09-20"),
+        CurrencyDto("FJD", "242", "Fijian Dollar", "$", "1999-01-04", "2026-09-18"),
+        CurrencyDto("FKP", "238", "Falkland Pound", "£", "1966-02-14", "2026-09-20"),
+        CurrencyDto("GBP", "826", "British Pound", "£", "1949-12-21", "2026-09-20"),
+        CurrencyDto("GEL", "981", "Georgian Lari", "₾", "1995-09-29", "2026-09-18"),
+        CurrencyDto("GGP", "", "Guernsey Pound", "£", "1949-12-21", "2026-09-20"),
+        CurrencyDto("GHS", "936", "Ghanaian Cedi", "₵", "2007-07-02", "2026-09-18"),
+        CurrencyDto("GIP", "292", "Gibraltar Pound", "£", "1999-01-04", "2026-09-18"),
+        CurrencyDto("GMD", "270", "Gambian Dalasi", "D", "1999-01-04", "2026-09-18"),
+        CurrencyDto("GNF", "324", "Guinean Franc", "Fr", "1998-07-07", "2026-09-18"),
+        CurrencyDto("GTQ", "320", "Guatemalan Quetzal", "Q", "1999-01-04", "2026-09-18"),
+        CurrencyDto("GYD", "328", "Guyanese Dollar", "$", "1993-04-13", "2026-09-18"),
+        CurrencyDto("HKD", "344", "Hong Kong Dollar", "$", "1981-01-02", "2026-09-20"),
+        CurrencyDto("HNL", "340", "Honduran Lempira", "L", "1999-01-04", "2026-09-18"),
+        CurrencyDto("HTG", "332", "Haitian Gourde", "G", "1999-01-04", "2026-09-18"),
+        CurrencyDto("HUF", "348", "Hungarian Forint", "Ft", "1994-03-31", "2026-09-20"),
+        CurrencyDto("IDR", "360", "Indonesian Rupiah", "Rp", "1993-01-05", "2026-09-20"),
+        CurrencyDto("ILS", "376", "Israeli New Shekel", "₪", "1996-04-11", "2026-09-18"),
+        CurrencyDto("IMP", "", "Isle of Man Pound", "£", "1949-12-21", "2026-09-20"),
+        CurrencyDto("INR", "356", "Indian Rupee", "₹", "1994-03-01", "2026-09-20"),
+        CurrencyDto("IQD", "368", "Iraqi Dinar", "ع.د", "1999-01-04", "2026-09-18"),
+        CurrencyDto("IRR", "364", "Iranian Rial", "﷼", "1994-08-09", "2026-09-18"),
+        CurrencyDto("ISK", "352", "Icelandic Króna", "kr.", "1980-01-02", "2026-09-18"),
+        CurrencyDto("JEP", "", "Jersey Pound", "£", "1949-12-21", "2026-09-20"),
+        CurrencyDto("JMD", "388", "Jamaican Dollar", "$", "1993-04-13", "2026-09-18"),
+        CurrencyDto("JOD", "400", "Jordanian Dinar", "د.ا", "1995-10-23", "2026-09-20"),
+        CurrencyDto("JPY", "392", "Japanese Yen", "¥", "1969-12-01", "2026-09-20"),
+        CurrencyDto("KES", "404", "Kenyan Shilling", "KSh", "1998-07-07", "2026-09-18"),
+        CurrencyDto("KGS", "417", "Kyrgyzstani Som", "som", "1993-12-31", "2026-09-18"),
+        CurrencyDto("KHR", "116", "Cambodian Riel", "៛", "1999-01-04", "2026-09-18"),
+        CurrencyDto("KMF", "174", "Comorian Franc", "Fr", "1999-01-04", "2026-09-18"),
+        CurrencyDto("KPW", "408", "North Korean Won", "₩", "1999-01-04", "2026-09-20"),
+        CurrencyDto("KRW", "410", "South Korean Won", "₩", "1981-01-02", "2026-09-20"),
+        CurrencyDto("KWD", "414", "Kuwaiti Dinar", "د.ك", "1993-11-25", "2026-09-20"),
+        CurrencyDto("KYD", "136", "Cayman Islands Dollar", "$", "1999-01-04", "2026-09-18"),
+        CurrencyDto("KZT", "398", "Kazakhstani Tenge", "₸", "1993-12-31", "2026-09-20"),
+        CurrencyDto("LAK", "418", "Lao Kip", "₭", "1999-01-04", "2026-09-18"),
+        CurrencyDto("LBP", "422", "Lebanese Pound", "ل.ل", "1993-11-25", "2026-09-18"),
+        CurrencyDto("LKR", "144", "Sri Lankan Rupee", "₨", "1999-01-04", "2026-09-18"),
+        CurrencyDto("LRD", "430", "Liberian Dollar", "$", "1999-01-04", "2026-09-18"),
+        CurrencyDto("LSL", "426", "Lesotho Loti", "L", "1999-01-04", "2026-09-18"),
+        CurrencyDto("LYD", "434", "Libyan Dinar", "ل.د", "1999-01-04", "2026-09-18"),
+        CurrencyDto("MAD", "504", "Moroccan Dirham", "د.م.", "1998-01-02", "2026-09-18"),
+        CurrencyDto("MDL", "498", "Moldovan Leu", "L", "1993-12-31", "2026-09-18"),
+        CurrencyDto("MGA", "969", "Malagasy Ariary", "Ar", "2005-01-03", "2026-09-18"),
+        CurrencyDto("MKD", "807", "Macedonian Denar", "ден", "1999-01-04", "2026-09-18"),
+        CurrencyDto("MMK", "104", "Myanmar Kyat", "K", "1999-01-04", "2026-09-18"),
+        CurrencyDto("MNT", "496", "Mongolian Tögrög", "₮", "1998-07-07", "2026-09-20"),
+        CurrencyDto("MOP", "446", "Macanese Pataca", "P", "1983-01-01", "2026-09-20"),
+        CurrencyDto("MRO", "478", "Mauritanian Ouguiya", "UM", "1999-01-04", "2026-09-18"),
+        CurrencyDto("MRU", "929", "Mauritanian Ouguiya", "UM", "2018-01-02", "2026-09-18"),
+        CurrencyDto("MUR", "480", "Mauritian Rupee", "₨", "1999-01-04", "2026-09-18"),
+        CurrencyDto("MVR", "462", "Maldivian Rufiyaa", "MVR", "1999-01-04", "2026-09-18"),
+        CurrencyDto("MWK", "454", "Malawian Kwacha", "MK", "1999-01-04", "2026-09-18"),
+        CurrencyDto("MXN", "484", "Mexican Peso", "$", "1991-11-12", "2026-09-18"),
+        CurrencyDto("MYR", "458", "Malaysian Ringgit", "RM", "1988-01-08", "2026-09-20"),
+        CurrencyDto("MZN", "943", "Mozambican Metical", "MTn", "1998-07-07", "2026-09-18"),
+        CurrencyDto("NAD", "516", "Namibian Dollar", "$", "1999-02-01", "2026-09-18"),
+        CurrencyDto("NGN", "566", "Nigerian Naira", "₦", "1999-01-04", "2026-09-18"),
+        CurrencyDto("NIO", "558", "Nicaraguan Córdoba", "C$", "1999-01-04", "2026-09-20"),
+        CurrencyDto("NOK", "578", "Norwegian Krone", "kr", "1949-12-21", "2026-09-20"),
+        CurrencyDto("NPR", "524", "Nepalese Rupee", "Rs.", "1999-01-04", "2026-09-20"),
+        CurrencyDto("NZD", "554", "New Zealand Dollar", "$", "1990-05-02", "2026-09-20"),
+        CurrencyDto("OMR", "512", "Omani Rial", "ر.ع.", "1986-01-01", "2026-09-20"),
+        CurrencyDto("PAB", "590", "Panamanian Balboa", "B/.", "1998-07-07", "2026-09-18"),
+        CurrencyDto("PEN", "604", "Peruvian Sol", "S/", "1998-07-07", "2026-09-18"),
+        CurrencyDto("PGK", "598", "Papua New Guinean Kina", "K", "1999-01-04", "2026-09-18"),
+        CurrencyDto("PHP", "608", "Philippine Peso", "₱", "1998-07-07", "2026-09-18"),
+        CurrencyDto("PKR", "586", "Pakistani Rupee", "₨", "1998-07-07", "2026-09-18"),
+        CurrencyDto("PLN", "985", "Polish Złoty", "zł", "1994-03-31", "2026-09-20"),
+        CurrencyDto("PYG", "600", "Paraguayan Guaraní", "₲", "1999-01-04", "2026-09-18"),
+        CurrencyDto("QAR", "634", "Qatari Riyal", "ر.ق", "1998-07-07", "2026-09-20"),
+        CurrencyDto("RON", "946", "Romanian Leu", "Lei", "1996-05-07", "2026-09-18"),
+        CurrencyDto("RSD", "941", "Serbian Dinar", "RSD", "2000-01-03", "2026-09-18"),
+        CurrencyDto("RUB", "643", "Russian Ruble", "₽", "1994-03-31", "2026-09-20"),
+        CurrencyDto("RWF", "646", "Rwandan Franc", "FRw", "1999-01-04", "2026-09-18"),
+        CurrencyDto("SAR", "682", "Saudi Riyal", "ر.س", "1986-06-01", "2026-09-20"),
+        CurrencyDto("SBD", "090", "Solomon Islands Dollar", "$", "1999-01-04", "2026-09-18"),
+        CurrencyDto("SCR", "690", "Seychellois Rupee", "₨", "1999-01-04", "2026-09-18"),
+        CurrencyDto("SDG", "938", "Sudanese Pound", "£", "2007-04-02", "2026-09-18"),
+        CurrencyDto("SEK", "752", "Swedish Krona", "kr", "1949-12-21", "2026-09-20"),
+        CurrencyDto("SGD", "702", "Singapore Dollar", "$", "1981-01-02", "2026-09-20"),
+        CurrencyDto("SHP", "654", "Saint Helenian Pound", "£", "1976-02-02", "2026-09-20"),
+        CurrencyDto("SLE", "925", "New Leone", "Le", "2022-07-01", "2026-09-18"),
+        CurrencyDto("SOS", "706", "Somali Shilling", "Sh", "1999-01-04", "2026-09-18"),
+        CurrencyDto("SRD", "968", "Surinamese Dollar", "$", "2004-03-01", "2026-09-18"),
+        CurrencyDto("SSP", "728", "South Sudanese Pound", "£", "2013-01-21", "2026-09-18"),
+        CurrencyDto(
+            "STN",
+            "930",
+            "São Tomé and Príncipe Second Dobra",
+            "Db",
+            "2018-01-02",
+            "2026-09-18"
+        ),
+        CurrencyDto("SVC", "222", "Salvadoran Colón", "₡", "1999-01-04", "2026-09-18"),
+        CurrencyDto("SYP", "760", "Syrian Pound", "£S", "1998-07-07", "2026-09-18"),
+        CurrencyDto("SZL", "748", "Swazi Lilangeni", "E", "1999-01-04", "2026-09-18"),
+        CurrencyDto("THB", "764", "Thai Baht", "฿", "1990-12-31", "2026-09-20"),
+        CurrencyDto("TJS", "972", "Tajikistani Somoni", "ЅМ", "2000-01-03", "2026-09-18"),
+        CurrencyDto("TMT", "934", "Turkmenistani Manat", "m", "2009-01-01", "2026-09-20"),
+        CurrencyDto("TND", "788", "Tunisian Dinar", "د.ت", "1998-07-07", "2026-09-18"),
+        CurrencyDto("TOP", "776", "Tongan Paʻanga", "T$", "1999-01-04", "2026-09-18"),
+        CurrencyDto("TRY", "949", "Turkish Lira", "₺", "1996-04-16", "2026-09-20"),
+        CurrencyDto("TTD", "780", "Trinidad and Tobago Dollar", "$", "1991-01-31", "2026-09-18"),
+        CurrencyDto("TWD", "901", "New Taiwan Dollar", "$", "1981-01-02", "2026-09-20"),
+        CurrencyDto("TZS", "834", "Tanzanian Shilling", "Sh", "1998-07-07", "2026-09-18"),
+        CurrencyDto("UAH", "980", "Ukrainian Hryvnia", "₴", "1996-09-02", "2026-09-20"),
+        CurrencyDto("UGX", "800", "Ugandan Shilling", "USh", "1999-01-04", "2026-09-18"),
+        CurrencyDto("USD", "840", "United States Dollar", "$", "1948-06-21", "2026-09-20"),
+        CurrencyDto("UYU", "858", "Uruguayan Peso", "U", "1998-07-07", "2026-09-18"),
+        CurrencyDto("UZS", "860", "Uzbekistan Som", "so'm", "1994-07-01", "2026-09-18"),
+        CurrencyDto("VES", "928", "Venezuelan Bolívar Soberano", "Bs", "2018-05-29", "2026-09-18"),
+        CurrencyDto("VND", "704", "Vietnamese Đồng", "₫", "1998-07-07", "2026-09-20"),
+        CurrencyDto("VUV", "548", "Vanuatu Vatu", "Vt", "1999-01-04", "2026-09-18"),
+        CurrencyDto("WST", "882", "Samoan Tala", "T", "1999-01-04", "2026-09-18"),
+        CurrencyDto("XAF", "950", "Central African CFA Franc", "CFA", "1998-07-07", "2026-09-20"),
+        CurrencyDto("XAG", "961", "Silver (Troy Ounce)", "oz t", "1999-01-05", "2026-09-20"),
+        CurrencyDto("XAU", "959", "Gold (Troy Ounce)", "oz t", "1999-01-05", "2026-09-20"),
+        CurrencyDto("XCD", "951", "East Caribbean Dollar", "$", "1999-01-04", "2026-09-18"),
+        CurrencyDto("XCG", "532", "Caribbean Guilder", "Cg", "2025-03-31", "2026-09-18"),
+        CurrencyDto("XDR", "960", "Special Drawing Rights", "SDR", "1981-01-01", "2026-09-20"),
+        CurrencyDto("XOF", "952", "West African CFA Franc", "Fr", "1998-07-07", "2026-09-20"),
+        CurrencyDto("XPD", "964", "Palladium", "oz t", "2000-04-21", "2026-09-18"),
+        CurrencyDto("XPF", "953", "CFP Franc", "₣", "1999-01-04", "2026-09-18"),
+        CurrencyDto("XPT", "962", "Platinum", "oz t", "1999-01-05", "2026-09-18"),
+        CurrencyDto("YER", "886", "Yemeni Rial", "﷼", "1998-07-07", "2026-09-18"),
+        CurrencyDto("ZAR", "710", "South African Rand", "R", "1987-01-02", "2026-09-20"),
+        CurrencyDto("ZMW", "967", "Zambian Kwacha", "K", "2013-01-02", "2026-09-18"),
+        CurrencyDto("ZWG", "924", "Zimbabwe Gold", "ZiG", "2024-09-02", "2026-09-18")
+    )
+}
+
 fun getMapCurrencies(): Map<String, String> {
     return getCurrencies().associate { it.code to it.name }
 }
 
 fun getLatestRatesRequest(): GetLatestRates.Request {
     return GetLatestRates.Request(
-        source = "USD",
-        currencies = "AUD,EUR,GBP,PLN",
-        format = 1
+        base = "USD", quotes = "AUD,EUR,GBP,PLN"
     )
 }
 
 fun getLatestRatesResponse(
-    source: String,
-    avableCurrencies: List<Currency>,
-    currencies: String
-): GetLatestRates.Response {
+    source: String, avableCurrencies: List<Currency>, currencies: String
+): List<GetLatestRates.RateDto> {
     return try {
         val operationSource = source.ifEmpty { getCurrencies().first().code }
         val sourceIsValid = avableCurrencies.find { it.code == operationSource }
@@ -209,44 +391,25 @@ fun getLatestRatesResponse(
 
         val targets = getTargetsByCurrencies(avableCurrencies, currencies)
         val quotes = generateRandomExchangeRates(operationSource, targets)
-        GetLatestRates.Response(
-            success = true,
-            terms = "https://www.termsfeed.com/blog/sample-terms-and-conditions-template/",
-            privacy = "https://termify.io/privacy-policy-generator?gad_source=1&gad_campaignid=10836291524&gbraid=0AAAAAC6IOXLl_P31uk89uiTLnLkJzATzP&gclid=CjwKCAjw_-3GBhAYEiwAjh9fUNYYI9vIOQUMFXQWlzEQpkqNzGYYQIkjDFc8QG8kySVNFAFaZ1uy2RoCe3MQAvD_BwE",
-            timestamp = Date.from(Instant.now()).time,
-            source = operationSource,
-            quotes = quotes,
-            error = null
-        )
+        List(quotes.size) { index ->
+            val target = targets[index]
+            GetLatestRates.RateDto(
+                date = Date.from(Instant.now()).time.toString(),
+                base = operationSource,
+                quote = target,
+                rate = quotes["$operationSource$target"] ?: 0.0,
+            )
+        }
     } catch (_: Exception) {
-        GetLatestRates.Response(
-            success = false,
-            terms = null,
-            privacy = null,
-            timestamp = null,
-            source = null,
-            quotes = null,
-            error = getApiError()
-        )
+        emptyList()
     }
 
 }
 
 
-fun getCurrenciesResponse(): GetCurrencies.Response {
-    return GetCurrencies.Response(
-        success = true,
-        terms = "https://www.termsfeed.com/blog/sample-terms-and-conditions-template/",
-        privacy = "https://termify.io/privacy-policy-generator?gad_source=1&gad_campaignid=10836291524&gbraid=0AAAAAC6IOXLl_P31uk89uiTLnLkJzATzP&gclid=CjwKCAjw_-3GBhAYEiwAjh9fUNYYI9vIOQUMFXQWlzEQpkqNzGYYQIkjDFc8QG8kySVNFAFaZ1uy2RoCe3MQAvD_BwE",
-        error = null,
-        currencies = getMapCurrencies()
-    )
+fun getCurrenciesResponse(): List<CurrencyDto> {
+    return getCurrenciesDto()
 }
-
-fun getApiError(): ApiError {
-    return ApiError(101, "You have supplied an invalid Source Currency. [Example: source=EUR]")
-}
-
 
 private fun generateRandomExchangeRates(base: String, targets: List<String>): Map<String, Double> {
     return targets.associate { target ->
@@ -255,15 +418,11 @@ private fun generateRandomExchangeRates(base: String, targets: List<String>): Ma
 }
 
 private fun getTargetsByCurrencies(
-    avableCurrencies: List<Currency>,
-    currencies: String
+    avableCurrencies: List<Currency>, currencies: String
 ): List<String> {
     val avableCurrencyCodes = avableCurrencies.map { it.code }
-    val targetList = currencies
-        .split(",")
-        .toSet()
-        .filter { currencie ->
-            avableCurrencyCodes.find { it == currencie } != null
-        }
+    val targetList = currencies.split(",").toSet().filter { currencie ->
+        avableCurrencyCodes.find { it == currencie } != null
+    }
     return targetList
 }

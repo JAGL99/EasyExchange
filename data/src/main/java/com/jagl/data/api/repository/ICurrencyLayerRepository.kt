@@ -10,7 +10,7 @@ interface ICurrencyLayerRepository {
      */
     suspend fun getLatestRates(
        request: GetLatestRates.Request
-    ): Result<GetLatestRates.Response>
+    ): Result<List<GetLatestRates.RateDto>>
 
-    suspend fun getCurrencies(): Result<GetCurrencies.Response>
+    suspend fun getCurrencies(): Result<List<GetCurrencies.CurrencyDto>>
 }

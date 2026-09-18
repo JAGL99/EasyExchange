@@ -43,8 +43,7 @@ class CurrencyLayerDataSource @Inject constructor(
             return@safeApiStateCall ApiState.Error(message)
         }
 
-        val currencies = result.getOrThrow().currencies ?: emptyMap()
-        val currencyList = currencies.map { Currency(code = it.key, name = it.value) }
+        val currencyList = result.getOrThrow().map { Currency(code = it.isoCode, name = it.name) }
         currencyDao.insertCurrencies(currencyList.map(CurrencyEntity.Companion::fromCurrency))
         return@safeApiStateCall ApiState.Success(currencyList)
     }

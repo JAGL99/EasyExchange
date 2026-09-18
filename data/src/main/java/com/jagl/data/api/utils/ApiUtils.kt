@@ -1,7 +1,8 @@
 package com.jagl.data.api.utils
 
-import com.jagl.data.api.model.CurrencyLayerResponse
+import com.jagl.data.api.model.ErrorDto
 import com.jagl.domain.model.ApiState
+import com.squareup.moshi.Moshi
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
@@ -11,17 +12,20 @@ import java.net.UnknownHostException
 object ApiUtils {
 
     const val GENERIC_ERROR = "Oops, something went wrong. Please try again later."
-    const val REQUEST_ERROR = "There was a problem with the request. Please check your connection or data."
-    const val CONNECTION_ERROR = "Could not connect to the server. Please check your internet connection."
+    const val REQUEST_ERROR =
+        "There was a problem with the request. Please check your connection or data."
+    const val CONNECTION_ERROR =
+        "Could not connect to the server. Please check your internet connection."
     const val NO_INTERNET_ERROR =
         "No internet connection, please connect to a network and try again"
     const val INVALID_TOKEN_ERROR =
         "A valid access key has not been provided, please try another key"
 
-    const val NO_RATE_ERROR = "No valid exchange rate was found for these currencies, please try another option"
+    const val NO_RATE_ERROR =
+        "No valid exchange rate was found for these currencies, please try another option"
     const val TIME_OUT_ERROR = "The connection has expired. Please try again later."
 
-    private fun getCurrencyLayerCodeMessage(code: Int): String {
+    private fun getFrankfurterCodeMessage(code: Int): String {
         return when (code) {
             101 -> INVALID_TOKEN_ERROR
             else -> GENERIC_ERROR
@@ -62,24 +66,26 @@ object ApiUtils {
         ApiState.Error(getErrorMessage(e.cause))
     }
 
-    fun <T : CurrencyLayerResponse> safeMap(
-        response: Response<T>,
+    fun <T : List<*>> safeMap(
+        response: Response<T?>,
         onMapResponse: ((T) -> T)? = null
     ): Result<T> {
         try {
             if (!response.isSuccessful || response.body() == null)
                 return Result.failure(Exception(getHttpMessage(response.code())))
 
-            val body = response.body()!!
+            val bodyList = response.body()!!
 
-            if (!body.success) {
-                val message = body.error?.code?.let { code ->
-                    getCurrencyLayerCodeMessage(code)
-                } ?: GENERIC_ERROR
+            if (bodyList.isEmpty()) {
+                val moshi = Moshi.Builder().build()
+                val jsonAdapter = moshi.adapter(ErrorDto::class.java)
+                val error = jsonAdapter.fromJson(bodyList.toString())
+                val message =
+                    error?.status?.let { code -> getFrankfurterCodeMessage(code) } ?: GENERIC_ERROR
                 return Result.failure(Exception(message))
             }
 
-            return Result.success(onMapResponse?.invoke(body) ?: body)
+            return Result.success(onMapResponse?.invoke(bodyList) ?: bodyList)
         } catch (e: Exception) {
             return Result.failure(e)
         }
