@@ -1,11 +1,10 @@
 package com.jagl.exchangeapp.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -31,8 +30,19 @@ fun EasyExchangeButton(
     icon: ImageVector? = null,
     enabled: Boolean = true
 ) {
-    val brush =
-        Brush.horizontalGradient(listOf(Color(0xFF0546ED), Color(0xFF849AFF)))
+
+    val gradientLight = listOf(
+        Color(0xFF0546ED),
+        Color(0xFF849AFF)
+    )
+
+    val gradientDark = listOf(
+        Color(0xFF6E8CFF),
+        Color(0xFFC7D3FF)
+    )
+
+
+    val brush = Brush.horizontalGradient(if (isSystemInDarkTheme()) gradientDark else gradientLight)
 
     Button(
         onClick = onClick,
