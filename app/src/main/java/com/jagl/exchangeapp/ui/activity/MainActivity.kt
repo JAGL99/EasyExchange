@@ -27,7 +27,8 @@ class MainActivity() : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val internetConnectionState = viewModel.internetConnection.collectAsState(initial = NetworkStatus.Idle)
+            val internetConnectionState =
+                viewModel.internetConnection.collectAsState(initial = NetworkStatus.Idle)
             LaunchedEffect(internetConnectionState.value) {
                 if (internetConnectionState.value == NetworkStatus.Unavailable) {
                     Toast.makeText(
@@ -46,9 +47,7 @@ class MainActivity() : ComponentActivity() {
                 Surface(
                     modifier = Modifier.Companion.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                ) {
-                    AppNavigation(viewModel.getToken())
-                }
+                ) { AppNavigation() }
             }
         }
     }
