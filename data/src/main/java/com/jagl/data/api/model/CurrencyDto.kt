@@ -1,28 +1,28 @@
 package com.jagl.data.api.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 object GetCurrencies {
 
-    @Serializable
+    @JsonClass(generateAdapter = true)
     data class CurrencyDto(
-        @SerialName("iso_code")
-        val isoCode: String,
+        @Json(name = "iso_code")
+        val isoCode: String? = null,
 
-        @SerialName("iso_numeric")
+        @Json(name = "iso_numeric")
         val isoNumeric: String? = null,
 
-        @SerialName("name")
-        val name: String,
+        @Json(name = "name")
+        val name: String? = null,
 
-        @SerialName("symbol")
+        @Json(name = "symbol")
         val symbol: String? = null,
 
-        @SerialName("start_date")
-        val startDate: String,
+        @Json(name = "start_date")
+        val startDate: String? = null,
 
-        @SerialName("end_date")
-        val endDate: String
+        @Json(name = "end_date")
+        val endDate: String? = null
     )
 }
