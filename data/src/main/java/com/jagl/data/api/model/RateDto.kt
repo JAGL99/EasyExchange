@@ -1,7 +1,7 @@
 package com.jagl.data.api.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 object GetLatestRates {
 
@@ -10,15 +10,15 @@ object GetLatestRates {
         val quotes: String,
     )
 
-    @Serializable
+    @JsonClass(generateAdapter = true)
     data class RateDto(
-        @SerialName("date")
+        @Json(name = "date")
         val date: String,
-        @SerialName("base")
+        @Json(name = "base")
         val base: String,
-        @SerialName("rate")
+        @Json(name = "rate")
         val rate: Double,
-        @SerialName("quote")
+        @Json(name = "quote")
         val quote: String
     )
 }
