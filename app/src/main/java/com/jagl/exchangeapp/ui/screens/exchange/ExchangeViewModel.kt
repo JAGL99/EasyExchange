@@ -254,7 +254,8 @@ class ExchangeViewModel @Inject constructor(
                         }
                         _uiState.update { currentState ->
                             currentState.copy(
-                                convertedAmount = formatter.format(exchangeRate.rate),
+                                convertedAmount = formatter.format(exchangeRate.rate)
+                                    .replace(Regex("(?<=[a-zA-Z])(?=\\d)"), " "),
                                 exchangeRate = exchangeRate.getEquivalent(locale),
                                 isLoading = false
                             )
