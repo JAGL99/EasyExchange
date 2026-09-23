@@ -21,6 +21,7 @@ android {
 
     namespace = "com.jagl.exchangeapp"
     compileSdk = currencCompileSdk
+    ndkVersion = "30.0.16248370"
 
     defaultConfig {
         applicationId = "com.jagl.exchangeapp"
@@ -43,6 +44,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk.debugSymbolLevel = "FULL"
         }
     }
     compileOptions {
