@@ -21,7 +21,6 @@ android {
 
     namespace = "com.jagl.exchangeapp"
     compileSdk = currencCompileSdk
-    ndkVersion = "30.0.16248370"
 
     defaultConfig {
         applicationId = "com.jagl.exchangeapp"
@@ -39,14 +38,11 @@ android {
             isShrinkResources = true
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = true
-                unstrippedNativeLibsDir = file("build/intermediates/merged_native_libs/release/out/lib")
-                nativeSymbolUploadEnabled = true
             }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            ndk.debugSymbolLevel = "FULL"
         }
     }
     compileOptions {
