@@ -39,6 +39,8 @@ android {
             isShrinkResources = true
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = true
+                unstrippedNativeLibsDir = file("build/intermediates/merged_native_libs/release/out/lib")
+                nativeSymbolUploadEnabled = true
             }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
