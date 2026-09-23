@@ -10,7 +10,7 @@ plugins {
 android {
     namespace = "com.jagl.data"
     compileSdk = 35
-
+    ndkVersion = "30.0.16248370"
     defaultConfig {
         minSdk = 24
 
@@ -25,6 +25,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk.debugSymbolLevel = "FULL"
         }
     }
     compileOptions {
