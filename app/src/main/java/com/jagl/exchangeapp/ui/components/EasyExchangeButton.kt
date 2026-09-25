@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.testTag
 import com.jagl.exchangeapp.R
 
 @Composable
@@ -53,7 +54,8 @@ fun EasyExchangeButton(
                     brush = brush,
                     shape = ButtonDefaults.shape
                 )
-                .then(modifier),
+                .then(modifier)
+                .testTag("calculate_button"),
         enabled = enabled
     ) {
         Row(

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -88,13 +89,16 @@ fun SearchableCurrencyDropdown(
                         focusRequester.freeFocus()
                         onCurrencySelected(currency)
                     }
+                    .testTag("currency_item_${currency.code}")
             )
         }
     } else if (searchQuery.value.isNotEmpty() && filteredCurrencies.isEmpty()) {
         Text(
             text = stringResource(R.string.no_currency_match),
             color = Color.Red,
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier
+                .padding(8.dp)
+                .testTag("no_currency_match")
         )
     }
 }

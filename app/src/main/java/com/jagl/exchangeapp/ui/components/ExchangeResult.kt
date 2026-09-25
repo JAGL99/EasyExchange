@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.testTag
 import com.jagl.core.extensions.EMPTY
 import com.jagl.domain.model.ExchangeRate
 import com.jagl.domain.model.getEquivalent
@@ -32,7 +33,9 @@ fun ExchangeResult(
     exchangeRate: String,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier) {
+    Box(
+        modifier = modifier.testTag("exchange_result")
+    ) {
         ElevatedCard(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
