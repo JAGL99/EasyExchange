@@ -29,7 +29,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -115,6 +117,7 @@ private fun ExchangeContent(
                 SpacerH4()
 
                 SearchableCurrencyDropdown(
+                    modifier = Modifier.testTag("from_currency_dropdown"),
                     currencySelected = uiState.value.fromCurrency,
                     avableCurrencies = uiState.value.availableCurrencies,
                     onCurrencySelected = { onEvent(ExchangeUiEvents.SelectFromCurrency(it)) }
@@ -139,6 +142,7 @@ private fun ExchangeContent(
                 SpacerH4()
 
                 SearchableCurrencyDropdown(
+                    modifier = Modifier.testTag("to_currency_dropdown"),
                     currencySelected = uiState.value.toCurrency,
                     avableCurrencies = uiState.value.availableCurrencies,
                     onCurrencySelected = { onEvent(ExchangeUiEvents.SelectToCurrency(it)) }

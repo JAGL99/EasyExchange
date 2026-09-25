@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.testTag
 import com.jagl.exchangeapp.ui.theme.ExchangeAppTheme
 
 
@@ -46,7 +47,8 @@ fun AnimatedAlert(
         Card(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(16.dp)
+                .testTag("error_alert"),
             colors = CardDefaults.cardColors().copy(
                 containerColor = MaterialTheme.colorScheme.error,
                 contentColor = MaterialTheme.colorScheme.onError
@@ -65,10 +67,13 @@ fun AnimatedAlert(
                     modifier = Modifier.weight(1f),
                     fontSize = 18.sp
                 )
-                IconButton(onClick = {
-                    visible = false
-                    onDismiss()
-                }) {
+                IconButton(
+                    onClick = {
+                        visible = false
+                        onDismiss()
+                    },
+                    modifier = Modifier.testTag("close_error_button")
+                ) {
                     Icon(
                         modifier = Modifier.size(30.dp),
                         imageVector = Icons.Default.Close,
