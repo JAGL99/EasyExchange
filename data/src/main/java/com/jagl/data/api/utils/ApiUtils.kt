@@ -1,6 +1,7 @@
 package com.jagl.data.api.utils
 
 import com.jagl.data.api.model.ErrorDto
+import com.jagl.domain.crashlytics.CrashlyticsHelper
 import com.jagl.domain.model.ApiState
 import com.squareup.moshi.Moshi
 import retrofit2.HttpException
@@ -57,12 +58,14 @@ object ApiUtils {
     suspend fun <T> safeResultCall(request: suspend () -> Result<T>): Result<T> = try {
         request()
     } catch (e: Exception) {
+        CrashlyticsHelper.logException(e)
         Result.failure(Exception(getErrorMessage(e.cause)))
     }
 
     suspend fun <T> safeApiStateCall(request: suspend () -> ApiState<T>): ApiState<T> = try {
         request()
     } catch (e: Exception) {
+        CrashlyticsHelper.logException(e)
         ApiState.Error(getErrorMessage(e.cause))
     }
 
@@ -87,6 +90,7 @@ object ApiUtils {
 
             return Result.success(onMapResponse?.invoke(bodyList) ?: bodyList)
         } catch (e: Exception) {
+            CrashlyticsHelper.logException(e)
             return Result.failure(e)
         }
     }
