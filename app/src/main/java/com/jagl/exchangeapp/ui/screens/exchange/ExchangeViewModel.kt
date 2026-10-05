@@ -63,6 +63,9 @@ class ExchangeViewModel @Inject constructor(
             is ApiState.Success -> {
                 val currencies = result.data
                 _uiState.update { currentState ->
+                    currencies.forEach { currency ->
+                        println("Currency: ${currency.code} - ${currency.name}")
+                    }
                     currentState.copy(availableCurrencies = currencies)
                 }
             }

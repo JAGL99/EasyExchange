@@ -39,7 +39,9 @@ fun SearchableCurrencyDropdown(
     currencySelected: Currency? = null,
     modifier: Modifier = Modifier
 ) {
+    println("Available Currencies: $avableCurrencies")
     val searchQuery = remember { mutableStateOf(currencySelected?.code.orEmpty()) }
+    println("searchQuery: $searchQuery")
     LaunchedEffect(currencySelected) {
         searchQuery.value = currencySelected?.code.orEmpty()
     }
