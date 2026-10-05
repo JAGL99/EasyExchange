@@ -7,22 +7,22 @@ object GetCurrencies {
 
     @JsonClass(generateAdapter = true)
     data class CurrencyDto(
-        @Json(name = "iso_code")
-        val isoCode: String? = null,
+        @field:Json(name = "iso_code")
+        val iso_code: String? = null,
 
-        @Json(name = "iso_numeric")
-        val isoNumeric: String? = null,
+        @field:Json(name = "iso_numeric")
+        val iso_numeric: String? = null,
 
-        @Json(name = "name")
+        @field:Json(name = "name")
         val name: String? = null,
 
-        @Json(name = "symbol")
+        @field:Json(name = "symbol")
         val symbol: String? = null,
 
-        @Json(name = "start_date")
-        val startDate: String? = null,
+        @field:Json(name = "start_date")
+        val start_date: String? = null,
 
-        @Json(name = "end_date")
-        val endDate: String? = null
+        @field:Json(name = "end_date")
+        val end_date: String? = null
     )
 }
