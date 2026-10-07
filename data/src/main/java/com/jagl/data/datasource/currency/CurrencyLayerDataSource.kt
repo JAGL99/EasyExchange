@@ -26,25 +26,38 @@ class CurrencyLayerDataSource @Inject constructor(
      * @return An [ApiState] with a list of [Currency] objects.
      */
     override suspend fun getAvailableCurrencies(): ApiState<List<Currency>> = safeApiStateCall {
+        println("CurrencyLayerDataSource: getAvailableCurrencies called")
         val localData = currencyDao.getCurrencies().map { it.toCurrency() }
 
         if (localData.isNotEmpty()) {
+            println("CurrencyLayerDataSource: Returning local data with ${localData.size} currencies")
             return@safeApiStateCall ApiState.Success(localData)
         }
+
+        println("CurrencyLayerDataSource: Local data is empty, fetching from API")
 
         if (networkManager.isConnected().not())
             return@safeApiStateCall ApiState.Error(ApiUtils.NO_INTERNET_ERROR)
 
+        println("CurrencyLayerDataSource: Network is connected, calling API")
 
         val result = api.getCurrencies()
 
+        println("CurrencyLayerDataSource: API call completed with result: $result")
+
         if (result.isFailure) {
+            println("CurrencyLayerDataSource: API call failed with exception: ${result.exceptionOrNull()}")
             val message = result.exceptionOrNull()?.message ?: ApiUtils.GENERIC_ERROR
             return@safeApiStateCall ApiState.Error(message)
         }
-
-        val currencyList = result.getOrThrow().map { Currency(code = it.iso_code.orEmpty(), name = it.name.orEmpty()) }
+        println("CurrencyLayerDataSource: Mapping API response to Currency objects")
+        val currencyList = result.getOrThrow().map {
+            println("CurrencyLayerDataSource: Mapping CurrencyDto to Currency: code=${it.iso_code}, name=${it.name}")
+            Currency(code = it.iso_code.orEmpty(), name = it.name.orEmpty())
+        }
+        println("CurrencyLayerDataSource: Inserting ${currencyList.size} currencies into local database")
         currencyDao.insertCurrencies(currencyList.map(CurrencyEntity.Companion::fromCurrency))
+        println("CurrencyLayerDataSource: Returning API data with ${currencyList.size} currencies")
         return@safeApiStateCall ApiState.Success(currencyList)
     }
 

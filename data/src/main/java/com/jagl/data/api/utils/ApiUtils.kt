@@ -61,8 +61,10 @@ object ApiUtils {
     }
 
     suspend fun <T> safeApiStateCall(request: suspend () -> ApiState<T>): ApiState<T> = try {
+        println("safeApiStateCall")
         request()
     } catch (e: Exception) {
+        println("safeApiStateCall error: ${e.message}")
         ApiState.Error(getErrorMessage(e.cause))
     }
 
@@ -70,13 +72,18 @@ object ApiUtils {
         response: Response<T?>,
         onMapResponse: ((T) -> T)? = null
     ): Result<T> {
+        println("safeMap called with response: $response")
         try {
+            println("safeMap: isSuccessful=${response.isSuccessful}, body=${response.body()}")
             if (!response.isSuccessful || response.body() == null)
                 return Result.failure(Exception(getHttpMessage(response.code())))
 
+            println("safeMap: response body is not null, proceeding to map")
             val bodyList = response.body()!!
 
+            println("safeMap: bodyList size=${bodyList.size}")
             if (bodyList.isEmpty()) {
+                println("safeMap: bodyList is empty, attempting to parse error response")
                 val moshi = Moshi.Builder().build()
                 val jsonAdapter = moshi.adapter(ErrorDto::class.java)
                 val error = jsonAdapter.fromJson(bodyList.toString())
@@ -85,6 +92,7 @@ object ApiUtils {
                 return Result.failure(Exception(message))
             }
 
+            println("safeMap: Mapping bodyList to desired format")
             return Result.success(onMapResponse?.invoke(bodyList) ?: bodyList)
         } catch (e: Exception) {
             return Result.failure(e)
