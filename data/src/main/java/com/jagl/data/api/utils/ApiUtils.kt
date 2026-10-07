@@ -58,6 +58,7 @@ object ApiUtils {
         println("safeResultCall")
         request()
     } catch (e: Exception) {
+        e.printStackTrace()
         println("safeResultCall exception: ${e.cause}")
         println("safeResultCall error: ${e.message}")
         Result.failure(Exception(getErrorMessage(e.cause)))
@@ -67,6 +68,7 @@ object ApiUtils {
         println("safeApiStateCall")
         request()
     } catch (e: Exception) {
+        e.printStackTrace()
         println("safeApiStateCall exception: ${e.cause}")
         println("safeApiStateCall error: ${e.message}")
         ApiState.Error(getErrorMessage(e.cause))
