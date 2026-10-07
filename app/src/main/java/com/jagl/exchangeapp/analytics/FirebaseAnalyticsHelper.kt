@@ -2,7 +2,7 @@ package com.jagl.exchangeapp.analytics
 
 import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.jagl.domain.crashlytics.CrashlyticsHelper
 
 object FirebaseAnalyticsHelper {
 
@@ -42,7 +42,7 @@ object FirebaseAnalyticsHelper {
                     else -> bundle.putString(key.paramName, value.toString())
                 }
             }catch (e: Exception) {
-                FirebaseCrashlytics.getInstance().recordException(e)
+                CrashlyticsHelper.logException(e)
             }
         }
         firebaseAnalytics.logEvent(event.eventName, bundle)

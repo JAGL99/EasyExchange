@@ -12,13 +12,13 @@ object GetLatestRates {
 
     @JsonClass(generateAdapter = true)
     data class RateDto(
-        @Json(name = "date")
+        @field:Json(name = "date")
         val date: String,
-        @Json(name = "base")
+        @field:Json(name = "base")
         val base: String,
-        @Json(name = "rate")
+        @field:Json(name = "rates")
         val rate: Double,
-        @Json(name = "quote")
+        @field:Json(name = "quote")
         val quote: String
     )
 }

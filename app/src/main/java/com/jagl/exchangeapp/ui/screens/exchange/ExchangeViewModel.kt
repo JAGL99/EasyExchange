@@ -2,11 +2,11 @@ package com.jagl.exchangeapp.ui.screens.exchange
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.jagl.core.tropicalization.ITropicalization
 import com.jagl.core.util.DateUtils
 import com.jagl.data.datasource.currency.ICurrencyDataSource
 import com.jagl.data.datasource.exchangeRate.IExchangeDataSource
+import com.jagl.domain.crashlytics.CrashlyticsHelper
 import com.jagl.domain.model.ApiState
 import com.jagl.domain.model.Currency
 import com.jagl.domain.model.ExchangeRate
@@ -53,7 +53,7 @@ class ExchangeViewModel @Inject constructor(
         val result: ApiState<List<Currency>> = currencyDataSource.getAvailableCurrencies()
         when (result) {
             is ApiState.Error -> {
-                FirebaseCrashlytics.getInstance().recordException(Exception(result.message))
+                CrashlyticsHelper.logException(Exception(result.message))
                 _uiState.update { currentState ->
                     val erroMessage = ErrorMessageUtils.getErrorMessage(result.message)
                     currentState.copy(errorMessage = erroMessage)
@@ -63,6 +63,9 @@ class ExchangeViewModel @Inject constructor(
             is ApiState.Success -> {
                 val currencies = result.data
                 _uiState.update { currentState ->
+                    currencies.forEach { currency ->
+                        println("Currency: ${currency.code} - ${currency.name}")
+                    }
                     currentState.copy(availableCurrencies = currencies)
                 }
             }
@@ -254,7 +257,8 @@ class ExchangeViewModel @Inject constructor(
                         }
                         _uiState.update { currentState ->
                             currentState.copy(
-                                convertedAmount = formatter.format(exchangeRate.rate),
+                                convertedAmount = formatter.format(exchangeRate.rate)
+                                    .replace(Regex("(?<=[a-zA-Z])(?=\\d)"), " "),
                                 exchangeRate = exchangeRate.getEquivalent(locale),
                                 isLoading = false
                             )
@@ -262,7 +266,7 @@ class ExchangeViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                FirebaseCrashlytics.getInstance().recordException(e)
+                CrashlyticsHelper.logException(e)
                 _uiState.update { currentState ->
                     val erroMessage = ErrorMessageUtils.getErrorMessage(e.message.orEmpty())
                     currentState.copy(

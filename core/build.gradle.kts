@@ -9,8 +9,7 @@ plugins {
 
 android {
     namespace = "com.jagl.core"
-    compileSdk = 35
-
+    compileSdk = 36
     defaultConfig {
         minSdk = 24
 
@@ -25,6 +24,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
         }
     }
     compileOptions {

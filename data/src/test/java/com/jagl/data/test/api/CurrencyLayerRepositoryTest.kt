@@ -5,12 +5,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
-import assertk.assertions.isNullOrEmpty
 import assertk.assertions.isTrue
 import com.jagl.data.api.client.FrankfurterApi
-import com.jagl.data.api.model.GetCurrencies
 import com.jagl.data.api.model.GetCurrencies.CurrencyDto
-import com.jagl.data.api.model.GetLatestRates
 import com.jagl.data.api.model.GetLatestRates.RateDto
 import com.jagl.data.api.model.getCurrencies
 import com.jagl.data.api.model.getCurrenciesResponse
@@ -106,7 +103,7 @@ class CurrencyLayerRepositoryTest {
             val currency = currencies.getOrNull(i)
             assertThat(currency).isNotNull()
             assertThat(currency!!.name.orEmpty()).isNotEmpty()
-            assertThat(currency.isoCode).isEqualTo(value.isoCode)
+            assertThat(currency.iso_code).isEqualTo(value.iso_code)
         }
     }
 

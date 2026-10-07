@@ -1,6 +1,5 @@
 package com.jagl.exchangeapp
 
-import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
@@ -56,6 +55,39 @@ class ExchangeE2ETest {
         }
 
         composeTestRule.onNodeWithTag("exchange_result").assertExists()
+    }
+
+    @Test
+    fun testSwapFlow() {
+
+        composeTestRule.onNodeWithTag("from_currency_dropdown").performTextInput("USD")
+
+        composeTestRule.waitUntil(timeoutMillis = 5000L) {
+            composeTestRule.onNodeWithTag("currency_item_USD").isDisplayed()
+        }
+
+        composeTestRule.onNodeWithTag("currency_item_USD").performClick()
+
+        composeTestRule.onNodeWithTag("to_currency_dropdown").performTextInput("MXN")
+
+        composeTestRule.waitUntil(timeoutMillis = 5000L) {
+            composeTestRule.onNodeWithTag("currency_item_MXN").isDisplayed()
+        }
+
+        composeTestRule.onNodeWithTag("currency_item_MXN").performClick()
+
+        composeTestRule.onNodeWithTag("amount_input").performTextInput("100")
+
+        composeTestRule.onNodeWithTag("swap_button").performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 5000L) {
+            composeTestRule.onAllNodesWithText("USD").fetchSemanticsNodes().size == 1 &&
+                    composeTestRule.onAllNodesWithText("MXN").fetchSemanticsNodes().size == 1
+        }
+
+        composeTestRule.waitUntil(timeoutMillis = 5000L) {
+            composeTestRule.onNodeWithTag("exchange_result").isDisplayed()
+        }
     }
 
     @Test
