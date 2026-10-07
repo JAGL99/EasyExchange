@@ -21,7 +21,7 @@ fun SwapButton(
     onSwap: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val text = stringResource(R.string.swap_button)
+    val text = stringResource(R.string.swap_button_tag)
     Box(modifier = modifier) {
         FilledIconButton(
             onClick = onSwap,

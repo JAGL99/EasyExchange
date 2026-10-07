@@ -6,7 +6,7 @@
     <string name="calculate_exchange">Calculate Exchange</string>
     <string name="result">The exchange rate is:</string>
     <string name="enter_amount_to_exchange">Enter an amount to convert</string>
-    <string name="swap_button">Swap</string>
+    <string name="swap_button_tag" translatable="false">swap_button</string>
     <string name="exit_confirmation">Do you want to exit the app?</string>
     <string name="exit">Exit</string>
     <string name="cancel">Cancel</string>
