@@ -55,8 +55,11 @@ object ApiUtils {
 
 
     suspend fun <T> safeResultCall(request: suspend () -> Result<T>): Result<T> = try {
+        println("safeResultCall")
         request()
     } catch (e: Exception) {
+        println("safeResultCall exception: ${e.cause}")
+        println("safeResultCall error: ${e.message}")
         Result.failure(Exception(getErrorMessage(e.cause)))
     }
 
@@ -64,6 +67,7 @@ object ApiUtils {
         println("safeApiStateCall")
         request()
     } catch (e: Exception) {
+        println("safeApiStateCall exception: ${e.cause}")
         println("safeApiStateCall error: ${e.message}")
         ApiState.Error(getErrorMessage(e.cause))
     }

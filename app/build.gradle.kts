@@ -15,7 +15,7 @@ plugins {
 android {
     val versionMajor = 0
     val versionMinor = 1
-    val versionPatch = 9
+    val versionPatch = 10
     val currencCompileSdk = 36
     val currentMinSdk = 24
 
