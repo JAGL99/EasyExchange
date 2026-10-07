@@ -34,7 +34,9 @@ class CurrencyLayerRepositoryImpl(
      * @return A Result containing a list of CurrencyDto objects or an error.
      */
     override suspend fun getCurrencies(): Result<List<GetCurrencies.CurrencyDto>> = safeResultCall {
+        println("CurrencyLayerRepositoryImpl: getCurrencies called")
         val response = api.getCurrencies()
+        println("CurrencyLayerRepositoryImpl: API call completed with response: $response")
         safeMap(response)
     }
 }
