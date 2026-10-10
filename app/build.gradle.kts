@@ -34,10 +34,10 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             configure<CrashlyticsExtension> {
-                mappingFileUploadEnabled = false
+                mappingFileUploadEnabled = true
             }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
