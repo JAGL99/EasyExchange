@@ -1,7 +1,8 @@
 package com.jagl.data.api.repository
 
-import com.jagl.data.api.model.GetCurrencies
-import com.jagl.data.api.model.GetLatestRates
+import com.jagl.data.api.model.CurrencyDto
+import com.jagl.data.api.model.GetLatestRatesRequest
+import com.jagl.data.api.model.RateDto
 
 interface ICurrencyLayerRepository {
 
@@ -9,8 +10,8 @@ interface ICurrencyLayerRepository {
      * Access real-time exchange rates using the currencylayer API's live endpoint
      */
     suspend fun getLatestRates(
-       request: GetLatestRates.Request
-    ): Result<List<GetLatestRates.RateDto>>
+        request: GetLatestRatesRequest
+    ): Result<List<RateDto>>
 
-    suspend fun getCurrencies(): Result<List<GetCurrencies.CurrencyDto>>
+    suspend fun getCurrencies(): Result<List<CurrencyDto>>
 }

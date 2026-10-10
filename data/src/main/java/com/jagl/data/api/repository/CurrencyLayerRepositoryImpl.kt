@@ -1,10 +1,11 @@
 package com.jagl.data.api.repository
 
 import com.jagl.data.api.client.FrankfurterApi
-import com.jagl.data.api.model.GetCurrencies
-import com.jagl.data.api.model.GetLatestRates
-import com.jagl.data.api.utils.ApiUtils.safeResultCall
+import com.jagl.data.api.model.CurrencyDto
+import com.jagl.data.api.model.GetLatestRatesRequest
+import com.jagl.data.api.model.RateDto
 import com.jagl.data.api.utils.ApiUtils.safeMap
+import com.jagl.data.api.utils.ApiUtils.safeResultCall
 
 /**
  * Implementation of the ICurrencyLayerRepository interface that uses the FrankfurterApi to fetch currency data.
@@ -20,7 +21,7 @@ class CurrencyLayerRepositoryImpl(
      * @param request The request containing the base currency and quote currencies.
      * @return A Result containing a list of RateDto objects or an error.
      */
-    override suspend fun getLatestRates(request: GetLatestRates.Request): Result<List<GetLatestRates.RateDto>> =
+    override suspend fun getLatestRates(request: GetLatestRatesRequest): Result<List<RateDto>> =
         safeResultCall {
             val response = api.getLatestRates(
                 base = request.base,
@@ -33,7 +34,7 @@ class CurrencyLayerRepositoryImpl(
      * Fetches the list of available currencies.
      * @return A Result containing a list of CurrencyDto objects or an error.
      */
-    override suspend fun getCurrencies(): Result<List<GetCurrencies.CurrencyDto>> = safeResultCall {
+    override suspend fun getCurrencies(): Result<List<CurrencyDto>> = safeResultCall {
         println("CurrencyLayerRepositoryImpl: getCurrencies called")
         val response = api.getCurrencies()
         println("CurrencyLayerRepositoryImpl: API call completed with response: $response")

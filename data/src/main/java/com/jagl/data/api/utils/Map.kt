@@ -1,9 +1,9 @@
 package com.jagl.data.api.utils
 
-import com.jagl.data.api.model.GetCurrencies
+import com.jagl.data.api.model.CurrencyDto
 import com.jagl.domain.model.Currency
 
-fun  List<GetCurrencies.CurrencyDto>.toCurrencyList(): List<Currency> {
+fun List<CurrencyDto>.toCurrencyList(): List<Currency> {
     return this.map {
         Currency(code = it.iso_code.orEmpty(), name = it.name.orEmpty())
     }

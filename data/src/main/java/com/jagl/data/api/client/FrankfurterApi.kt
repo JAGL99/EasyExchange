@@ -1,8 +1,8 @@
 package com.jagl.data.api.client
 
 
-import com.jagl.data.api.model.GetCurrencies
-import com.jagl.data.api.model.GetLatestRates
+import com.jagl.data.api.model.CurrencyDto
+import com.jagl.data.api.model.RateDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -24,7 +24,7 @@ interface FrankfurterApi {
         base: String,
         @Query("quotes")
         quotes: String
-    ): Response<List<GetLatestRates.RateDto>?>
+    ): Response<List<RateDto>?>
 
     /**
      * Gets the list of available currencies
@@ -32,5 +32,5 @@ interface FrankfurterApi {
      */
 
     @GET("currencies")
-    suspend fun getCurrencies(): Response<List<GetCurrencies.CurrencyDto>?>
+    suspend fun getCurrencies(): Response<List<CurrencyDto>?>
 }
