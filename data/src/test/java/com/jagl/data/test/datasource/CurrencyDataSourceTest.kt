@@ -9,8 +9,7 @@ import assertk.assertions.isNotEmpty
 import com.jagl.core.network.INetworkManager
 import com.jagl.core.network.NetworkStatus
 import com.jagl.data.api.client.FrankfurterApi
-import com.jagl.data.api.model.GetCurrencies
-import com.jagl.data.api.model.GetCurrencies.CurrencyDto
+import com.jagl.data.api.model.CurrencyDto
 import com.jagl.data.api.model.getCurrenciesResponse
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
 import com.jagl.data.api.repository.ICurrencyLayerRepository
@@ -65,11 +64,12 @@ class CurrencyDataSourceTest {
                     emit(NetworkStatus.Available)
                 }
             }
+
             override fun isConnected(): Boolean {
                 return true
             }
         }
-        dataSource = CurrencyLayerDataSource(networkManager,repository, dao)
+        dataSource = CurrencyLayerDataSource(networkManager, repository, dao)
     }
 
     @AfterEach
@@ -78,18 +78,19 @@ class CurrencyDataSourceTest {
     }
 
     @Test
-    fun `Request without internet, get empty data`() = runBlocking<Unit>{
+    fun `Request without internet, get empty data`() = runBlocking<Unit> {
         networkManager = object : INetworkManager {
             override fun getInternetConnectionStatus(): Flow<NetworkStatus> {
                 return flow {
                     emit(NetworkStatus.Unavailable)
                 }
             }
+
             override fun isConnected(): Boolean {
                 return false
             }
         }
-        dataSource = CurrencyLayerDataSource(networkManager,repository, dao)
+        dataSource = CurrencyLayerDataSource(networkManager, repository, dao)
         val apiState = dataSource.getAvailableCurrencies()
         assertThat(apiState).hasClass(ApiState.Error::class)
         val error = (apiState as ApiState.Error)

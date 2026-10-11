@@ -7,8 +7,8 @@ import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import com.jagl.data.api.client.FrankfurterApi
-import com.jagl.data.api.model.GetCurrencies.CurrencyDto
-import com.jagl.data.api.model.GetLatestRates.RateDto
+import com.jagl.data.api.model.CurrencyDto
+import com.jagl.data.api.model.RateDto
 import com.jagl.data.api.model.getCurrencies
 import com.jagl.data.api.model.getCurrenciesResponse
 import com.jagl.data.api.model.getLatestRatesRequest
@@ -99,7 +99,7 @@ class CurrencyLayerRepositoryTest {
         assertThat(result.getOrNull()).isNotNull()
         val currencies = result.getOrNull()!!
         assertThat(currencies).isNotNull()
-        mockResponse.forEachIndexed { i ,value->
+        mockResponse.forEachIndexed { i, value ->
             val currency = currencies.getOrNull(i)
             assertThat(currency).isNotNull()
             assertThat(currency!!.name.orEmpty()).isNotEmpty()
