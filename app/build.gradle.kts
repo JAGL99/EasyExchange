@@ -15,7 +15,7 @@ plugins {
 android {
     val versionMajor = 0
     val versionMinor = 1
-    val versionPatch = 12
+    val versionPatch = 13
     val currencCompileSdk = 36
     val currentMinSdk = 24
 
@@ -34,10 +34,10 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             configure<CrashlyticsExtension> {
-                mappingFileUploadEnabled = false
+                mappingFileUploadEnabled = true
             }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

@@ -11,7 +11,7 @@ import assertk.assertions.isNotNull
 import com.jagl.core.network.INetworkManager
 import com.jagl.core.network.NetworkStatus
 import com.jagl.data.api.client.FrankfurterApi
-import com.jagl.data.api.model.GetLatestRates.RateDto
+import com.jagl.data.api.model.RateDto
 import com.jagl.data.api.model.getCurrencies
 import com.jagl.data.api.model.getLatestRatesResponse
 import com.jagl.data.api.repository.CurrencyLayerRepositoryImpl
@@ -258,7 +258,7 @@ class ExchangeDataSourceTest {
             )
         }
         val baseQuote = mockResponse.find {
-            it.base ==  fromCurrency.code && it.quote == toCurrency.code
+            it.base == fromCurrency.code && it.quote == toCurrency.code
         }
         val type = Types.newParameterizedType(List::class.java, RateDto::class.java)
         val adapter = moshi.adapter<List<RateDto>>(type)
@@ -299,7 +299,7 @@ class ExchangeDataSourceTest {
                 )
             }
             val baseQuote = mockResponse.find {
-                it.base ==  fromCurrency.code && it.quote == toCurrency.code
+                it.base == fromCurrency.code && it.quote == toCurrency.code
             }
             val type = Types.newParameterizedType(List::class.java, RateDto::class.java)
             val adapter = moshi.adapter<List<RateDto>>(type)
@@ -340,7 +340,7 @@ class ExchangeDataSourceTest {
                 )
             }
             val baseQuote = mockResponse.find {
-                it.base ==  fromCurrency.code && it.quote == toCurrency.code
+                it.base == fromCurrency.code && it.quote == toCurrency.code
             }
             val type = Types.newParameterizedType(List::class.java, RateDto::class.java)
             val adapter = moshi.adapter<List<RateDto>>(type)

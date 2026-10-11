@@ -2,7 +2,7 @@ package com.jagl.data.datasource.exchangeRate
 
 
 import com.jagl.core.network.INetworkManager
-import com.jagl.data.api.model.GetLatestRates
+import com.jagl.data.api.model.GetLatestRatesRequest
 import com.jagl.data.api.repository.ICurrencyLayerRepository
 import com.jagl.data.api.utils.ApiUtils
 import com.jagl.data.api.utils.ApiUtils.safeApiStateCall
@@ -63,7 +63,7 @@ class ExchangeDataSource @Inject constructor(
             return@safeApiStateCall ApiState.Error(message = ApiUtils.NO_INTERNET_ERROR)
 
 
-        val request = GetLatestRates.Request(
+        val request = GetLatestRatesRequest(
             base = fromCurrency.code,
             quotes = toCurrency.code
         )

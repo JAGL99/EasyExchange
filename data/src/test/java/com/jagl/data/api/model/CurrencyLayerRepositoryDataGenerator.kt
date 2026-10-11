@@ -1,6 +1,5 @@
 package com.jagl.data.api.model
 
-import com.jagl.data.api.model.GetCurrencies.CurrencyDto
 import com.jagl.domain.model.Currency
 import java.time.Instant
 import java.util.Date
@@ -369,19 +368,15 @@ fun getCurrenciesDto(): List<CurrencyDto> {
     )
 }
 
-fun getMapCurrencies(): Map<String, String> {
-    return getCurrencies().associate { it.code to it.name }
-}
-
-fun getLatestRatesRequest(): GetLatestRates.Request {
-    return GetLatestRates.Request(
+fun getLatestRatesRequest(): GetLatestRatesRequest {
+    return GetLatestRatesRequest(
         base = "USD", quotes = "AUD,EUR,GBP,PLN"
     )
 }
 
 fun getLatestRatesResponse(
     source: String, avableCurrencies: List<Currency>, currencies: String
-): List<GetLatestRates.RateDto> {
+): List<RateDto> {
     return try {
         val operationSource = source.ifEmpty { getCurrencies().first().code }
         val sourceIsValid = avableCurrencies.find { it.code == operationSource }
@@ -393,7 +388,7 @@ fun getLatestRatesResponse(
         val quotes = generateRandomExchangeRates(operationSource, targets)
         List(quotes.size) { index ->
             val target = targets[index]
-            GetLatestRates.RateDto(
+            RateDto(
                 date = Date.from(Instant.now()).time.toString(),
                 base = operationSource,
                 quote = target,
