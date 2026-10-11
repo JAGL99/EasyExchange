@@ -15,10 +15,10 @@
 # ====================================================================
 # 2. RETROFIT
 # ====================================================================
-# Conservar llamadas a métodos en interfaces de Retrofit
--keepclassmembers,allowshrinking,allowobfuscation interface * {
-    @retrofit2.http.* <methods>;
-}
+# Conservar
+-keep,allowobfuscation,allowshrinking interface retrofit2.Call
+-keep,allowobfuscation,allowshrinking class retrofit2.Response
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
 # ====================================================================
 # 3. MOSHI & DTOs (API DATA LAYER)
