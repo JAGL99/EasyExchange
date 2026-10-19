@@ -17,7 +17,6 @@ data class CurrencyEntity(
      * Converts the entity to a domain model
      */
     fun toCurrency(): Currency {
-        println("Converting CurrencyEntity to Currency: code=$code, name=$name")
         return Currency(
             code = code,
             name = name
@@ -31,7 +30,6 @@ data class CurrencyEntity(
         fun fromCurrency(
             currency: Currency
         ): CurrencyEntity {
-            println("Creating CurrencyEntity from Currency: code=${currency.code}, name=${currency.name}")
             return CurrencyEntity(
                 code = currency.code,
                 name = currency.name
